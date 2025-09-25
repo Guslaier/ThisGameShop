@@ -1,0 +1,212 @@
+*{
+  padding: 0;
+  margin: 0;
+  font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+body{
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(43, 29, 72, 1.000) 0.000%, rgba(0, 4, 47, 1.000) 50.000%, rgba(10, 1, 21, 1.000) 100.000%);
+}
+
+nav{
+  z-index: 99;
+  position: sticky;
+  top: 0;
+  height: 3.5rem;
+  background-color: rgb(0, 0, 0,0.5);
+  display: flex;
+  justify-content: space-between;
+  padding: 0rem 4rem;
+}
+
+.nav-l{
+  flex: 0;
+  min-width: 20%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  overflow: hidden;
+}
+.nav-l img{
+  width: 55%;
+  filter: brightness(0.6);
+  border-radius: 15px;
+}
+.nav-l span{
+  font-weight: bolder;
+  font-size: 0.8rem;
+  color: rgb(255, 255, 255);
+}
+
+.nav-c{
+  flex: 0;
+  min-width: 40%;
+}
+
+.nav-c .group{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.group li{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  height: 85%;
+  padding: 0px 0.6rem;
+  margin: 0 0.6rem;
+  
+}
+.group li .icon{
+  aspect-ratio: 1/1;
+  margin-right: 0.5rem;
+  font-size: 1.15rem;
+  color: whitesmoke;
+  display: flex;
+  align-items: center;
+  font-weight: 1px;
+  justify-content: center;
+}
+
+
+
+.group li a{
+  height: 80%;
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  color: rgb(231, 231, 231);
+  text-decoration: none;
+  border: none;
+  outline: none;
+}
+
+nav .active{
+  border-top: 0.2rem solid  rgb(0, 0, 0,0);
+  border-bottom: 0.2rem solid  rgb(30, 255, 30);
+}
+
+nav .active a{
+   color: rgb(151, 151, 151);
+}
+nav .active .icon{
+   color: rgb(151, 151, 151);
+}
+
+.nav-r{
+  flex: 0;
+  min-width: 20%;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+.profile{
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  height: 85%;
+}
+  
+#pf{
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+#pf:hover{
+  cursor: pointer;
+}
+#nameProfile{
+  user-select: none;
+  color: whitesmoke;
+  font-size: 0.7rem;
+  display: flex;
+  margin-right: 0.3rem;
+  justify-content: end;
+  text-align: right;
+  text-shadow: none;
+  word-wrap: break-word;
+}
+
+#iconProfileProfile{
+  display: flex;
+  height: 2rem;
+
+background: linear-gradient(135deg, rgba(109, 95, 138, 1.000) 0.000%, rgba(51, 70, 113, 1.000) 50.000%, rgba(76, 67, 87, 1.000) 100.000%);
+  aspect-ratio: 1/1;
+  border-radius: 15%;
+}
+
+#menu{
+  display: none;
+  align-self: flex-end;
+  position: absolute;
+  background-color: rgb(0, 0, 0,0.6);
+  top: 3.8rem;
+  width: 13rem;
+  border-radius: 5%;
+  box-shadow: 0px 0px 3px 1px rgb(83, 83, 83);
+  overflow: hidden;
+}
+
+#menu li{
+  list-style: none;
+  display: flex;
+}
+#menu li:hover{
+  background-color: rgb(52, 51, 51,0.6);
+}
+
+#menu li a{
+  width: 100%;
+  display: flex;
+  list-style: none;
+  color: whitesmoke;
+  padding: 1rem;
+  text-decoration: none;
+}
+
+
+#menu .activeM a{
+  color:gray;
+}
+
+
+/* main ================== */
+.conten{
+  display: grid;
+  grid-row: auto auto;
+  height: auto;
+  padding: 1rem 4rem 0 4rem;
+  min-height: 90.1vh;
+  background-color: rgb(0, 0, 0,0.3);
+}
+
+@media screen and (max-width:610px) {
+  .group li{
+  height: 85%;
+  padding: 0px 0.3rem;
+  margin: 0 0.1rem;
+  
+}
+.group li .icon{
+  font-size: 1rem;
+  font-weight: 1px;
+}
+
+
+.group li a{
+  height: 80%;
+  font-size: 0.8rem;
+}
+
+#nameProfile{
+  display: none;
+  
+}
+
+}

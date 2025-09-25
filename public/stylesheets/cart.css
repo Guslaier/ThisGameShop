@@ -1,0 +1,269 @@
+.title{
+    color: whitesmoke;
+    margin: 0 0 0.8rem 0;
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px black;
+}
+
+.totleCart{
+    background-color: rgb(0, 0, 0,0.5);
+    display: flex;
+    flex-direction: column;
+    min-height: 4rem;
+    border-radius: 15px;
+    padding: 0.2rem 0.8rem;
+    color: whitesmoke;
+}
+
+#showsum{
+    margin: 0 0.5rem;
+}
+
+.Header{
+    display: flex;
+    padding: 0.3rem;
+    justify-content: space-between;
+    min-height: 10px;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid rgb(151, 151, 151);
+}
+
+.drtail{
+    display: flex;
+    
+}
+.drtail .cost{
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    width: 6rem;
+    display: flex;
+}
+.drtail .amount{
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    display: flex;
+    width: 6rem;
+}
+
+
+.cartItem{
+    display: flex;
+    padding: 0.3rem;
+    justify-content: space-between;
+    min-height: 10px;
+}
+
+.cartItem .drtail{
+    display: flex;
+    
+}
+.cartItem .drtail .cost{
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    width: 6rem;
+    display: flex;
+}
+.cartItem .drtail .amount{
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    display: flex;
+    width: 6rem;
+}
+
+/* footer===================== */
+
+.footer .subsub{
+    height: 1.5rem;
+    aspect-ratio: 5/2;
+}
+.footer .subsub button{
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    border: none;
+    background-color: rgb(35, 90, 66);
+    color: whitesmoke;
+    font-size: 12px;
+}
+.footer .subsub button:hover{
+    scale: 1.05;
+}
+
+.footer{
+    margin-top: 1rem;
+    background-color: rgb(0, 0, 0,0.5);
+    display: flex;
+    min-height: 3rem;
+    border-radius: 15px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.2rem 0.8rem;
+}
+.footer .sumi{
+    display: flex;
+    color: rgb(215, 215, 215);
+    align-items: center;
+}
+
+
+/* ++++++++++++++++++ */
+
+
+  .checkbox-wrapper-2 .ikxBAC {
+    appearance: none;
+    background-color: #dfe1e4;
+    border-radius: 72px;
+    border-style: none;
+    flex-shrink: 0;
+    height: 12px;
+    margin: 0 0.2rem 0 0;
+    position: relative;
+    width: 25px;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC::before {
+    bottom: -6px;
+    content: "";
+    left: -6px;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC,
+  .checkbox-wrapper-2 .ikxBAC::after {
+    transition: all 100ms ease-out;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC::after {
+    background-color: #fff;
+    border-radius: 50%;
+    content: "";
+    height: 8px;
+    left: 3px;
+    position: absolute;
+    top: 1.3px;
+    width: 8px;
+  }
+
+  .checkbox-wrapper-2 input[type=checkbox] {
+    cursor: default;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:hover {
+    background-color: #c9cbcd;
+    transition-duration: 0s;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:checked {
+    background-color: #6e79d6;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:checked::after {
+    background-color: #fff;
+    left: 13px;
+  }
+
+  .checkbox-wrapper-2 :focus:not(.focus-visible) {
+    outline: 0;
+  }
+
+  .checkbox-wrapper-2 .ikxBAC:checked:hover {
+    background-color: #535db3;
+  }
+
+  #selectAll{
+      display: flex;
+      align-items: center;
+      color: whitesmoke;
+      font-size:0.7rem;
+    }
+/* ============= */
+.quantity-field {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4rem; 
+  height: 1.2rem;
+  margin: 0 auto;    
+}
+
+.quantity-field .value-button{ 
+  margin: 0px;
+  width: 40px;
+  height: 100%;   
+  padding: 0;
+  background: rgba(40, 123, 88, 0.823);
+  outline: none;
+  cursor: pointer;
+}
+
+.quantity-field .value-button:hover {
+  background: rgba(72, 109, 94, 0.823);
+}
+
+.quantity-field .value-button:active{
+  background: rgba(72, 109, 94, 0.823);
+}
+
+.quantity-field .decrease-button {
+  margin-right: -4px;
+  border-radius: 15px 15px;
+  border: none;
+}
+
+.quantity-field .increase-button {
+  margin-left: -4px;
+  border-radius: 15px 15px;
+  border: none;
+}
+ 
+.quantity-field .number{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  margin: 0px;
+  width: 4rem;
+  height: 100%;
+  line-height: 40px;
+  font-size: 11pt;
+  box-sizing: border-box; 
+  font-family: calibri;
+}
+
+.quantity-field .number::selection{
+  background: none;
+}
+
+/*
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+*/
+
+
+
+
+
+.poto{
+    display: flex;
+    padding: 0.8rem;
+    height: 3rem;  
+    aspect-ratio: 16/9;
+}
+.poto img{
+    border-radius: 5px;
+    object-fit: cover;
+    transition: 0.2s;
+    width: 100%;
+    box-shadow: 0 0 10px 0.1px rgba(118, 110, 110, 0.221);
+}
+
