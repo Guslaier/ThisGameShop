@@ -1,5 +1,6 @@
 import createError from'http-errors';
 import express from 'express';
+import session from "express-session";
 import path from'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
@@ -18,6 +19,15 @@ liveReloadServer.server.once("connection", () => {
     liveReloadServer.refresh(".");
   }, 100);
 });
+app.use(session({
+  secret: "mySecretKey",     // ใช้ string ลับสำหรับ sign cookie
+  resave: false,             // ไม่บันทึกซ้ำถ้าไม่มีการแก้ไข
+  saveUninitialized: false,  // ไม่สร้าง session ถ้าไม่ใช้งาน
+  cookie: { 
+    maxAge: 1000 * 60 * 60,  // อายุ cookie 1 ชั่วโมง
+    httpOnly: true           // ปลอดภัยกว่า ปิดการเข้าถึงจาก client JS
+  }
+}));
 
 app.use(connectLiveReload());
 // view engine setup
@@ -42,15 +52,6 @@ app.use('/store', storepage);
 app.use('/cart', cartpage);
 app.use('/account', accountpage);
 app.use('/history', historypage);
-
-
-
-
-
-
-
-
-
 
 
 // catch 404 and forward to error handler

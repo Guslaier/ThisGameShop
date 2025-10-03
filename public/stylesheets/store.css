@@ -141,8 +141,8 @@
     
     margin: 0;
     margin-top: 0.3rem;
-      white-space: normal;   /* ให้ข้อความตัดบรรทัด */
-  word-break: break-word; /* ตัดคำถ้าตัวอักษรยาวเกิน */
+    white-space: normal;   /* ให้ข้อความตัดบรรทัด */
+    word-break: break-word; /* ตัดคำถ้าตัวอักษรยาวเกิน */
 }
 
 .cards .price {

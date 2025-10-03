@@ -13,18 +13,16 @@ client.connect()
 .then(() => console.log('Connected to PostgreSQL'))
 .catch(err => console.error('Connection error', err.stack));
 
-class Query{
-    async QQuery (statment) {
+class Query {
+  async QQuery(sql, params = []) {
     try {
-        const res = await client.query(statment
-        );
-        console.log('User Query:', res);
-        return res
+      const rows = await client.query(sql, params);
+      return rows; // คืนเฉพาะ rows
     } catch (err) {
-        console.error('Error Query:', err);
+      console.error("Error Query:", err);
     }
-};
-
+  }
+  
 }
 
 export default  new Query();
