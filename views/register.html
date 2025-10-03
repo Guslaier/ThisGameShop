@@ -48,38 +48,30 @@
     </nav>
     <div class="conten">
 
-        <div class="login-container">
-            <div class="login-pic">
+        <div class="register-container">
+            <div class="register-pic">
                 <!-- <img src="/images/this-game-shop-high-resolution-logo.png" alt="IMG"> -->
             </div>
 
-            <form id="loginForm">
-                <span class="login-title">Login</span>
-
-                <div class="wrap-input100">
-                    <input class="input100" type="text" name="email" placeholder="Email" required>
+            <form id="registerForm">
+                <span class="login-title">Register</span>
+                <div class="wrap-input">
+                    <input class="input" type="text" name="display_name" placeholder="Name" required>
+                </div>
+                <div class="wrap-input">
+                    <input class="input" type="text" name="email" placeholder="Email" required>
+                </div>
+                <div class="wrap-input">
+                    <input class="input" type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="wrap-input">
+                    <input class="input" type="password" name="password-con" placeholder="Password-confirm" required>
                 </div>
 
-                <div class="wrap-input100">
-                    <input class="input100" type="password" name="password" placeholder="Password" required>
-                </div>
-
-                <div class="container-login100-form-btn">
-                    <button type="submit" class="login100-form-btn">
-                        Login
+                <div class="container-btn">
+                    <button type="submit" class="Submit-form-btn">
+                        Submit
                     </button>
-                </div>
-
-                <div class="text-center p-t-12">
-                    <span class="txt1">Forgot</span>
-                    <a class="txt2" href="#">Password?</a>
-                </div>
-
-                <div class="text-center p-t-136">
-                    <a class="txt2" href="./register">
-                        Create your Account
-                        <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-                    </a>
                 </div>
             </form>
 
@@ -101,10 +93,11 @@
                         const result = await response.json();
                         console.log(result);
                         if (result.status == true) {
-                            // redirect หลัง logi
-                            window.location.href = "/";
+                            alert("register Success 🎉");
+                            // ตัวอย่าง redirect หลัง login
+                            window.location.href = "account/";
                         } else {
-                            alert("Login Failed ❌ : " + result.message);
+                            alert("register Failed ❌ : " + result.message);
                         }
                     } catch (error) {
                         console.error("Error:", error);

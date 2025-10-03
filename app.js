@@ -47,6 +47,21 @@ import indexpage from './routes/indexpage.js';
 import historypage from './routes/history/controller.js';
 import storepage from './routes/store/controller.js';
 
+
+app.use((req, res, next) => {
+  if (!req.session.user) { 
+    if (!(req.path === '/' || 
+      req.path === '/store' || 
+      req.path === '/account/' || 
+      req.path === '/account/login' || 
+      req.path === '/account/register' ||
+      req.path === '/account/register-sum' ||
+      req.path === '/account/session' )) {
+      return res.redirect('/account/');
+    }
+  }
+  next();
+});
 app.use('/', indexpage);
 app.use('/store', storepage);
 app.use('/cart', cartpage);

@@ -1,11 +1,27 @@
 const slides = document.querySelectorAll('.card');
-let current = 0;
+const prevBtn = document.querySelector('.prev');
+const nextBtn = document.querySelector('.next');
+const dotsContainer = document.querySelector('.dots');
 
+let current = 0;
+let interval;
+
+// สร้าง dot ตามจำนวนสไลด์
+slides.forEach((_, i) => {
+  const dot = document.createElement('span');
+  dot.classList.add('dot');
+  if (i === 0) dot.classList.add('active');
+  dot.addEventListener('click', () => goToSlide(i));
+  dotsContainer.appendChild(dot);
+});
+
+const dots = document.querySelectorAll('.dot');
 
 function showSlide(i) {
   slides.forEach((slide, s) => {
-    slide.classList.remove('active');
-    slide.classList.remove('naxt');
+    slide.classList.remove('active', 'naxt');
+    slide.style.transition = "all 1s ease"; // ✅ smooth
+
     if (s === i) {
       slide.style.left = `48%`;
       slide.classList.add('active');
@@ -20,19 +36,47 @@ function showSlide(i) {
       slide.style.left = `100vw`;
     }
   });
+
+  dots.forEach(dot => dot.classList.remove('active'));
+  dots[i].classList.add('active');
 }
 
+function goToSlide(i) {
+  current = i;
+  showSlide(current);
+  resetInterval(); // ✅ reset timer เมื่อคลิก dot
+}
+
+function nextSlideLoop() {
+  current = (current + 1) % slides.length;
+  showSlide(current);
+  resetInterval();
+}
+function nextSlide() {
+  if (current < slides.length-1) {
+  current = (current + 1) % slides.length;
+  showSlide(current);
+  resetInterval();
+  } 
+}
+
+function prevSlide() {
+  if (current > 0) {
+  current = (current - 1 + slides.length) % slides.length;
+  showSlide(current);
+  resetInterval(); // ✅ reset timer เมื่อกด prev
+  }
+}
+
+// ปุ่มคลิก
+nextBtn.addEventListener('click', nextSlide);
+prevBtn.addEventListener('click', prevSlide);
+
+// Auto slide
+function resetInterval() {
+  clearInterval(interval);
+  interval = setInterval(nextSlideLoop, 3500);
+}
 
 showSlide(current);
-if (slides.length > 1) {
-
-  setInterval(() => {
-    if (current === slides.length - 1) {
-      direction = -1;
-    } else if (current === 0) {
-      direction = 1;
-    }
-    current += direction;
-    showSlide(current);
-  }, 3500);
-}
+resetInterval();

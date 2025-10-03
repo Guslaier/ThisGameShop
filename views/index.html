@@ -21,7 +21,7 @@
       <ul class="group">
         <li class="Home active">
 
-          <a href="/">
+          <a>
             <i class="fi fi-rr-home icon"></i>
             Home
           </a>
@@ -42,33 +42,62 @@
         </li>
       </ul>
     </div>
-    <div class="nav-r">
+    <div class="nav-r" id="account-area">
+      <script>
+        (async () => {
+          try {
+            const response = await fetch("../account/session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" }
+            });
+            const data = await response.json();
+            const container = document.getElementById("account-area");
 
-
-      <div class="profile"><!--  active -->
-        <ul id="menu">
-          <!-- activeM -->
-          <li class=""><a href="./account">Account</a></li>
-          <li class=""><a href="./history">History</a></li>
-          <li class=""><a href="">Log out</a></li>
-        </ul>
-        <div id="pf">
-          <div id="nameProfile">
-            Nattawooth Preechajarn
-          </div>
-          <div id="iconProfileProfile">
-
+            if (data.loggedIn) {
+              container.innerHTML = `
+        <div class="profile">
+          <ul id="menu" style="padding: 0;">
+            <li class="" ><a>Account</a></li>
+            <li><a href="/history">History</a></li>
+            <li><a href="/account/logout">Log out</a></li>
+          </ul>
+          <div id="pf">
+            <div id="nameProfile">
+              ${data.user.display_name}
+            </div>
+            <div id="iconProfileProfile"></div>
           </div>
         </div>
-      </div>
+      `;
+              var show = 0
+              document.getElementById('pf').addEventListener("click", (e) => {
+                if (show == 0) {
+                  show = 1
+                  document.getElementById('menu').style.display = "block"
+                } else {
+                  show = 0
+                  document.getElementById('menu').style.display = "none"
+                }
+              });
+            } else {
+              container.innerHTML = `
+        <div>
+          <a href="/account/">Sign in</a>
+        </div>
+      `;
+            }
+          } catch (error) {
+            console.error("Error fetching session data:", error);
+          }
+        })();
+      </script>
     </div>
 
   </nav>
   <div class="conten">
-    
+
   </div>
 </body>
-<Script src="javascripts/main.js"></Script>
 
 
 </html>

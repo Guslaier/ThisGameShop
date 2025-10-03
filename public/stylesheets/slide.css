@@ -24,7 +24,7 @@
     right: -100vw;
     opacity: 0.8;
     scale: 0.90;
-    transition: 1s;
+    transition: 0.1s;
     border-radius: 5px;
     box-shadow: 0 0 10px 0.1px rgba(0, 0, 0, 0.221);
     overflow: hidden;
@@ -90,4 +90,44 @@
     .con-card{
     width: 80%;
 }
+}
+.slide .nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.1);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 15px;
+  transition: background 0.3s;
+}
+.slide .nav:hover {
+  background: rgba(0,0,0,0.8);
+}
+.slide .prev { left: 1%; }
+.slide .next { right: 1%; }
+
+.dots {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+.dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.dots .dot.active {
+  background: white;
 }

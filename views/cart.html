@@ -11,23 +11,7 @@
     href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
 </head>
-<script>
-  function increaseValue(button, limit) {
-    const numberInput = button.parentElement.querySelector('.number');
-    var value = parseInt(numberInput.innerHTML, 10);
-    if (isNaN(value)) value = 0;
-    if (limit && value >= limit) return;
-    numberInput.innerHTML = value + 1;
-  }
 
-
-  function decreaseValue(button) {
-    const numberInput = button.parentElement.querySelector('.number');
-    var value = parseInt(numberInput.innerHTML, 10);
-    if (isNaN(value)) value = 1;
-    if (value < 2) return;
-    numberInput.innerHTML = value - 1;
-  }</script>
 
 <body>
   <nav>
@@ -52,45 +36,90 @@
         </li>
         <li class="Cart active">
 
-          <a href="/cart">
+          <a>
             <i class="fi fi-rr-shopping-cart icon"></i>
             Cart
           </a>
         </li>
       </ul>
     </div>
-    <div class="nav-r">
+    <div class="nav-r" id="account-area">
 
 
-      <div class="profile"><!--  active -->
-        <ul id="menu">
-          <!-- activeM -->
-          <li class=""><a href="./account">Account</a></li>
-          <li class=""><a href="./history">History</a></li>
-          <li class=""><a href="">Log out</a></li>
-        </ul>
-        <div id="pf">
-          <div id="nameProfile">
-            Nattawooth Preechajarn
-          </div>
-          <div id="iconProfileProfile">
+      <script>
+        (async () => {
+          try {
+            const response = await fetch("../account/session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" }
+            });
+            const data = await response.json();
+            const container = document.getElementById("account-area");
 
+            if (data.loggedIn) {
+              container.innerHTML = `
+        <div class="profile">
+          <ul id="menu">
+            <li><a href="/account/profile">Account</a></li>
+            <li><a href="/history">History</a></li>
+            <li><a href="/account/logout">Log out</a></li>
+          </ul>
+          <div id="pf">
+            <div id="nameProfile">
+              ${data.user.display_name}
+            </div>
+            <div id="iconProfileProfile"></div>
           </div>
         </div>
-      </div>
-    </div>
+      `;
 
+            } else {
+              container.innerHTML = `
+        <div>
+          <a href="/account/">Sign in</a>
+        </div>
+      `;
+            }
+          } catch (error) {
+            console.error("Error fetching session data:", error);
+          }
+        })();
+      </script>
+    </div>
+    </div>
   </nav>
   <div class="conten">
     <div class="Cart">
+
+      <script>
+        function increaseValue(button, limit) {
+          const numberInput = button.parentElement.querySelector('.number');
+          var value = parseInt(numberInput.innerHTML, 10);
+          if (isNaN(value)) value = 0;
+          if (limit && value >= limit) return;
+          numberInput.innerHTML = value + 1;
+        }
+
+
+        function decreaseValue(button) {
+          const numberInput = button.parentElement.querySelector('.number');
+          var value = parseInt(numberInput.innerHTML, 10);
+          if (isNaN(value)) value = 1;
+          if (value < 2) return;
+          numberInput.innerHTML = value - 1;
+        }</script>
       <div class="title">
         IN Cart
       </div>
       <div class="totleCart">
         <div class="Header">
-          <div class="checkbox-wrapper-2" id="selectAll">
-            <input type="checkbox" class="sc-gJwTLC ikxBAC">
-            Product
+          <div class="checkbox-wrap" id="selectAll">
+            <label class="custom-checkbox">
+              <input type="checkbox" id="selectAllCheck">
+               <span class="checkmark"></span>
+            </label>
+
+            <div>Product</div>
           </div>
           <div class="drtail">
             <div class="cost">cost</div>
@@ -102,67 +131,10 @@
         <!-- item============= -->
         <div class="cartItem">
           <div class="checkbox-wrapper-2" id="selectAll">
-            <input type="checkbox" class="sc-gJwTLC ikxBAC">
-            <div class="poto">
-              <img src="images/image-47.jpeg" alt="">
-            </div>
-            God of war
-          </div>
-          <div class="drtail">
-            <div class="cost">234</div>
-            <div class="amount">
-              <div class="quantity-field">
-                <button class="value-button decrease-button" onclick="decreaseValue(this)" title="Azalt">-</button>
-                <div class="number">1</div>
-                <button class="value-button increase-button" onclick="increaseValue(this, 5)" title="Arrtır">+
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="cartItem">
-          <div class="checkbox-wrapper-2" id="selectAll">
-            <input type="checkbox" class="sc-gJwTLC ikxBAC">
-            <div class="poto">
-              <img src="images/image-47.jpeg" alt="">
-            </div>
-            God of war
-          </div>
-          <div class="drtail">
-            <div class="cost">234</div>
-            <div class="amount">
-              <div class="quantity-field">
-                <button class="value-button decrease-button" onclick="decreaseValue(this)" title="Azalt">-</button>
-                <div class="number">1</div>
-                <button class="value-button increase-button" onclick="increaseValue(this, 5)" title="Arrtır">+
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="cartItem">
-          <div class="checkbox-wrapper-2" id="selectAll">
-            <input type="checkbox" class="sc-gJwTLC ikxBAC">
-            <div class="poto">
-              <img src="images/image-47.jpeg" alt="">
-            </div>
-            God of war
-          </div>
-          <div class="drtail">
-            <div class="cost">234</div>
-            <div class="amount">
-              <div class="quantity-field">
-                <button class="value-button decrease-button" onclick="decreaseValue(this)" title="Azalt">-</button>
-                <div class="number">1</div>
-                <button class="value-button increase-button" onclick="increaseValue(this, 5)" title="Arrtır">+
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="cartItem">
-          <div class="checkbox-wrapper-2" id="selectAll">
-            <input type="checkbox" class="sc-gJwTLC ikxBAC">
+            <label class="custom-checkbox">
+              <input type="checkbox" class="item-check">
+               <span class="checkmark"></span>
+            </label>
             <div class="poto">
               <img src="images/image-47.jpeg" alt="">
             </div>
@@ -199,5 +171,6 @@
   </div>
 </body>
 <Script src="javascripts/main.js"></Script>
+<script src="javascripts/cart.js"></script>
 
 </html>
