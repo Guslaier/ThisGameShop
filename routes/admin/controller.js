@@ -2,7 +2,7 @@
 import express from "express";
 import ProvidersAcc from "../account/service.js";
 import Providersstock from "../stock/service.js";
-import Providers from "../service";
+import Providers from "../service.js";
 const router = express.Router();
 
 // ✅ แสดงหน้า admin (เฉพาะ role = admin)
