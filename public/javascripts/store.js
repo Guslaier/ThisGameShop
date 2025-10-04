@@ -22,7 +22,7 @@ document.querySelectorAll('.layout').forEach(d => {
 
 let g = container.firstElementChild;
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 50; i++) {
     let clone = g.cloneNode(true);
     container.appendChild(clone);
 }
