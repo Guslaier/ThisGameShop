@@ -1,0 +1,117 @@
+:root {
+  --primary-color: #0a84ff;
+  --secondary-color: #111;
+  --text-color: #fff;
+  --muted-text: #ccc;
+  --background-light: #f8f8f8;
+  --shadow: rgba(0, 0, 0, 0.3);
+
+  --card-radius: 15px;
+  --card-gap: 20px;
+
+
+  --transition-fast: 0.3s ease;
+
+  --font-main: 'Segoe UI', sans-serif;
+}
+
+
+.conten {
+  display: grid;
+  grid-template-rows: auto auto; 
+  gap: 2rem;
+  height: auto;
+  padding: 1rem 4rem 3rem 4rem;
+  min-height: 100vh;
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-main);
+}
+
+.recommend-section {
+  max-width: 1200px;
+  width: 100%;
+   margin: 0 auto 3rem auto;
+  padding: 0 20px;
+}
+
+.recommend-section h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+.recommend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: var(--card-gap);
+}
+
+.recommend-card {
+  position: relative;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.recommend-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: fill;
+  opacity: 0.9;
+  transition: opacity var(--transition-fast);
+}
+
+.recommend-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.recommend-card:hover img {
+  opacity: 1;
+}
+
+.recommend-card .info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.recommend-card .info .category {
+  font-size: 0.9rem;
+  color: var(--muted-text);
+}
+
+.recommend-card .info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 5px 0;
+}
+
+.recommend-card .info p {
+  font-size: 0.85rem;
+  color: var(--text-color);
+}
+
+/* 📱 Mobile responsive */
+@media (max-width: 768px) {
+  .conten {
+    padding: 1rem 1.5rem 2rem 1.5rem;
+  }
+
+  .recommend-section {
+    margin-top: 2rem;
+    padding: 0 10px;
+  }
+}

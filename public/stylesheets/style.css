@@ -1,27 +1,68 @@
-*{
+:root {
+  /* Fonts */
+  --font-base: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
+
+  /* Colors */
+  --color-bg-main: linear-gradient(135deg,
+    rgba(43, 29, 72, 1) 0%,
+    rgba(0, 4, 47, 1) 50%,
+    rgba(10, 1, 21, 1) 100%
+  );
+  --color-nav-bg: rgba(0, 0, 0, 0.5);
+  --color-card-bg: rgba(0, 0, 0, 0.3);
+  --color-white: #ffffff;
+  --color-gray: rgb(151, 151, 151);
+  --color-text: whitesmoke;
+  --color-border: rgba(0, 255, 100, 0.4);
+  --color-accent: #00ff80;
+  --color-accent2: rgba(0, 255, 100, 0.08);
+  --color-hover: rgba(0, 255, 100, 0.4);
+  --color-shadow: rgba(83, 83, 83, 1);
+
+  /* Gradients */
+  --gradient-profile: linear-gradient(135deg,
+    rgba(109, 95, 138, 1) 0%,
+    rgba(51, 70, 113, 1) 50%,
+    rgba(76, 67, 87, 1) 100%
+  );
+
+  /* Sizes */
+  --nav-height: 3.5rem;
+  --radius-small: 5%;
+  --radius-med: 12px;
+  --radius-large: 15px;
+
+  /* Transitions */
+  --transition: all 0.3s ease;
+  --transition-fast: all 0.1s ease-in-out;
+}
+
+/* ===================== GLOBAL RESET ===================== */
+* {
   padding: 0;
   margin: 0;
-  font: 1rem "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: aliceblue;
+  font: var(--font-base);
 }
 
-body{
+body {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgba(43, 29, 72, 1.000) 0.000%, rgba(0, 4, 47, 1.000) 50.000%, rgba(10, 1, 21, 1.000) 100.000%);
+  background: var(--color-bg-main);
 }
 
-nav{
+/* ===================== NAVIGATION ===================== */
+nav {
   z-index: 99;
   position: sticky;
   top: 0;
-  height: 3.5rem;
-  background-color: rgb(0, 0, 0,0.5);
+  height: var(--nav-height);
+  background-color: var(--color-nav-bg);
   display: flex;
   justify-content: space-between;
   padding: 0rem 4rem;
 }
 
-.nav-l{
+/* ---------- LEFT ---------- */
+.nav-l {
   flex: 0;
   min-width: 20%;
   display: flex;
@@ -29,54 +70,55 @@ nav{
   align-items: center;
   overflow: hidden;
 }
-.nav-l img{
+
+.nav-l img {
   width: 55%;
   min-width: 4.5rem;
-  filter: brightness(0.6);
-  border-radius: 15px;
-}
-.nav-l span{
-  font-weight: bolder;
-  font-size: 0.8rem;
-  color: rgb(255, 255, 255);
+  filter: brightness(0) saturate(100%) invert(63%) sepia(98%) saturate(748%) hue-rotate(91deg) brightness(108%) contrast(101%);
+  border-radius: var(--radius-large);
 }
 
-.nav-c{
+.nav-l span {
+  font-weight: bolder;
+  font-size: 0.8rem;
+  color: var(--color-white);
+}
+
+/* ---------- CENTER ---------- */
+.nav-c {
   flex: 0;
   min-width: 40%;
 }
 
-.nav-c .group{
+.nav-c .group {
   height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.group li{
+
+.group li {
   display: flex;
   justify-content: center;
   align-items: center;
   list-style: none;
   height: 85%;
-  padding: 0px 0.6rem;
+  padding: 0 0.6rem;
   margin: 0 0.6rem;
-  
 }
-.group li .icon{
+
+.group li .icon {
   aspect-ratio: 1/1;
   margin-right: 0.5rem;
   font-size: 1.15rem;
-  color: whitesmoke;
+  color: var(--color-text);
   display: flex;
   align-items: center;
-  font-weight: 1px;
   justify-content: center;
 }
 
-
-
-.group li a{
+.group li a {
   height: 80%;
   display: flex;
   font-weight: bold;
@@ -88,106 +130,125 @@ nav{
   outline: none;
 }
 
-nav .active{
-  border-top: 0.2rem solid  rgb(0, 0, 0,0);
-  border-bottom: 0.2rem solid  rgb(30, 255, 30);
+/* Active state */
+nav .active {
+  border-top: 0.2rem solid transparent;
+  border-bottom: 0.2rem solid var(--color-accent);
 }
 
-nav .active a{
-   color: rgb(151, 151, 151);
-}
-nav .active .icon{
-   color: rgb(151, 151, 151);
+nav .active a,
+nav .active .icon {
+  color: var(--color-gray);
 }
 
-.nav-r{
+/* ---------- RIGHT ---------- */
+.nav-r {
   flex: 0;
   min-width: 20%;
   display: flex;
   justify-content: right;
   align-items: center;
 }
-.profile{
+
+.profile {
   display: flex;
   justify-content: right;
   align-items: center;
   height: 85%;
 }
-  
-#pf{
+
+#pf {
   display: flex;
   justify-content: right;
   align-items: center;
 }
-#pf:hover{
+
+#pf:hover {
   cursor: pointer;
 }
-#nameProfile{
+
+#nameProfile {
   user-select: none;
-  color: whitesmoke;
+  color: var(--color-text);
   font-size: 0.7rem;
   display: flex;
   margin-right: 0.3rem;
   justify-content: end;
   text-align: right;
-  text-shadow: none;
   word-wrap: break-word;
 }
 
-#iconProfileProfile{
+#iconProfileProfile {
   display: flex;
   height: 2rem;
-
-background: linear-gradient(135deg, rgba(109, 95, 138, 1.000) 0.000%, rgba(51, 70, 113, 1.000) 50.000%, rgba(76, 67, 87, 1.000) 100.000%);
   aspect-ratio: 1/1;
   border-radius: 15%;
+  background: var(--gradient-profile);
 }
 
-#menu{
+/* ---------- MENU ---------- */
+#menu {
   display: none;
   align-self: flex-end;
   position: absolute;
-  background-color: rgb(0, 0, 0,0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   top: 3.8rem;
   width: 13rem;
-  border-radius: 5%;
-  box-shadow: 0px 0px 3px 1px rgb(83, 83, 83);
+  border-radius: var(--radius-small);
+  box-shadow: 0px 0px 3px 1px var(--color-shadow);
   overflow: hidden;
 }
 
-#menu li{
+#menu li {
   list-style: none;
   display: flex;
-}
-#menu li:hover{
-  background-color: rgb(52, 51, 51,0.6);
 }
 
-#menu li a{
+#menu li:hover {
+  background-color: rgba(52, 51, 51, 0.6);
+}
+
+#menu li a {
   width: 100%;
   display: flex;
-  list-style: none;
-  color: whitesmoke;
+  color: var(--color-text);
   padding: 1rem;
   text-decoration: none;
 }
 
-
-#menu .activeM a{
-  color:gray;
+#menu .activeM a {
+  color: gray;
 }
 
+/* ---------- SIGN IN BUTTON ---------- */
+.signIn {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: var(--radius-med);
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--color-accent2);
+  border: 1px solid var(--color-border);
+  transition: var(--transition-fast);
+}
 
-/* main ================== */
-.conten{
+.signIn:hover {
+  box-shadow: 0 0 10px var(--color-hover);
+  transform: scale(1.0);
+}
+
+/* ===================== MAIN CONTENT ===================== */
+.conten {
   display: grid;
   grid-row: auto auto;
   height: auto;
   padding: 1rem 4rem 0 4rem;
   min-height: 90.1vh;
-  background-color: rgb(0, 0, 0,0.3);
+  background-color: var(--color-card-bg);
 }
 
+/* ===================== MEDIA QUERIES ===================== */
 @media screen and (max-width: 768px) {
   nav {
     padding: 0rem 1rem;
@@ -211,7 +272,7 @@ background: linear-gradient(135deg, rgba(109, 95, 138, 1.000) 0.000%, rgba(51, 7
   }
 }
 
-/* =============== Mobile เล็ก (<= 480px) ================= */
+/* ---------- Small Mobile (<=480px) ---------- */
 @media screen and (max-width: 480px) {
   nav {
     padding: 0 0.5rem;
@@ -243,7 +304,6 @@ background: linear-gradient(135deg, rgba(109, 95, 138, 1.000) 0.000%, rgba(51, 7
     font-size: 0.7rem;
     margin-right: 0.2rem;
   }
-
 
   #iconProfileProfile {
     height: 1.6rem;
