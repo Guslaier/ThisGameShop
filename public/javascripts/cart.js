@@ -1,4 +1,5 @@
 
+
 function increaseValue(button, limit) {
   const numberInput = button.parentElement.querySelector('.number');
   var value = parseInt(numberInput.innerHTML, 10);
@@ -10,12 +11,30 @@ function increaseValue(button, limit) {
 
 function decreaseValue(button) {
   const numberInput = button.parentElement.querySelector('.number');
-  var value = parseInt(numberInput.innerHTML, 10);
+  let value = parseInt(numberInput.innerHTML, 10);
   if (isNaN(value)) value = 1;
-  if (value < 2) return;
-  numberInput.innerHTML = value - 1;
+
+  value--; // ลดจำนวนลง 1
+
+  if (value <= 0) {
+    const cartItem = button.closest('.cartItem');
+    if (cartItem) {
+      const confirmRemove = confirm("ต้องการลบสินค้านี้ออกจากตะกร้าหรือไม่?");
+      if (confirmRemove) {
+        cartItem.remove();  // ✅ ลบสินค้าออกจาก DOM
+        updateTotal();      // ✅ อัปเดตราคารวม
+      } else {
+        // ถ้าไม่ลบ ให้คืนค่ากลับเป็น 1 ชิ้น
+        numberInput.innerHTML = 1;
+      }
+    }
+    return;
+  }
+
+  numberInput.innerHTML = value;
   updateTotal();
 }
+
 
 function updateTotal() {
   let total = 0;
@@ -32,7 +51,7 @@ function updateTotal() {
 }
 
 // จัดการ select all
-document.getElementById('selectAllCheck').addEventListener('change', function() {
+ document.getElementById('selectAllCheck').addEventListener('change', function() {
   const checked = this.checked;
   document.querySelectorAll('.item-check').forEach(cb => cb.checked = checked);
   updateTotal();
@@ -42,4 +61,7 @@ document.getElementById('selectAllCheck').addEventListener('change', function() 
 document.querySelectorAll('.item-check').forEach(cb => {
   cb.addEventListener('change', updateTotal);
 });
+
+
+updateTotal()
 

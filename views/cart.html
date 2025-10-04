@@ -88,26 +88,19 @@
     </div>
     </div>
   </nav>
+
+
+
+
+  <script type="module">
+    import { increaseValue, decreaseValue } from '../javascripts/cart.js';
+
+    window.increaseValue = increaseValue;
+    window.decreaseValue = decreaseValue;
+  </script>
   <div class="conten">
     <div class="Cart">
 
-      <script>
-        function increaseValue(button, limit) {
-          const numberInput = button.parentElement.querySelector('.number');
-          var value = parseInt(numberInput.innerHTML, 10);
-          if (isNaN(value)) value = 0;
-          if (limit && value >= limit) return;
-          numberInput.innerHTML = value + 1;
-        }
-
-
-        function decreaseValue(button) {
-          const numberInput = button.parentElement.querySelector('.number');
-          var value = parseInt(numberInput.innerHTML, 10);
-          if (isNaN(value)) value = 1;
-          if (value < 2) return;
-          numberInput.innerHTML = value - 1;
-        }</script>
       <div class="title">
         IN Cart
       </div>
@@ -116,7 +109,7 @@
           <div class="checkbox-wrap" id="selectAll">
             <label class="custom-checkbox">
               <input type="checkbox" id="selectAllCheck">
-               <span class="checkmark"></span>
+              <span class="checkmark"></span>
             </label>
 
             <div>Product</div>
@@ -132,8 +125,32 @@
         <div class="cartItem">
           <div class="checkbox-wrapper-2" id="selectAll">
             <label class="custom-checkbox">
-              <input type="checkbox" class="item-check">
-               <span class="checkmark"></span>
+              <input type="checkbox" class="item-check" checked="true">
+              <span class="checkmark"></span>
+            </label>
+            <div class="poto">
+              <img src="images/image-47.jpeg" alt="">
+            </div>
+            God of war
+          </div>
+          <div class="drtail">
+            <div class="cost">234</div>
+            <div class="amount">
+              <div class="quantity-field">
+                <button class="value-button decrease-button" onclick="decreaseValue(this)" title="Azalt">-</button>
+                <div class="number">1</div>
+                <button class="value-button increase-button" onclick="increaseValue(this, 5)" title="Arrtır">+
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cartItem">
+          <div class="checkbox-wrapper-2" id="selectAll">
+            <label class="custom-checkbox">
+              <input type="checkbox" class="item-check" checked="true">
+              <span class="checkmark"></span>
             </label>
             <div class="poto">
               <img src="images/image-47.jpeg" alt="">

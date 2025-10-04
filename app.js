@@ -46,27 +46,30 @@ import cartpage from './routes/cart/controller.js';
 import indexpage from './routes/indexpage.js';
 import historypage from './routes/history/controller.js';
 import storepage from './routes/store/controller.js';
+import adminpage from './routes/admin/controller.js';
 
 
-app.use((req, res, next) => {
-  if (!req.session.user) { 
-    if (!(req.path === '/' || 
-      req.path === '/store' || 
-      req.path === '/account/' || 
-      req.path === '/account/login' || 
-      req.path === '/account/register' ||
-      req.path === '/account/register-sum' ||
-      req.path === '/account/session' )) {
-      return res.redirect('/account/');
-    }
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   if (!req.session.user) { 
+//     if (!(req.path === '/' || 
+//       req.path === '/store' || 
+//       req.path === '/account/' || 
+//       req.path === '/account/login' || 
+//       req.path === '/account/register' ||
+//       req.path === '/account/register-sum' ||
+//       req.path === '/account/session' ||
+//       req.path === '/admin' )) {
+//       return res.redirect('/account/');
+//     }
+//   }
+//   next();
+// });
 app.use('/', indexpage);
 app.use('/store', storepage);
 app.use('/cart', cartpage);
 app.use('/account', accountpage);
 app.use('/history', historypage);
+app.use('/ad-m', adminpage);
 
 
 // catch 404 and forward to error handler
