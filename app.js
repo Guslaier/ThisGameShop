@@ -47,6 +47,7 @@ import indexpage from './routes/indexpage.js';
 import historypage from './routes/history/controller.js';
 import storepage from './routes/store/controller.js';
 import adminpage from './routes/admin/controller.js';
+import stockpage from './routes/stock/controller.js';
 
 
 // app.use((req, res, next) => {
@@ -70,6 +71,7 @@ app.use('/cart', cartpage);
 app.use('/account', accountpage);
 app.use('/history', historypage);
 app.use('/ad-m', adminpage);
+app.use('/stock', stockpage);
 
 
 // catch 404 and forward to error handler

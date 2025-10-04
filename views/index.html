@@ -43,58 +43,61 @@
       </ul>
     </div>
     <div class="nav-r" id="account-area">
+      <div class="nav-r" id="account-area"></div>
+
       <script>
-        (async () => {
+        document.addEventListener("DOMContentLoaded", async () => {
+          const container = document.getElementById("account-area");
           try {
-            const response = await fetch("../account/session", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" }
-            });
+            const response = await fetch("../account/session", { method: "POST" });
             const data = await response.json();
-            const container = document.getElementById("account-area");
 
             if (data.loggedIn) {
               container.innerHTML = `
         <div class="profile">
-          <ul id="menu" style="padding: 0;">
-            <li class="" ><a>Account</a></li>
+          <ul id="menu" style="padding:0; display:none;">
+            <li><a>Account</a></li>
             <li><a href="/history">History</a></li>
             <li><a href="/account/logout">Log out</a></li>
           </ul>
           <div id="pf">
-            <div id="nameProfile">
-              ${data.user.display_name}
+            <div id="nameProfile">${data.user.display_name}</div>
+            <div id="iconProfileProfile">
+              <img id="ProImage" src="" alt="Profile Image" style="display:none;width:40px;height:40px;border-radius:50%;">
             </div>
-            <div id="iconProfileProfile"></div>
           </div>
-        </div>
-      `;
-              var show = 0
-              document.getElementById('pf').addEventListener("click", (e) => {
-                if (show == 0) {
-                  show = 1
-                  document.getElementById('menu').style.display = "block"
-                } else {
-                  show = 0
-                  document.getElementById('menu').style.display = "none"
-                }
+        </div>`;
+
+              const imgEl = document.getElementById("ProImage");
+              const res = await fetch(`/account/image/${data.user.id}`);
+
+              if (res.ok) {
+                const blob = await res.blob();
+                imgEl.src = URL.createObjectURL(blob);
+                imgEl.style.display = "block";
+              } else {
+                imgEl.src = "/images/default-user.png";
+                imgEl.style.display = "block";
+              }
+
+              let show = false;
+              document.getElementById("pf").addEventListener("click", () => {
+                show = !show;
+                document.getElementById("menu").style.display = show ? "block" : "none";
               });
             } else {
-              container.innerHTML = `
-        <div>
-          <a href="/account/">Sign in</a>
-        </div>
-      `;
+              container.innerHTML = `<div><a href="/account/">Sign in</a></div>`;
             }
           } catch (error) {
             console.error("Error fetching session data:", error);
           }
-        })();
+        });
       </script>
     </div>
 
+
   </nav>
-  <div class="conten">
+
 
   </div>
 </body>

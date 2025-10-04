@@ -1,6 +1,8 @@
 import express from 'express';
 import Providers from './service.js'
 import e from 'express';
+import multer from 'multer';
+import db from '../databace/db.js';
 const providers = new Providers();
 var router = express.Router();
 
@@ -85,6 +87,48 @@ router.get('/logout', function (req, res, next) {
 router.get('/user', async function (req, res, next) {
   const user = await providers.getUserById(req.session.user.id);
   res.json(user[0]);
+});
+// สำหรับอัปโหลดรูปภาพ
+const upload = multer({ storage: multer.memoryStorage() });
+router.post('/image/:id', upload.single("image"), async (req, res) => {
+  const { id } = req.params;
+  const file = req.file;
+  const result = await providers.getUserById(id);
+  if (result.rowCount === 0) {
+    return res.status(404).json({ status:false, message: "Profile not found" });
+  }
+  if (!file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  try {
+    await db.QQuery(
+      "UPDATE USERS SET profile_image = $1 WHERE id = $2",
+      [file.buffer, id]
+    );
+    res.json({ status: true, message: "Image uploaded successfully" });
+  } catch (err) {
+    console.error("Error uploading image:", err);
+    res.status(500).json({ status: false, error: err.message });
+  }
+});
+
+// ดึงรูปโปรไฟล์ผู้ใช้
+router.get("/image/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const rows = await db.QQuery("SELECT profile_image FROM USERS WHERE id = $1;", [id]);
+    console.log(rows);
+    // ✅ ตรวจ array แทน object
+    if (!rows || rows.rowCount === 0 || !rows.rows[0].profile_image) {
+      return res.status(404).send("❌ No image found");
+    }
+
+    res.set("Content-Type", "image/jpeg"); // หรือ image/png ตามจริง
+    res.send(rows.rows[0].profile_image);
+  } catch (err) {
+    console.error("Error fetching image:", err);
+    res.status(500).send("Error fetching image");
+  }
 });
 
 // แสดงรายการผู้ใช้ทั้งหมด
