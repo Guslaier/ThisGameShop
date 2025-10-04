@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS USERS (
     password_hash VARCHAR(255) NOT NULL,
     display_name VARCHAR(100),
     role VARCHAR(50),
+    profile_image BYTEA, -- เก็บรูปภาพเป็น binary
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -52,14 +53,14 @@ CREATE TABLE IF NOT EXISTS GAMES (
     platform_flags VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    image_poster VARCHAR(255)
+    image_poster BYTEA  -- เก็บรูปภาพเป็น binary
 );
 
 CREATE TABLE IF NOT EXISTS Game_img (
     id SERIAL PRIMARY KEY,
     game_id INT REFERENCES GAMES(id) ON DELETE CASCADE,
     title VARCHAR(255),
-    scr VARCHAR(255)
+    scr BYTEA  -- เก็บรูปภาพเป็น binary
 );
 
 CREATE TABLE IF NOT EXISTS PRICES (
@@ -113,6 +114,15 @@ CREATE TABLE IF NOT EXISTS LIBRARY_ITEMS (
 );
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+INSERT INTO users (email, password_hash, display_name, role) 
+VALUES (
+  'admin@example.com', 
+  crypt('adminCS', gen_salt('bf')), 
+  'GOOL', 
+  'admin'
+);
+
   `);
 
   // TODO: ใส่ CREATE TABLE อื่น ๆ ตาม diagram
