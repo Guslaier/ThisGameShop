@@ -21,7 +21,7 @@ class Providers {
       p.is_active = TRUE
       AND g.deleted_at IS NULL
       AND p.deleted_at IS NULL
-    ORDER BY g.id ASC;
+    ORDER BY g.updated_at DESC;
   `);
 
     return games;
@@ -51,7 +51,6 @@ class Providers {
     title,
     price,
     stock = 0,
-    img = null,
     description_md = "",
     release_date = null,
     platform_flags = ""
@@ -59,10 +58,10 @@ class Providers {
     // เพิ่มข้อมูลในตาราง games
     const result = await db.QQuery(
       `INSERT INTO games 
-   (title, stock_managed, image_poster, description_md, release_date, platform_flags)
-   VALUES ($1, $2, $3, $4, $5, $6)
+   (title, stock_managed, description_md, release_date, platform_flags)
+   VALUES ($1, $2, $3, $4, $5)
    RETURNING *;`,
-      [title, stock, img, description_md, release_date, platform_flags]
+      [title, stock, description_md, release_date, platform_flags]
 
     );
     const gameId = result.rows[0].id;
@@ -177,6 +176,65 @@ class Providers {
 
     return { status: true, data: deleted[0] };
   }
+  async addGameImage(gameId, title, imgPath) {
+    const result = await db.QQuery(
+      "INSERT INTO game_img (game_id, title, scr) VALUES ($1, $2, $3) RETURNING *",
+      [gameId, title, imgPath]
+    );
+    return result.rows[0];
+  }
+
+  // ✅ ดึงรูปทั้งหมด
+  async listGameImages(gameId) {
+    const result = await db.QQuery("SELECT * FROM game_img WHERE game_id = $1", [gameId]);
+    return result.rows;
+  }
+
+  // ✅ ดึงรูปเดียว
+  async getGameImage(gameId, imgId) {
+    const result = await db.QQuery(
+      "SELECT * FROM game_img WHERE game_id = $1 AND id = $2",
+      [gameId, imgId]
+    );
+    return { status: true, data: result.rows[0] };
+  }
+
+// ✅ ลบรูป
+  async deleteGameImage(gameId, imgId) {
+  const result = await db.QQuery(
+    "SELECT scr FROM game_img WHERE game_id = $1 AND id = $2",
+    [gameId, imgId]
+  );
+
+  if (result.rowCount === 0) {
+    return { status: false, message: "Image not found" };
+  }
+
+  const imgPath = result.rows[0].scr; // เช่น /images/uploads/game-1730.jpg
+  const filePath = path.join("public", imgPath); // รวม path จริงบนเครื่อง
+
+  try {
+    // ลบจาก DB ก่อน
+    await db.QQuery(
+      "DELETE FROM game_img WHERE game_id = $1 AND id = $2",
+      [gameId, imgId]
+    );
+
+    // ลบไฟล์จริง (ถ้ามี)
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      console.log("🗑️ Deleted file:", filePath);
+    } else {
+      console.log("⚠️ File not found on disk:", filePath);
+    }
+
+    return { status: true, message: "Image deleted successfully" };
+  } catch (err) {
+    console.error("Error deleting game image:", err);
+    return { status: false, error: err.message };
+  }
 }
 
+
+}
 export default Providers;

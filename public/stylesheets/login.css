@@ -3,13 +3,13 @@
   --font-family: 'Poppins', sans-serif;
 
   /* Colors */
-  --color-bg-main: radial-gradient(circle at top, #0a0a1f, #020214);
+  --color-bg-main: radial-gradient(circle at top, #13132e, #09092d);
   --color-bg-card: rgba(16, 16, 49, 0.95);
-  --color-text: #0c0067;
+  --color-text: #ffffff;
   --color-subtext: #bbbbbb;
   --color-accent: #00ff80;
   --color-accent-secondary: #00b8ff;
-  --color-input-bg: #dfdfdf;
+  --color-input-bg: #cac6c6;
   --color-input-focus: #00ff80;
   --color-shadow: rgba(0, 255, 100, 0.2);
   --color-hover-shadow: rgba(0, 255, 120, 0.3);
@@ -18,7 +18,7 @@
   --color-shadow: rgba(0, 140, 255, 0.746);
   
   /* Box Shadow */
-  --box-shadow: 0 0 100px 10px var(--color-shadow);
+  --box-shadow: 0 0 50px 2px var(--color-shadow);
 
   /* Spacing & Radius */
   --radius: 8px;
@@ -95,6 +95,8 @@ body {
   position: relative;
   margin-bottom: 18px;
   width: fit-content;
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .input {
@@ -104,13 +106,16 @@ body {
   border: none;
   background: var(--color-input-bg);
   color: var(--color-text);
-  font-size: var(--font-size-base);
+  font-size: 1rem;
+  color: #000000;
   outline: none;
   transition: 0.3s;
+  font-weight: bold;
 }
 
 .input:focus {
   box-shadow: 0 0 0 2px var(--color-input-focus);
+  font-size: 1rem;
 }
 
 
@@ -123,7 +128,7 @@ body {
   position: absolute;
   right: 14px;
   top: 33%;
-  color: #aaa;
+  color: #000000;
   cursor: pointer;
   transition: 0.3s;
 }

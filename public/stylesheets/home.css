@@ -16,24 +16,9 @@
 }
 
 
-.conten {
-  display: grid;
-  grid-template-rows: auto auto; 
-  gap: 2rem;
-  height: auto;
-  padding: 1rem 4rem 3rem 4rem;
-  min-height: 100vh;
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
-  font-family: var(--font-main);
-}
-
 .recommend-section {
-  max-width: 1200px;
   width: 100%;
-   margin: 0 auto 3rem auto;
-  padding: 0 20px;
+  margin: 0 auto 2rem auto;
 }
 
 .recommend-section h1 {
@@ -48,11 +33,15 @@
 
 .recommend-grid {
   display: grid;
+  width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   gap: var(--card-gap);
 }
 
 .recommend-card {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  justify-content: center;
   position: relative;
   border-radius: var(--card-radius);
   overflow: hidden;
@@ -63,9 +52,8 @@
 }
 
 .recommend-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: fill;
+  height: 100%;
+  position: absolute;
   opacity: 0.9;
   transition: opacity var(--transition-fast);
 }
@@ -106,9 +94,6 @@
 
 /* 📱 Mobile responsive */
 @media (max-width: 768px) {
-  .conten {
-    padding: 1rem 1.5rem 2rem 1.5rem;
-  }
 
   .recommend-section {
     margin-top: 2rem;

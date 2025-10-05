@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/stylesheets/admin/style.css">
-  <title>ThisGameShop Admin Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Prompt:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body>
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/stylesheets/admin/style.css" />
+  <link rel="stylesheet" href="/stylesheets/admin/ad-game.css" />
+  <title>ThisGameShop Admin - Games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Prompt:wght@400;600&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
   <!-- Sidebar -->
   <aside class="sidebar">
     <div>
       <h2>THISGAMESHOP</h2>
       <div class="menu">
-        <a href="/ad-m" >Dashboard</a>
+        <a href="/ad-m">Dashboard</a>
         <a href="/ad-m/User">Users</a>
-        <a class="active" >Games</a>
-        <a href="/ad-m/Orders" >Orders</a>
-        <a href="/ad-m/Reports" >Reports</a>
+        <a class="active">Games</a>
+        <a href="/ad-m/Orders">Orders</a>
+        <a href="/ad-m/Reports">Reports</a>
       </div>
     </div>
     <footer>© 2025 ThisGameShop</footer>
@@ -26,9 +29,281 @@
 
   <!-- Main -->
   <main class="main-con">
-    
+    <header class="topbar">
+      <h1>🎮 Games Management</h1>
+      <button id="btnAddGame" class="btn-primary">+ Add Game</button>
+    </header>
+
+    <!-- ✅ ส่วน Gallery -->
+    <section id="gallerySection" class="gallery hidden">
+      <h2>📸 Game Gallery</h2>
+      <div id="galleryGrid" class="gallery-grid"></div>
+      <form id="galleryForm" enctype="multipart/form-data" class="gallery-form">
+        <input type="file" id="galleryImage" name="image" accept="image/*" required />
+        <input type="text" id="galleryTitle" name="title" placeholder="Title (optional)" />
+        <button type="submit" class="btn-primary">+ Add to Gallery</button>
+        <button type="button" id="btnCloseGallery" class="btn-secondary">Close</button>
+      </form>
+    </section>
+
+    <!-- ✅ ฟิลเตอร์ + Sort -->
+    <section class="grid-header">
+      <div class="filters">
+        <input type="text" id="filterTitle" placeholder="Search title...">
+        <select id="filterPlatform">
+          <option value="">All</option>
+          <option value="PC">PC</option>
+          <option value="PS5">PS5</option>
+          <option value="Xbox">Xbox</option>
+          <option value="Switch">Switch</option>
+        </select>
+        <input type="number" id="filterPriceMin" placeholder="฿ Min" style="width:80px;">
+        <input type="number" id="filterPriceMax" placeholder="฿ Max" style="width:80px;">
+        <input type="number" id="filterStockMin" placeholder="Stock Min" style="width:90px;">
+        <input type="number" id="filterStockMax" placeholder="Stock Max" style="width:90px;">
+      </div>
+
+      <div class="sort-buttons">
+        <label>Sort:</label>
+        <button onclick="sortGames('price', 'asc')">💰 Price ⬆</button>
+        <button onclick="sortGames('price', 'desc')">💰 Price ⬇</button>
+        <button onclick="sortGames('stock', 'asc')">📦 Stock ⬆</button>
+        <button onclick="sortGames('stock', 'desc')">📦 Stock ⬇</button>
+      </div>
+    </section>
+
+    <!-- ✅ แสดงผลแบบ Grid -->
+    <section class="grid-section">
+      <div id="gameGrid" class="game-grid"></div>
+    </section>
+
+    <!-- Modal: Add/Edit Game -->
+    <div id="modalGame" class="modal hidden">
+      <div class="modal-content">
+        <h2 id="modalTitle">Add New Game</h2>
+        <form id="gameForm" enctype="multipart/form-data">
+          <input type="hidden" name="id" id="gameId" />
+          <label>Title</label>
+          <input type="text" name="title" id="title" required />
+          <label>Platform</label>
+          <select name="platform_flags" id="platform_flags" required>
+            <option value="PC">PC</option>
+            <option value="PS5">PS5</option>
+            <option value="Xbox">Xbox</option>
+            <option value="Switch">Nintendo Switch</option>
+          </select>
+          <label>Price (฿)</label>
+          <input type="number" name="price" id="price" min="0" required />
+          <label>Stock</label>
+          <input type="number" name="stock" id="stock" min="0" required />
+          <label>Release Date</label>
+          <input type="date" name="release_date" id="release_date" />
+          <label>Cover Image</label>
+          <input type="file" name="image" id="image" />
+          <label>Description</label>
+          <textarea name="description_md" id="description_md" rows="4"></textarea>
+          <div class="modal-buttons">
+            <button type="submit" class="btn-primary">Save</button>
+            <button type="button" class="btn-secondary" id="btnCancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirm Delete -->
+    <div id="confirmDelete" class="modal hidden">
+      <div class="modal-content">
+        <h2>Confirm Delete</h2>
+        <p>Are you sure you want to delete this game?</p>
+        <div class="modal-buttons">
+          <button id="btnYesDelete" class="btn-danger">Delete</button>
+          <button id="btnCancelDelete" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
   </main>
 
+  <!-- ✅ JavaScript -->
+  <script>
+    const apiBase = '/stock/games';
+    const gameGrid = document.getElementById('gameGrid');
+    const modal = document.getElementById('modalGame');
+    const confirmModal = document.getElementById('confirmDelete');
+    const gallerySection = document.getElementById('gallerySection');
+    const galleryGrid = document.getElementById('galleryGrid');
+
+    let allGames = [];
+    let selectedGameId = null;
+    let deleteId = null;
+
+    // ✅ โหลดเกมทั้งหมดจาก API
+    async function loadGames() {
+      try {
+        const res = await fetch(apiBase);
+        const data = await res.json();
+        allGames = Array.isArray(data) ? data : data.data || [];
+        renderGames(allGames);
+      } catch (err) {
+        console.error('❌ Error loading games:', err);
+        gameGrid.innerHTML = `<p style="text-align:center; color:#bbb;">Failed to load games</p>`;
+      }
+    }
+
+    // ✅ แสดงเกมเป็นการ์ด
+    function renderGames(games) {
+      gameGrid.innerHTML = '';
+      if (games.length === 0) {
+        gameGrid.innerHTML = `<p style="text-align:center; color:#bbb;">No games found</p>`;
+        return;
+      }
+
+      games.forEach((g, i) => {
+        const price = parseFloat(g.price_cents)
+          ? (parseFloat(g.price_cents) / 100).toFixed(2)
+          : '—';
+        const stock = parseInt(g.stock_managed) ?? '—';
+        const platform = g.platform_flags || '—';
+
+        gameGrid.innerHTML += `
+      <div class="game-card-row">
+        <div class="col image">
+          <img src="${g.image_poster || '/images/default-cover.jpg'}" alt="${g.title}">
+        </div>
+        <div class="col title">${g.title}</div>
+        <div class="col platform">${platform}</div>
+        <div class="col price">${price} ฿</div>
+        <div class="col stock">${stock}</div>
+        <div class="col actions">
+          <button class="btn-small edit" onclick="editGame(${g.id})">Edit</button>
+          <button class="btn-small" onclick="openGallery(${g.id})">Gallery</button>
+          <button class="btn-small danger" onclick="confirmDelete(${g.id})">Delete</button>
+        </div>
+      </div>
+    `;
+      });
+    }
+
+    // ✅ ฟิลเตอร์เกม
+    function applyFilters() {
+      const title = document.getElementById('filterTitle').value.toLowerCase();
+      const platform = document.getElementById('filterPlatform').value;
+      const priceMin = parseFloat(document.getElementById('filterPriceMin').value) || 0;
+      const priceMax = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
+      const stockMin = parseFloat(document.getElementById('filterStockMin').value) || 0;
+      const stockMax = parseFloat(document.getElementById('filterStockMax').value) || Infinity;
+
+      const filtered = allGames.filter(g => {
+        const titleMatch = g.title.toLowerCase().includes(title);
+        const platformMatch = platform ? g.platform_flags === platform : true;
+        const priceValue = parseFloat(g.price_cents || g.price || 0) / 100;
+        const stockValue = parseInt(g.stock_managed) ?? 0;
+        const priceMatch = priceValue >= priceMin && priceValue <= priceMax;
+        const stockMatch = stockValue >= stockMin && stockValue <= stockMax;
+
+        return titleMatch && platformMatch && priceMatch && stockMatch;
+      });
+
+      renderGames(filtered);
+    }
+
+    // ✅ Event listeners สำหรับ filter
+    ['filterTitle', 'filterPlatform', 'filterPriceMin', 'filterPriceMax', 'filterStockMin', 'filterStockMax']
+      .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
+
+    // ✅ เรียงเกม
+    function sortGames(field, order) {
+      let sorted = [...allGames];
+      sorted.sort((a, b) => {
+        let valA = 0, valB = 0;
+        if (field === 'price') {
+          valA = parseFloat(a.price_cents || a.price || 0);
+          valB = parseFloat(b.price_cents || b.price || 0);
+        } else if (field === 'stock') {
+          valA = parseInt(a.stock_managed || 0);
+          valB = parseInt(b.stock_managed || 0);
+        }
+        return order === 'asc' ? valA - valB : valB - valA;
+      });
+      renderGames(sorted);
+    }
+
+    // ✅ Gallery
+    async function openGallery(id) {
+      selectedGameId = id;
+      gallerySection.classList.remove('hidden');
+      const res = await fetch(`${apiBase}/${id}/gallery`);
+      const data = await res.json();
+      const images = data.data || [];
+      galleryGrid.innerHTML = images.length
+        ? images.map(img => `
+          <div class="gallery-item">
+            <img src="${img.scr}" alt="${img.title}">
+            <p>${img.title || ''}</p>
+            <button class="btn-small danger" onclick="deleteGalleryImage(${img.id})">Delete</button>
+          </div>
+        `).join('')
+        : '<p style="color:#ccc;">No images found</p>';
+    }
+
+    document.getElementById('btnCloseGallery').addEventListener('click', () => {
+      gallerySection.classList.add('hidden');
+      selectedGameId = null;
+    });
+
+    document.getElementById('galleryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!selectedGameId) return alert('No game selected');
+      const formData = new FormData(e.target);
+      await fetch(`${apiBase}/${selectedGameId}/gallery`, { method: 'POST', body: formData });
+      openGallery(selectedGameId);
+    });
+
+    async function deleteGalleryImage(imgId) {
+      await fetch(`${apiBase}/${selectedGameId}/gallery/${imgId}`, { method: 'DELETE' });
+      openGallery(selectedGameId);
+    }
+
+    // ✅ Delete
+    function confirmDelete(id) {
+      deleteId = id;
+      confirmModal.classList.remove('hidden');
+    }
+
+    document.getElementById('btnCancelDelete').addEventListener('click', () => confirmModal.classList.add('hidden'));
+    document.getElementById('btnYesDelete').addEventListener('click', async () => {
+      if (!deleteId) return;
+      await fetch(`${apiBase}/${deleteId}`, { method: 'DELETE' });
+      confirmModal.classList.add('hidden');
+      loadGames();
+    });
+
+    // ✅ Add Game
+    document.getElementById('btnAddGame').addEventListener('click', () => {
+      document.getElementById('gameForm').reset();
+      document.getElementById('modalTitle').innerText = "Add New Game";
+      modal.classList.remove('hidden');
+    });
+
+    document.getElementById('btnCancel').addEventListener('click', () => modal.classList.add('hidden'));
+
+    document.getElementById('gameForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const res = await fetch('/stock/games', { method: 'POST', body: formData });
+      if (!res.ok) return alert('❌ Failed to add game');
+      modal.classList.add('hidden');
+      loadGames();
+    });
+
+    function editGame(id) {
+      alert(`🛠 Edit mode coming soon for game ID: ${id}`);
+    }
+
+
+    loadGames();
   </script>
+
+
 </body>
+
 </html>
