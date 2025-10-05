@@ -270,7 +270,7 @@ nav .active .icon {
 /* ===================== MAIN CONTENT ===================== */
 .conten {
   height: calc(100vh - var(--nav-height));
-  padding: var(--nav-height) 4rem 0 4rem;
+  padding: var(--nav-height) 11rem 0 11rem;
   background-color: var(--color-card-bg);
   padding-bottom: 1rem;
   overflow-y: auto;
