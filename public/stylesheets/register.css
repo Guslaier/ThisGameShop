@@ -47,7 +47,13 @@ body {
   align-items: center;
   height: calc(100vh - 80px);
 }
-
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-textfield-decoration-container,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-password-toggle-button {
+  display: none !important;
+}
 /* === Register Container === */
 .register-container {
   background: var(--color-bg-card);

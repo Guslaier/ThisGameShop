@@ -59,7 +59,7 @@ html, body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -270,13 +270,35 @@ nav .active .icon {
 /* ===================== MAIN CONTENT ===================== */
 .conten {
   height: calc(100vh - var(--nav-height));
-  padding: var(--nav-height) 11rem 0 11rem;
+  padding: 2rem 11rem 0 11rem;
   background-color: var(--color-card-bg);
   padding-bottom: 1rem;
   overflow-y: auto;
 }
 
 /* ===================== MEDIA QUERIES ===================== */
+@media screen and (min-width: 1440px) {
+  nav {
+    padding: 0rem 30rem;
+  }
+
+  .nav-l img {
+    width: 45%;
+  }
+
+  .group li {
+    margin: 0 0.3rem;
+    padding: 0 0.3rem;
+  }
+
+  .group li a {
+    font-size: 0.9rem;
+  }
+
+  .conten {
+    padding: 1rem 30rem;
+  }
+}
 @media screen and (max-width: 768px) {
   nav {
     padding: 0rem 1rem;

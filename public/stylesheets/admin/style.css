@@ -1,22 +1,23 @@
+/* ===================== 🎨 ROOT VARIABLES ===================== */
 :root {
-  /* 🎨 สีหลักของธีม */
-  --bg-dark: #131f19;          /* พื้นหลังใหญ่สุด */
-  --bg-panel: #375f50;         /* กล่องและ sidebar */
-  --text-primary: #ffffff;     /* ข้อความทั่วไป */
-  --text-accent: rgba(250, 250, 250, 0.823);      /* ตัวอักษรไฮไลท์ */
-  --accent: rgba(162, 230, 202, 0.823);           /* สีหลักของปุ่ม / ขอบ */
-  --shadow: rgba(55, 236, 160, 0.1); /* เงาเขียวอ่อน */
+  /* Colors */
+  --bg-dark: #131f19;
+  --bg-panel: #375f50;
+  --text-primary: #ffffff;
+  --text-accent: rgba(250, 250, 250, 0.823);
+  --accent: rgba(162, 230, 202, 0.823);
+  --shadow: rgba(55, 236, 160, 0.1);
 
-  /* สี hover / เอฟเฟกต์ */
+  /* Hover / Effect */
   --hover-glow: rgba(102, 252, 241, 0.5);
   --table-hover: rgba(102, 252, 241, 0.1);
 
-  /* ฟอนต์ */
+  /* Fonts */
   --font-main: 'Prompt', sans-serif;
   --font-title: 'Orbitron', sans-serif;
 }
 
-/* Global reset */
+/* ===================== 🌍 GLOBAL RESET ===================== */
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -28,14 +29,25 @@ body {
   overflow-x: hidden;
 }
 
-/* Sidebar */
+/* ===================== 📚 SIDEBAR ===================== */
 .sidebar {
-  width: 250px;
   background: var(--bg-panel);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 0.8rem 2rem;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 275px;
+  transition: transform 0.4s ease-in-out;
+  z-index: 1000;
+}
+
+.sidebar.active {
+  transform: translateX(0);      /* 🔹 slide เข้ามา */
 }
 
 .sidebar h2 {
@@ -44,7 +56,6 @@ body {
   text-align: center;
   letter-spacing: 1px;
   margin-bottom: 2rem;
-  font-size: 1.3rem;
 }
 
 .menu {
@@ -56,12 +67,13 @@ body {
 .menu a {
   text-decoration: none;
   color: var(--text-primary);
-  padding: 0.7rem 1rem;
+  padding: 0.7rem 0;
   border-radius: 6px;
   transition: 0.3s;
 }
 
-.menu a:hover, .menu a.active {
+.menu a:hover,
+.menu a.active {
   background-color: var(--accent);
   color: var(--bg-dark);
 }
@@ -72,10 +84,34 @@ body {
   color: #aaa;
 }
 
-/* Main */
-.main {
+/* ===================== 🧭 SIDEBAR TOGGLE BUTTON ===================== */
+#toggleSidebar {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 2rem;
+  z-index: 1100;
+  background: var(--accent);
+  border: none;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#toggleSidebar:hover {
+  background: var(--text-accent);
+}
+
+/* ===================== 🖼️ MAIN CONTENT ===================== */
+main {
   flex: 1;
   padding: 2rem;
+  padding-top: 0rem;
+  margin-left: 280px;
+  width: 100%;
+  transition: margin-left 0.4s ease;
   overflow-y: auto;
 }
 
@@ -83,12 +119,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .header h1 {
   font-family: var(--font-title);
   color: var(--text-accent);
+
 }
 
 .header input {
@@ -100,7 +137,7 @@ body {
   width: 250px;
 }
 
-/* Cards */
+/* ===================== 🧱 CARDS ===================== */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -112,6 +149,7 @@ body {
   border: 1px solid var(--accent);
   border-radius: 12px;
   padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -130,7 +168,7 @@ body {
   color: var(--text-primary);
 }
 
-/* Tables */
+/* ===================== 📊 TABLE ===================== */
 .section {
   margin-top: 2.5rem;
 }
@@ -183,16 +221,33 @@ tr:hover {
   color: var(--bg-dark);
 }
 
-/* Scrollbar */
+/* ===================== 🖱️ SCROLLBAR ===================== */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb {
   background-color: var(--accent);
   border-radius: 5px;
 }
 html {
-  scrollbar-gutter: stable;  /* ไม่ขยับ layout */
+  scrollbar-gutter: stable;
+}
+body {
+  overflow-y: overlay;
 }
 
-body {
-  overflow-y: overlay;       /* scrollbar ซ้อนในเนื้อหา */
+/* ===================== 📱 RESPONSIVE ===================== */
+@media screen and (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%); /* ✅ แสดง sidebar ถาวรบนจอใหญ่ */
+    width: 275px;
+    padding-top: 3.8rem;
+  }
+  
+  #toggleSidebar {
+    display: flex; /* ✅ ซ่อนปุ่มเปิด sidebar */
+  }
+  main {
+    margin: 0;
+    padding-top: 2.8rem;
+  }
 }
+

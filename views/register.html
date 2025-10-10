@@ -1,33 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>This Game Shop - Register</title>
-
-  <link rel="stylesheet" href="/stylesheets/style.css">
-  <link rel="stylesheet" href="/stylesheets/register.css">
-
-  <!-- Icons -->
-  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+  <%- include('header.html')%>
+  <link rel="stylesheet" href="../stylesheets/register.css" />
 </head>
 
 <body>
-  <nav>
-    <div class="nav-l">
-      <img src="/images/this-game-shop-high-resolution-logo.png" alt="This Game Shop Logo" />
-    </div>
-    <div class="nav-c">
-      <ul class="group">
-        <li><a href="/"><i class="fi fi-rr-home icon"></i> Home</a></li>
-        <li><a href="/store"><i class="fi fi-rr-sign-hanging icon"></i> Store</a></li>
-        <li><a href="/cart"><i class="fi fi-rr-shopping-cart icon"></i> Cart</a></li>
-      </ul>
-    </div>
-    <div class="nav-r"></div>
-  </nav>
-
+  <%- include('nav.html')%>
   <main class="content">
     <div class="register-container">
       <h2 class="register-title">Register</h2>
@@ -43,7 +23,7 @@
         </div>
 
         <div class="wrap-input password-wrap">
-          <input class="input" type="password" name="password" placeholder="Password" id="password" required />
+          <input class="input" type="password" name="password" placeholder="Password" id="password" minlength="8" required />
           <i class="fi fi-rr-eye" id="togglePassword"></i>
         </div>
 
@@ -63,4 +43,5 @@
 
   <script src="/javascripts/register.js"></script>
 </body>
+
 </html>

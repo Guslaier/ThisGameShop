@@ -1,35 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>This Game Shop - Login</title>
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="/stylesheets/style.css">
-  <link rel="stylesheet" href="/stylesheets/login.css">
-
-  <!-- Icons -->
-<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
-<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
-
+  <%- include('header.html')%>
+  <link rel="stylesheet" href="../stylesheets/login.css" />
 </head>
 
 <body>
-  <nav>
-    <div class="nav-l">
-      <img src="/images/this-game-shop-high-resolution-logo.png" alt="This Game Shop Logo" />
-    </div>
-    <div class="nav-c">
-      <ul class="group">
-        <li><a href="/"><i class="fi fi-rr-home icon"></i> Home</a></li>
-        <li><a href="/store"><i class="fi fi-rr-sign-hanging icon"></i> Store</a></li>
-        <li><a href="/cart"><i class="fi fi-rr-shopping-cart icon"></i> Cart</a></li>
-      </ul>
-    </div>
-    <div class="nav-r"></div>
-  </nav>
+  <%- include('nav.html')%>
 
   <main class="content">
     <div class="login-container">
@@ -42,7 +20,8 @@
         </div>
 
         <div class="wrap-input password-wrap">
-          <input class="input" type="password" name="password" placeholder="Password" id="password" required />
+          <input class="input" type="password" name="password" placeholder="Password" id="password" minlength="8"
+            required />
           <i class="fi fi-rr-eye" id="togglePassword"></i>
         </div>
 
@@ -58,4 +37,36 @@
 
   <script src="/javascripts/login.js"></script>
 </body>
+<!-- 📦 SweetAlert2 สำหรับ popup สวยๆ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// ✅ ฟังก์ชัน Global fetch handler
+window.fetch = (async (originalFetch => {
+  return async (...args) => {
+    const response = await originalFetch(...args);
+
+    if (response.status === 403) {
+      let data = {};
+      try {
+        data = await response.clone().json();
+      } catch (e) {}
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Access Denied',
+        text: data.message || 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้',
+        confirmButtonText: 'ตกลง',
+        confirmButtonColor: '#3085d6',
+        background: '#1e1e1e',
+        color: '#fff'
+      });
+
+      return response; // ยังคงส่ง response กลับให้โค้ดอื่นทำงานต่อได้
+    }
+
+    return response;
+  };
+})(window.fetch));
+</script>
 </html>

@@ -44,7 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 import accountpage from './routes/account/controller.js';
 import cartpage from './routes/cart/controller.js';
 import indexpage from './routes/indexpage.js';
-import historypage from './routes/history/controller.js';
+import liberyoderpage from './routes/libery-oder/controller.js';
 import storepage from './routes/store/controller.js';
 import adminpage from './routes/admin/controller.js';
 import stockpage from './routes/stock/controller.js';
@@ -69,7 +69,7 @@ app.use('/', indexpage);
 app.use('/store', storepage);
 app.use('/cart', cartpage);
 app.use('/account', accountpage);
-app.use('/history', historypage);
+app.use('/libery-oder', liberyoderpage);
 app.use('/ad-m', adminpage);
 app.use('/stock', stockpage);
 

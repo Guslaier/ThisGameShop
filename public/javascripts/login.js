@@ -10,14 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const isPassword = passwordInput.getAttribute("type") === "password";
     passwordInput.setAttribute("type", isPassword ? "text" : "password");
 
+    // ล้าง class เก่าออกทั้งหมดก่อน
+    togglePassword.className = "fi";
 
-    togglePassword.classList.remove("fi-rr-eye", "fi-sr-eye-crossed");
-
-    // Change icon depending on state
+    // เพิ่ม class ใหม่ตามสถานะ
     if (isPassword) {
-      togglePassword.classList.add("fi-sr-eye-crossed"); // show crossed eye when visible
+      togglePassword.classList.add("fi-sr-eye-crossed"); // เมื่อแสดงรหัสผ่าน
     } else {
-      togglePassword.classList.add("fi-rr-eye"); // show open eye when hidden
+      togglePassword.classList.add("fi-rr-eye"); // เมื่อซ่อนรหัสผ่าน
     }
   });
 
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       if (result.status === true) {
-        window.location.href = "/";
+        window.location.href = result.redirectTo;
       } else {
         alert("❌ Login Failed: " + result.message);
         loginButton.disabled = false;

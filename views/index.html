@@ -2,177 +2,18 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>this-game-shop</title>
-
+  <%- include('header.html')%>
   <link rel="stylesheet" href="stylesheets/home.css" />
-  <link rel="stylesheet" href="stylesheets/style.css" />
   <link rel="stylesheet" href="stylesheets/slide.css" />
-
-  <link rel="stylesheet"
-    href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
-  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css" />
 </head>
 
 <body>
-  <nav>
-    <div class="nav-l">
-      <img src="/images/this-game-shop-high-resolution-logo.png" alt="" />
-    </div>
-
-    <div class="nav-c">
-      <ul class="group">
-        <li class="Home active">
-          <a>
-            <i class="fi fi-rr-home icon"></i>
-            Home
-          </a>
-        </li>
-        <li class="Store">
-          <a href="/store">
-            <i class="fi fi-rr-sign-hanging icon"></i>
-            Store
-          </a>
-        </li>
-        <li class="Cart">
-          <a href="/cart">
-            <i class="fi fi-rr-shopping-cart icon"></i>
-            Cart
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <div class="nav-r" id="account-area">
-      <script>
-        (async () => {
-          try {
-            let response = await fetch("../account/session", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-            });
-            let data = await response.json();
-            const container = document.getElementById("account-area");
-
-            if (data.loggedIn) {
-              container.innerHTML = `
-                  <div class="profile">
-                    <ul id="menu" style="padding: 0;">
-                      <li><a>Account</a></li>
-                      <li><a href="/history">History</a></li>
-                      <li><a href="/account/logout">Log out</a></li>
-                    </ul>
-                    <div id="pf">
-                      <div id="nameProfile">${data.user.display_name}</div>
-                      <div id="iconProfileProfile"></div>
-                    </div>
-                  </div>
-                `;
-              let show = 0;
-              document.getElementById("pf").addEventListener("click", (e) => {
-                if (show === 0) {
-                  show = 1;
-                  document.getElementById("menu").style.display = "block";
-                } else {
-                  show = 0;
-                  document.getElementById("menu").style.display = "none";
-                }
-              });
-
-              response = await fetch(`../account/image/${data.user.id}`, {
-                method: "GET",
-                headers: { "Accept": "application/json" }
-              });
-              data = await response.json();
-              console.log(data);
-              if (data.image) {
-                document.getElementById("iconProfileProfile").style.backgroundImage = `url(${data.image})`;
-              } else {
-                document.getElementById("iconProfileProfile").style.backgroundImage = `url('/images/profile.png')`;
-              }
-              document.getElementById("iconProfileProfile").style.backgroundSize = "cover";
-              document.getElementById("iconProfileProfile").style.backgroundPosition = "top";
-              document.getElementById("iconProfileProfile").style.backgroundRepeat = "no-repeat";
-              document.getElementById("iconProfileProfile").addEventListener("mouseover", (e) => {
-                document.getElementById("iconProfileProfile").style.transform = "scale(1.1)";
-              });
-              document.getElementById("iconProfileProfile").addEventListener("mouseout", (e) => {
-                document.getElementById("iconProfileProfile").style.transform = "scale(1)";
-
-              });
-            } else {
-              container.innerHTML = `
-                  <div>
-                    <a href="/account/" class="signIn">Sign in</a>
-                  </div>
-                `;
-            }
-          } catch (error) {
-            console.error("Error fetching session data:", error);
-          }
-        })();
-
-
-      </script>
-    </div>
-  </nav>
+  <%- include('nav.html')%>
 
   <div class="conten">
     <div class="Explope">
       <div class="slide">
         <div class="con-card"></div>
-
-        <div class="card" index="0">
-          <img class="bg" src="https://i.pinimg.com/736x/d1/11/f4/d111f4da28aab27db9ced26691faa9ef--promotion-game.jpg"
-            alt="bg0" />
-          <img class="cover"
-            src="https://i.pinimg.com/736x/d1/11/f4/d111f4da28aab27db9ced26691faa9ef--promotion-game.jpg"
-            alt="cover0" />
-        </div>
-
-        <div class="card" index="1">
-          <img class="bg"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/cd63f266143885.5b0c7ad54bb19.png"
-            alt="bg1" />
-          <img class="cover"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/cd63f266143885.5b0c7ad54bb19.png"
-            alt="cover1" />
-        </div>
-
-        <div class="card" index="2">
-          <img class="bg" src="https://i.pinimg.com/originals/43/86/21/4386218c4a70da6bfe841dbb0ba60346.jpg"
-            alt="bg2" />
-          <img class="cover" src="https://i.pinimg.com/originals/43/86/21/4386218c4a70da6bfe841dbb0ba60346.jpg"
-            alt="cover2" />
-        </div>
-
-        <div class="card" index="3">
-          <img class="bg"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cdabf8114338715.60391d51d54d2.png"
-            alt="bg3" />
-          <img class="cover"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/cdabf8114338715.60391d51d54d2.png"
-            alt="cover3" />
-        </div>
-
-        <div class="card" index="4">
-          <img class="bg"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/cd63f266143885.5b0c7ad54bb19.png"
-            alt="bg4" />
-          <img class="cover"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/cd63f266143885.5b0c7ad54bb19.png"
-            alt="cover4" />
-        </div>
-
-        <div class="card" index="5">
-          <img class="bg"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/9cc73943112493.57e3ab71dc4da.png"
-            alt="bg5" />
-          <img class="cover"
-            src="https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/9cc73943112493.57e3ab71dc4da.png"
-            alt="cover5" />
-        </div>
 
         <button class="nav prev">&#10094;</button>
         <button class="nav next">&#10095;</button>
@@ -184,34 +25,47 @@
       <h1><i class="fi fi-rr-apps"></i> Platform</h1>
 
       <div class="recommend-grid">
-        <div class="recommend-card">
+        <!-- 💻 PC -->
+        <a class="recommend-card" href="/store?platform=PC">
           <img
             src="https://res.cloudinary.com/teepublic/image/private/s--vKFslUJc--/t_Preview/b_rgb:000000,c_lpad,f_jpg,h_630,q_90,w_1200/v1505406105/production/designs/1895459_1.jpg"
             alt="PC" />
           <div class="info">
             <h2>PC</h2>
           </div>
-        </div>
+        </a>
 
-        <div class="recommend-card">
+        <!-- 🎮 PlayStation -->
+        <a class="recommend-card" href="/store?platform=PS5">
           <img src="https://logovent.com/blog/wp-content/uploads/2024/06/PlayStation-Logo.png" alt="Playstation" />
           <div class="info">
             <h2>Playstation</h2>
           </div>
-        </div>
+        </a>
 
-        <div class="recommend-card">
+        <!-- 🕹️ Nintendo -->
+        <a class="recommend-card" href="/store?platform=Switch">
           <img src="https://www.cinepremiere.com.mx/wp-content/uploads/2020/08/nintendo-switch-gif.gif"
             alt="Nintendo" />
           <div class="info">
             <h2>Nintendo</h2>
           </div>
-        </div>
+        </a>
+
+        <!-- 🧩 Xbox -->
+        <a class="recommend-card" href="/store?platform=Xbox">
+          <img src="https://www.destructoid.com/wp-content/uploads/2023/09/xbox-logo.jpg?w=1200" alt="Xbox" />
+          <div class="info">
+            <h2>Xbox</h2>
+          </div>
+        </a>
       </div>
     </section>
-  </div>
 
-  <script src="javascripts/slide.js"></script>
+
+
+    <script src="javascripts/slide.js"></script>
 </body>
+<script src="javascripts/main.js"></script>
 
 </html>

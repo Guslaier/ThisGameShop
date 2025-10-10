@@ -2,126 +2,12 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>this-game-shop</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-  <link rel="stylesheet" href="/stylesheets/cart.css">
-  <link rel='stylesheet'
-    href='https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
-  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+  <%- include('header.html')%>
+  <link rel="stylesheet" href="stylesheets/cart.css" />
 </head>
 
-
 <body>
-  <nav>
-    <div class="nav-l">
-      <img src="images/this-game-shop-high-resolution-logo.png" alt="">
-    </div>
-    <div class="nav-c">
-      <ul class="group">
-        <li class="Home ">
-
-          <a href="/">
-            <i class="fi fi-rr-home icon"></i>
-            Home
-          </a>
-        </li>
-        <li class="Store ">
-
-          <a href="/store">
-            <i class="fi fi-rr-sign-hanging icon"></i>
-            Store
-          </a>
-        </li>
-        <li class="Cart active">
-
-          <a>
-            <i class="fi fi-rr-shopping-cart icon"></i>
-            Cart
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="nav-r" id="account-area">
-
-
-      <script>
-        (async () => {
-          try {
-            let response = await fetch("../account/session", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-            });
-            let data = await response.json();
-            const container = document.getElementById("account-area");
-
-            if (data.loggedIn) {
-              container.innerHTML = `
-                  <div class="profile">
-                    <ul id="menu" style="padding: 0;">
-                      <li><a>Account</a></li>
-                      <li><a href="/history">History</a></li>
-                      <li><a href="/account/logout">Log out</a></li>
-                    </ul>
-                    <div id="pf">
-                      <div id="nameProfile">${data.user.display_name}</div>
-                      <div id="iconProfileProfile"></div>
-                    </div>
-                  </div>
-                `;
-              let show = 0;
-              document.getElementById("pf").addEventListener("click", (e) => {
-                if (show === 0) {
-                  show = 1;
-                  document.getElementById("menu").style.display = "block";
-                } else {
-                  show = 0;
-                  document.getElementById("menu").style.display = "none";
-                }
-              });
-
-              response = await fetch(`../account/image/${data.user.id}`, {
-                method: "GET",
-                headers: { "Accept": "application/json" }
-              });
-              data = await response.json();
-              console.log(data);
-              if (data.image) {
-                document.getElementById("iconProfileProfile").style.backgroundImage = `url(${data.image})`;
-              } else {
-                document.getElementById("iconProfileProfile").style.backgroundImage = `url('/images/profile.png')`;
-              }
-              document.getElementById("iconProfileProfile").style.backgroundSize = "cover";
-              document.getElementById("iconProfileProfile").style.backgroundPosition = "top";
-              document.getElementById("iconProfileProfile").style.backgroundRepeat = "no-repeat";
-              document.getElementById("iconProfileProfile").addEventListener("mouseover", (e) => {
-                document.getElementById("iconProfileProfile").style.transform = "scale(1.1)";
-              });
-              document.getElementById("iconProfileProfile").addEventListener("mouseout", (e) => {
-                document.getElementById("iconProfileProfile").style.transform = "scale(1)";
-
-              });
-            } else {
-              container.innerHTML = `
-                  <div>
-                    <a href="/account/" class="signIn">Sign in</a>
-                  </div>
-                `;
-            }
-          } catch (error) {
-            console.error("Error fetching session data:", error);
-          }
-        })();
-
-
-      </script>
-    </div>
-    </div>
-  </nav>
-
-
-
+  <%- include('nav.html')%>
 
   <script type="module">
     import { increaseValue, decreaseValue } from '../javascripts/cart.js';
@@ -146,66 +32,19 @@
             <div>Product</div>
           </div>
           <div class="drtail">
-            <div class="cost">cost</div>
+            <div class="cost">price</div>
             <div class="amount">amount</div>
           </div>
         </div>
 
 
         <!-- item============= -->
-        <div class="cartItem">
-          <div class="checkbox-wrapper-2" id="selectAll">
-            <label class="custom-checkbox">
-              <input type="checkbox" class="item-check" checked="true">
-              <span class="checkmark"></span>
-            </label>
-            <div class="poto">
-              <img src="images/image-47.jpeg" alt="">
-            </div>
-            God of war
-          </div>
-          <div class="drtail">
-            <div class="cost">234</div>
-            <div class="amount">
-              <div class="quantity-field">
-                <button class="value-button decrease-button" onclick="decreaseValue(this)" title="Azalt">-</button>
-                <div class="number">1</div>
-                <button class="value-button increase-button" onclick="increaseValue(this, 5)" title="Arrtır">+
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cartItem">
-          <div class="checkbox-wrapper-2" id="selectAll">
-            <label class="custom-checkbox">
-              <input type="checkbox" class="item-check" checked="true">
-              <span class="checkmark"></span>
-            </label>
-            <div class="poto">
-              <img src="images/image-47.jpeg" alt="">
-            </div>
-            God of war
-          </div>
-          <div class="drtail">
-            <div class="cost">234</div>
-            <div class="amount">
-              <div class="quantity-field">
-                <button class="value-button decrease-button" onclick="decreaseValue(this)" title="Azalt">-</button>
-                <div class="number">1</div>
-                <button class="value-button increase-button" onclick="increaseValue(this, 5)" title="Arrtır">+
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        
 
       </div>
       <div class="footer">
         <div class="sumi">
-          <span>TOTLE :</span>
+          <span>TOTAL :</span>
           <div id="showsum">0</div>
           <span>THB</span>
         </div>

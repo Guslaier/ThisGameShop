@@ -1,11 +1,14 @@
 import express from 'express';
-import Providers from './service.js'
-const providers = new Providers();
-var router = express.Router();
+import Providers from './service.js';
+import Authentication from '../authentication.js';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('store');
+const providers = new Providers();
+const { isAuthenticated } = Authentication;
+const router = express.Router();
+
+router.get('/', async (req, res) => {
+  res.render('store', { activePage: 'store' });
 });
 
-export default  router;
+
+export default router;

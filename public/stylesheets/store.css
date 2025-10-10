@@ -5,7 +5,7 @@
 
   /* Colors */
   --color-text-main: whitesmoke;
-  --color-text-sub: rgba(255, 255, 255, 0.5);
+  --color-text-sub: rgba(255, 255, 255, 0.685);
   --color-bg-card: rgba(0, 0, 0, 0.32);
   --color-bg-highlight: rgba(255, 255, 255, 0.2);
   --color-bg-light: rgba(240, 248, 255, 0.064);
@@ -13,12 +13,13 @@
   --color-primary: #00ff80;
   --color-filter: rgb(4, 88, 148);
   --color-filter-active: rgb(0, 123, 212);
-  --color-card-shadow:rgba(3, 88, 158, 0.24);
+  --color-card-shadow: rgba(3, 88, 158, 0.24);
+  --color-buy-btn: #01964b;
 
   /* Sizing */
   --radius-sm: 5px;
   --radius-md: 8px;
-  --radius-lg: 10px;                    
+  --radius-lg: 10px;
   --radius-round: 15px;
 
   /* Font sizes */
@@ -36,7 +37,7 @@
   --transition-normal: 0.2s;
 }
 
-.conten{
+.conten {
   overflow-y: scroll;
   height: 93.5vh;
 }
@@ -84,7 +85,7 @@
   transform: translateY(0.12rem);
 }
 
-#inPsearch {
+#filterTitle {
   margin: 0.5rem;
   background: none;
   border: none;
@@ -92,7 +93,10 @@
   width: 100%;
   outline: none;
 }
-
+#filterPlatform{
+  background-color: rgba(18, 18, 84, 0.744);
+  padding: 0.5rem 0.5rem;
+}
 /* ===================== FILTER BUTTON ===================== */
 .filter {
   overflow: hidden;
@@ -100,6 +104,7 @@
   height: 2rem;
   aspect-ratio: 2/1;
   border-radius: var(--radius-lg);
+
 }
 
 .filter .layout {
@@ -122,49 +127,10 @@
   justify-content: center;
 }
 
-/* ===================== SHOP EXPLORE GRID ===================== */
-#ShopExplo {
-  margin-top: 1rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(4, 1fr);
-}
 
-/* ---------- Horizontal Mode ---------- */
-#ShopExplo.horizontal {
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: minmax(1rem, 5rem);
-  gap: 0.2rem;
-  column-gap: 2rem;
-}
 
-#ShopExplo.horizontal .cards {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex: 1 1 auto;
-  padding: 0.3rem;
-  margin: 0;
-}
 
-#ShopExplo.horizontal .cards .poto {
-  height: 100%;
-  width: fit-content;
-  min-width: 5rem;
-}
 
-#ShopExplo.horizontal .cards .poto img {
-  height: 100%;
-}
-
-#ShopExplo.horizontal .cards .footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  height: 100%;
-  width: 100%;
-  flex: 1;
-}
 
 /* ===================== CARDS ===================== */
 .cards {
@@ -175,25 +141,79 @@
   flex-direction: column;
   color: var(--color-text-main);
   border-radius: var(--radius-md);
-  padding-bottom: 0.4rem;
   box-shadow: var(--box-shadow-card);
+  position: relative;
+  box-sizing: border-box;
+ flex: 0;
+ width: 100%;
 }
 
-.cards .title,
-.price {
-  padding: 0.1rem 0.7rem;
+.addCart {
+  width: 3.5rem;
+  aspect-ratio: 4/2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: var(--color-buy-btn);
+  border: none;
+}
+
+.addCart i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(226, 226, 226);
 }
 
 .cards .title {
+  display: flex;
+  justify-content: space-between;
   margin: 0.3rem 0 0 0;
   white-space: normal;
-  word-break: break-word;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.cards .title h1 {
+  display: -webkit-box;
+  /* ใช้ flexbox แนวตั้งแบบ webkit */
+  -webkit-line-clamp: 3;
+  /* ✅ จำกัด 3 บรรทัด */
+  -webkit-box-orient: vertical;
+  /* บังคับทิศทางแนวตั้ง */
+  overflow: hidden;
+  /* ซ่อนส่วนเกิน */
+  text-overflow: ellipsis;
+  /* แสดง … */
+  white-space: normal;
+  /* อนุญาตขึ้นบรรทัดใหม่ */
+  word-break: keep-all;
+  /* ไม่ตัดกลางคำ */
+  overflow-wrap: break-word;
+  /* ตัดเฉพาะเมื่อจำเป็น */
+}
+
+.cards .title spen {
+  margin-left: 1rem;
+}
+
+.cards .footer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.1rem 0.7rem;
+  padding-bottom: 1rem;
 }
 
 .cards .price {
   display: flex;
   align-items: center;
   margin: 0;
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .cards .price p,
@@ -202,47 +222,251 @@
   color: var(--color-text-sub);
 }
 
-.cards .price span {
-  margin-right: 1%;
+.cards .con-price {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 1rem;
 }
+
 
 /* ===================== CARD IMAGE ===================== */
 .cards .poto {
-  display: flex;
-  width: 100%;
   aspect-ratio: 16/9;
-  background-color: var(--color-bg-light);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  
 }
 
 .cards .poto img {
+  position: absolute;
+  display: block;
+  left: 50%;
+  height: 100%;
   border-radius: var(--radius-sm);
-  object-fit: cover;
   transition: var(--transition-normal);
-  width: 100%;
   box-shadow: var(--box-shadow-card);
+  object-fit: contain;
+  transform: translateX(-50%);
 }
 
+.cards .poto img:hover {
+  scale: 1.02;
+}
 .cards:hover {
   scale: 1.02;
+  box-shadow: 0px 0px 5px rgb(52, 117, 230,0.5);
   cursor: pointer;
+}
+
+
+
+/* ===================== SHOP EXPLORE GRID ===================== */
+#ShopExplo {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ---------- Horizontal Mode (ปรับให้เรียงและดันข้างในถูกต้อง) ---------- */
+
+#ShopExplo.horizontal {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(420px, 1fr));
+  gap: 0.4rem;
+  align-items: stretch;
+  /* ดันทุก card ให้สูงเท่ากันในแถวเดียว */
+}
+
+/* การ์ดในโหมดแนวนอน */
+#ShopExplo.horizontal .cards {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 7rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+#ShopExplo.horizontal .cards:hover {
+  transform: scale(1.02);
+}
+
+/* เนื้อหาด้านขวา */
+#ShopExplo.horizontal .cards .footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 0.8rem 0.6rem;
+  box-sizing: border-box; /* ✅ ป้องกัน padding ดันออก */
+}
+
+#ShopExplo.horizontal .cards .title {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+}
+#ShopExplo.horizontal .cards .title h1 {
+  display: -webkit-box;
+  /* ใช้ flexbox แนวตั้งแบบ webkit */
+  -webkit-line-clamp: 2;
+  /* ✅ จำกัด 3 บรรทัด */
+  -webkit-box-orient: vertical;
+  /* บังคับทิศทางแนวตั้ง */
+  overflow: hidden;
+  /* ซ่อนส่วนเกิน */
+  text-overflow: ellipsis;
+  /* แสดง … */
+  white-space: normal;
+  /* อนุญาตขึ้นบรรทัดใหม่ */
+  word-break: keep-all;
+  /* ไม่ตัดกลางคำ */
+  overflow-wrap: break-word;
+  /* ตัดเฉพาะเมื่อจำเป็น */
+}
+#ShopExplo.horizontal .cards spen {
+  padding: 0;
+  margin: 0;
+}
+
+#ShopExplo.horizontal .cards .poto {
+  flex: 0;
+  height: 100%;
+  aspect-ratio: 16/9;
+}
+
+#ShopExplo.horizontal .cards .con-price {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: end;
+  margin: 0;
+}
+
+#ShopExplo.horizontal .cards .addCart {}
+
+.game-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.game-card-row {
+  display: grid;
+  grid-template-columns: 120px 2fr 1fr 1fr 1fr 1.5fr;
+  /* ✅ ปรับสัดส่วนแต่ละคอลัมน์ */
+  align-items: center;
+  gap: 1rem;
+  background: rgba(30, 30, 30, 0.85);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+  transition: background 0.2s;
+}
+
+.game-card-row:hover {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+.game-card-row .col {
+  text-align: center;
+}
+
+.game-card-row .col.title {
+  text-align: left;
+  font-weight: 600;
+}
+
+.game-card-row .col.image img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.game-card-row .col.actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.btn-small {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-small.edit {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-small.danger {
+  background: #f44336;
+  color: white;
+}
+
+.btn-small:hover {
+  opacity: 0.85;
+}
+
+
+.filters input,
+select {
+  background-color: var(--color-bg-highlight);
+  border: none;
+  font-size: 1.3rem;
+  color: whitesmoke;
+  border-radius: 8px;
+  margin: 0.6rem 0 0 0 ;
+}
+
+.filters input {
+  width: 3rem;
+}
+
+.filters #filterTitle {
+  width: 15rem;
+}
+
+.sort-buttons {
+  margin: 0.3rem 0;
+}
+
+.sort-buttons button {
+  background-color: var(--color-bg-highlight);
+  border: none;
+  font-size: 0.8rem;
+  color: whitesmoke;
+  border-radius: 6px;
+  margin: 0.3rem 0;
+  padding: 0.2rem;
 }
 
 /* ===================== RESPONSIVE ===================== */
 @media screen and (max-width: 1410px) {
   #ShopExplo.normal {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media screen and (max-width: 1200px) {
-  #ShopExplo.horizontal {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
 
-@media screen and (max-width: 831px) {
+@media screen and (max-width: 931px) {
   #ShopExplo.normal {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  #ShopExplo.horizontal .cards {
+    height: 6rem;
   }
 }
 
@@ -250,4 +474,48 @@
   #ShopExplo.normal {
     grid-template-columns: repeat(1, 1fr);
   }
+
+}
+
+/* ===================== ADD TO CART (Enhanced) ===================== */
+
+/* ปกติ */
+.addCart {
+  width: 3.5rem;
+  aspect-ratio: 4/2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: var(--color-buy-btn);
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Hover ปกติ */
+.addCart:hover {
+  background-color: #02b35c;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+/* ===================== ปุ่ม Add to Cart แบบ Disabled ===================== */
+.addCart.disabled {
+  background-color: rgba(128, 128, 128, 0.4);
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  filter: grayscale(1);
+}
+
+.addCart.disabled i {
+  color: rgba(255, 255, 255, 0.4);
+}
+#ShopExplo.horizontal .stock-info{
+  margin-top: 0.4rem;
+}
+
+#ShopExplo.horizontal .stock-info span{
+ font-size: 0.8rem;
+ text-align: right;
 }

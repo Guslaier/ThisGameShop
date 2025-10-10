@@ -170,6 +170,11 @@ BEGIN
   END LOOP;
 END$$;
 
+ALTER TABLE cart_items
+ADD CONSTRAINT cart_items_unique_cart_game UNIQUE (cart_id, game_id);
+ALTER TABLE cart_items
+ADD CONSTRAINT cart_items_unique UNIQUE (cart_id, game_id);
+
 -- ✅ สร้าง admin เริ่มต้น
 INSERT INTO users (email, password_hash, display_name, role, profile_image)
 VALUES ('admin@example.com', crypt('adminCS', gen_salt('bf')), 'GOOL', 'admin', '/images/uploads/image-1759609033348-854689220.jpg')

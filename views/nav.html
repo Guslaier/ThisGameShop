@@ -1,0 +1,88 @@
+<nav>
+  <div class="nav-l">
+    <img src="/images/this-game-shop-high-resolution-logo.png" alt="">
+  </div>
+
+  <div class="nav-c">
+    <ul class="group">
+      <li class="Home <%= activePage === 'home' ? 'active' : '' %>">
+        <a href="/">
+          <i class="fi fi-rr-home icon"></i>
+          Home
+        </a>
+      </li>
+      <li class="Store <%= activePage === 'store' ? 'active' : '' %>">
+        <a href="/store">
+          <i class="fi fi-rr-sign-hanging icon"></i>
+          Store
+        </a>
+      </li>
+      <li class="Cart <%= activePage === 'cart' ? 'active' : '' %>">
+        <a href="/cart">
+          <i class="fi fi-rr-shopping-cart icon"></i>
+          Cart
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="nav-r" id="account-area">
+    <script>
+      (async () => {
+        try {
+          let response = await fetch("/account/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          });
+          let data = await response.json();
+          const container = document.getElementById("account-area");
+
+          if (data.loggedIn) {
+            container.innerHTML = `
+                <div class="profile <%= activePage === 'profile' || activePage === 'libery' ? 'active' : '' %>"">
+                  <ul id="menu" style="padding: 0;">
+                    <li class="<%= activePage === 'profile' ? 'activeM' : '' %>"><a href="/account/profile">Profile</a></li>
+                    <li class="<%= activePage === 'libery' ? 'activeM' : '' %>"><a href="/libery-oder">Libery & Oder</a></li>
+                    <li><a href="/account/logout">Log out</a></li>
+                  </ul>
+                  <div id="pf">
+                    <div id="nameProfile">${data.user.display_name}</div>
+                    <div id="iconProfileProfile"></div>
+                  </div>
+                </div>
+              `;
+            let show = 0;
+            document.getElementById("pf").addEventListener("click", (e) => {
+              show = !show;
+              document.getElementById("menu").style.display = show ? "block" : "none";
+            });
+
+            response = await fetch(`/account/image/${data.user.id}`, {
+              method: "GET",
+              headers: { "Accept": "application/json" }
+            });
+            data = await response.json();
+
+            const icon = document.getElementById("iconProfileProfile");
+            if (data.image) {
+              icon.style.backgroundImage = `url(${data.image})`;
+            } else {
+              icon.style.backgroundImage = `url('/images/profile.png')`;
+            }
+            icon.style.backgroundSize = "cover";
+            icon.style.backgroundPosition = "top";
+            icon.style.backgroundRepeat = "no-repeat";
+          } else {
+            container.innerHTML = `
+                <div>
+                  <a href="/account/" class="signIn">Sign in</a>
+                </div>
+              `;
+          }
+        } catch (error) {
+          console.error("Error fetching session data:", error);
+        }
+      })();
+    </script>
+  </div>
+</nav>
