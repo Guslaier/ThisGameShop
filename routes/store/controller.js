@@ -1,14 +1,8 @@
-import express from 'express';
-import Providers from './service.js';
-import Authentication from '../authentication.js';
+// 📁 /routes/stock/controller.js
+import StoreService from "./service.js";
+import db from "../../databace/db.js";
+const service = new StoreService();
 
-const providers = new Providers();
-const { isAuthenticated } = Authentication;
-const router = express.Router();
-
-router.get('/', async (req, res) => {
-  res.render('store', { activePage: 'store' });
-});
-
-
-export default router;
+export const StotrController = {
+  
+};

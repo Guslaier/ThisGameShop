@@ -1,99 +1,94 @@
+// 📁 /routes/account/service.js
 import q from '../databace/db.js'
 
 class Providers {
   async login(email, password) {
-    const query = `
-      SELECT * 
-      FROM users 
-      WHERE email = $1 
-        AND password_hash = crypt($2, password_hash)
-    `;
-    const rows = await q.QQuery(query, [email, password]);
-    return rows;
+    return await q.QQuery(
+      `SELECT * FROM users WHERE email=$1 AND password_hash=crypt($2,password_hash)`,
+      [email, password]
+    );
   }
 
   async register(email, password, display_name) {
-    const query = `
-      INSERT INTO users (email, password_hash, display_name) 
-      VALUES ($1, crypt($2, gen_salt('bf')), $3) 
-      RETURNING *
-    `;
-    const rows = await q.QQuery(query, [email, password, display_name]);
-    console.log(rows);
-    return rows;
+    return await q.QQuery(
+      `INSERT INTO users (email, password_hash, display_name)
+       VALUES ($1, crypt($2, gen_salt('bf')), $3) RETURNING *`,
+      [email, password, display_name]
+    );
   }
 
   async getUserById(id) {
-    const query = `SELECT * FROM users WHERE id = $1`;
-    const rows = await q.QQuery(query, [id]);
-    return rows;
+    return await q.QQuery(`SELECT * FROM users WHERE id=$1 AND deleted_at IS NULL`, [id]);
   }
 
   async getUserByEmail(email) {
-    const query = `SELECT * FROM users WHERE email = $1`;
-    const rows = await q.QQuery(query, [email]);
-    return rows;
-  } 
+    return await q.QQuery(`SELECT * FROM users WHERE email=$1 AND deleted_at IS NULL`, [email]);
+  }
 
   async updateUser(id, display_name) {
-    const query = `
-      UPDATE users 
-      SET display_name = $1, 
-          updated_at = CURRENT_TIMESTAMP 
-      WHERE id = $3 
-      RETURNING *
-    `;
-    const rows = await q.QQuery(query, [display_name, id]);
-    return rows;
+    return await q.QQuery(
+      `UPDATE users SET display_name=$1, updated_at=NOW() WHERE id=$2 RETURNING *`,
+      [display_name, id]
+    );
   }
-  async updatePassword(id, newPassword) {
-    const query = `
-      UPDATE users 
-      SET password_hash = crypt($1, gen_salt('bf')), 
-          updated_at = CURRENT_TIMESTAMP 
-      WHERE id = $2 
-      RETURNING *
-    `;
-    const rows = await q.QQuery(query, [newPassword, id]);
-    return rows;
+
+  async updatePassword(id, password) {
+    return await q.QQuery(
+      `UPDATE users SET password_hash=crypt($1, gen_salt('bf')), updated_at=NOW() WHERE id=$2 RETURNING *`,
+      [password, id]
+    );
   }
 
   async deleteUser(id) {
-    const query = `UpDATE users SET is_active = false, deleted_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *`;
-    const rows = await q.QQuery(query, [id]);
-    return rows;
+    return await q.QQuery(`DELETE FROM users WHERE id=$1 RETURNING *`, [id]);
   }
-  
+
+  async ReUser(id) {
+    return await q.QQuery(
+      `UPDATE users SET is_active=true, deleted_at=NULL WHERE id=$1 RETURNING *`,
+      [id]
+    );
+  }
+
   async listUsers() {
-    const query = `
-      SELECT id, email, display_name, role, is_active, created_at, updated_at 
-      FROM users
-    `;
-    const rows = await q.QQuery(query);
-    return rows;
+    return await q.QQuery(
+      `SELECT id, email, display_name, role, is_active, created_at, updated_at
+       FROM users WHERE deleted_at IS NULL`
+    );
   }
 
   async setUserRole(id, role) {
-    const query = `
-      UPDATE users 
-      SET role = $1, updated_at = CURRENT_TIMESTAMP 
-      WHERE id = $2 
-      RETURNING *
-    `;
-    const rows = await q.QQuery(query, [role, id]);
-    return rows;
+    return await q.QQuery(
+      `UPDATE users SET role=$1, updated_at=NOW() WHERE id=$2 RETURNING *`,
+      [role, id]
+    );
   }
 
   async setUserActiveStatus(id, is_active) {
-    const query = `
-      UPDATE users 
-      SET is_active = $1, updated_at = CURRENT_TIMESTAMP 
-      WHERE id = $2 
-      RETURNING *
-    `;
-    const rows = await q.QQuery(query, [is_active, id]);
-    return rows;
-  } 
-} 
+    return await q.QQuery(
+      `UPDATE users SET is_active=$1, updated_at=NOW() WHERE id=$2 RETURNING *`,
+      [is_active, id]
+    );
+  }
+
+    async updateProfileImage(id, imgPath) {
+    const result = await db.QQuery(
+      `UPDATE users 
+       SET profile_image = $1, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $2 RETURNING profile_image;`,
+      [imgPath, id]
+    );
+    return result;
+  }
+
+  /** ✅ ดึงรูปโปรไฟล์ตาม id */
+  async getProfileImage(id) {
+    const result = await db.QQuery(
+      `SELECT profile_image FROM users WHERE id = $1;`,
+      [id]
+    );
+    return result;
+  }
+}
 
 export default Providers;

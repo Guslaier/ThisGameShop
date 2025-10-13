@@ -31,23 +31,22 @@
       (async () => {
         try {
           let response = await fetch("/account/session", {
-            method: "POST",
+            method: "GET",
             headers: { "Content-Type": "application/json" },
           });
           let data = await response.json();
           const container = document.getElementById("account-area");
-
           if (data.loggedIn) {
             container.innerHTML = `
-                <div class="profile <%= activePage === 'profile' || activePage === 'libery' ? 'active' : '' %>"">
-                  <ul id="menu" style="padding: 0;">
-                    <li class="<%= activePage === 'profile' ? 'activeM' : '' %>"><a href="/account/profile">Profile</a></li>
-                    <li class="<%= activePage === 'libery' ? 'activeM' : '' %>"><a href="/libery-oder">Libery & Oder</a></li>
-                    <li><a href="/account/logout">Log out</a></li>
-                  </ul>
-                  <div id="pf">
-                    <div id="nameProfile">${data.user.display_name}</div>
-                    <div id="iconProfileProfile"></div>
+            <div class="profile <%= activePage === 'profile' || activePage === 'libery' ? 'active' : '' %>"">
+              <ul id="menu" style="padding: 0;">
+                <li class="<%= activePage === 'profile' ? 'activeM' : '' %>"><a href="/account/profile">Profile</a></li>
+                <li class="<%= activePage === 'libery' ? 'activeM' : '' %>"><a href="/libery-oder">Libery & Oder</a></li>
+                <li><a href="/account/logout">Log out</a></li>
+                </ul>
+                <div id="pf">
+                  <div id="nameProfile">${data.user.display_name}</div>
+                  <div id="iconProfileProfile"></div>
                   </div>
                 </div>
               `;
@@ -62,7 +61,7 @@
               headers: { "Accept": "application/json" }
             });
             data = await response.json();
-
+            console.log(data)
             const icon = document.getElementById("iconProfileProfile");
             if (data.image) {
               icon.style.backgroundImage = `url(${data.image})`;
@@ -75,7 +74,7 @@
           } else {
             container.innerHTML = `
                 <div>
-                  <a href="/account/" class="signIn">Sign in</a>
+                  <a href="/account/login" class="signIn">Sign in</a>
                 </div>
               `;
           }

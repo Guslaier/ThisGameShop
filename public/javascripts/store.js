@@ -74,7 +74,7 @@ async function addToCart(id) {
   try {
     // ✅ 1. ตรวจสอบว่า login แล้วหรือยัง
     const sessionRes = await fetch("/account/session", {
-      method: "POST",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
     const sessionData = await sessionRes.json();
@@ -93,7 +93,7 @@ async function addToCart(id) {
         color: "#fff",
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = "/account"; // ✅ เปลี่ยนเส้นทางไปหน้า login
+          window.location.href = "/account/login"; // ✅ เปลี่ยนเส้นทางไปหน้า login
         }
       });
       return; // ❌ หยุดการทำงานต่อ

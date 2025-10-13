@@ -41,13 +41,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-import accountpage from './routes/account/controller.js';
-import cartpage from './routes/cart/controller.js';
+import accountpage from './routes/account/router.js';
+import cartpage from './routes/cart/router.js';
 import indexpage from './routes/indexpage.js';
-import liberyoderpage from './routes/libery-oder/controller.js';
-import storepage from './routes/store/controller.js';
-import adminpage from './routes/admin/controller.js';
-import stockpage from './routes/stock/controller.js';
+import orderpage from './routes/order/router.js';
+import storepage from './routes/store/router.js';
+import adminpage from './routes/admin/router.js';
+import stockpage from './routes/stock/router.js';
 
 
 // app.use((req, res, next) => {
@@ -69,7 +69,7 @@ app.use('/', indexpage);
 app.use('/store', storepage);
 app.use('/cart', cartpage);
 app.use('/account', accountpage);
-app.use('/libery-oder', liberyoderpage);
+app.use('/order', orderpage);
 app.use('/ad-m', adminpage);
 app.use('/stock', stockpage);
 

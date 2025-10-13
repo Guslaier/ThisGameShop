@@ -32,7 +32,7 @@ async function loadCartItems() {
       const div = document.createElement("div");
       div.classList.add("cartItem");
       div.dataset.gameId = item.game_id;
-
+      console.log(item)
       div.innerHTML = `
   <div class="checkbox-wrapper-2">
     <label class="custom-checkbox">
@@ -231,7 +231,7 @@ document.addEventListener("click", async (e) => {
     try {
       // 1) ตรวจ login
       const sessionRes = await fetch("/account/session", {
-        method: "POST",
+        method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       const sessionData = await sessionRes.json();
@@ -325,7 +325,7 @@ document.addEventListener("click", async (e) => {
 
       // 4) สร้างออเดอร์ (pending) หลังยืนยันแล้วเท่านั้น
       const payload = selectedView.map(({ game_id, qty }) => ({ game_id, qty }));
-      const res = await fetch("/cart/order/checkout", {
+      const res = await fetch("/order/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: payload }),
@@ -364,7 +364,7 @@ document.addEventListener("click", async (e) => {
             background: "#1e1e1e",
             color: "#fff",
             preConfirm: async () => {
-              const payRes = await fetch("/cart/payment/confirm", {
+              const payRes = await fetch("/order/payment/confirm", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ order_id: data.order_id }),
@@ -381,7 +381,7 @@ document.addEventListener("click", async (e) => {
                   title: "ชำระเงินสำเร็จ 🎉",
                   text: "ระบบได้เพิ่มเกมของคุณเข้าสู่ Library แล้ว",
                   confirmButtonColor: "#3085d6",
-                }).then(() => (location.href = "/history")); // หรือ "/history" ตามที่คุณต้องการ
+                }).then(() => (location.href = ".")); // หรือ "/history" ตามที่คุณต้องการ
               }
             })
             .catch((err) => {
@@ -395,7 +395,7 @@ document.addEventListener("click", async (e) => {
             title: "เก็บไว้ก่อน 🕒",
             text: "คุณสามารถกลับมาชำระภายหลังได้ในหน้าประวัติคำสั่งซื้อ",
             confirmButtonColor: "#3085d6",
-          }).then(() => (location.href = "/history"));
+          }).then(() => (location.href = "."));
         }
       });
 

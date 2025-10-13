@@ -166,3 +166,28 @@ input[type="password"]::-webkit-password-toggle-button {
     transform: translateY(0);
   }
 }
+
+.otp-btn {
+      background-color: #0174ad93;
+      border: none;
+      color: white;
+      padding: 0.4rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 0.4rem;
+      transition: background 0.2s;
+    }
+    .otp-btn:hover {
+      background-color: #0190d790;
+    }
+    .otp-wrap {
+      display: flex;
+      align-items: center;
+      margin-top: 0.3rem;
+    }
+    .otp-wrap input {
+      flex: 1;
+    }
+    .otp-btn.verify {
+      background-color: #00b86b;
+    }

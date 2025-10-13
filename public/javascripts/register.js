@@ -58,3 +58,86 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+ const sendOtpBtn = document.getElementById("sendOtpBtn");
+ const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+    const otpWrap = document.querySelector(".otp-wrap");
+    const registerBtn = document.getElementById("registerBtn");
+
+    let otpVerified = false;
+
+    // ✅ ส่ง OTP
+    sendOtpBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      if (!email) {
+        Swal.fire("Warning", "Please enter your email first", "warning");
+        return;
+      }
+
+      sendOtpBtn.disabled = true;
+      sendOtpBtn.textContent = "Sending...";
+
+      try {
+        const res = await fetch("/account/generate-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.text();
+
+        Swal.fire("OTP Sent", "Check your email for the verification code!", "success");
+        otpWrap.style.display = "flex";
+      } catch (err) {
+        Swal.fire("Error", "Failed to send OTP", "error");
+      } finally {
+        sendOtpBtn.disabled = false;
+        sendOtpBtn.textContent = "Resend OTP";
+      }
+    });
+
+    // ✅ ตรวจสอบ OTP
+    verifyOtpBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const otp = document.getElementById("otp").value.trim();
+
+      if (!otp) {
+        Swal.fire("Warning", "Please enter the OTP", "warning");
+        return;
+      }
+
+      verifyOtpBtn.disabled = true;
+      verifyOtpBtn.textContent = "Checking...";
+
+      try {
+        const res = await fetch("/account/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp })
+        });
+
+        const data = await res.json();
+        if (data.status || otpVerified) {
+          otpVerified = true;
+          Swal.fire("Success", "OTP verified successfully!", "success");
+          registerBtn.disabled = false;
+          verifyOtpBtn.textContent = "✅ Verified";
+          verifyOtpBtn.style.background = "green";
+          verifyOtpBtn.style.cursor = "default";
+        } else {
+          Swal.fire("Error", "Invalid OTP", "error");
+          verifyOtpBtn.textContent = "Verify";
+        }
+      } catch (err) {
+        Swal.fire("Error", "Verification failed", "error");
+      } finally {
+        verifyOtpBtn.disabled = false;
+      }
+    });
+
+    // ✅ ป้องกัน submit ถ้ายังไม่ verify OTP
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      if (!otpVerified) {
+        e.preventDefault();
+        Swal.fire("Warning", "Please verify your OTP before registering", "warning");
+      }
+    });

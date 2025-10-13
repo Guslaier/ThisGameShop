@@ -1,204 +1,236 @@
-import express from 'express';
-import Providers from './service.js';
-import multer from 'multer';
-import db from '../databace/db.js';
-import otpGenerator from 'otp-generator';
-import nodemailer from 'nodemailer';
-import Authentication from '../authentication.js';
+// 📁 /routes/account/controller.js
+import Providers from "./service.js";
+import db from "../databace/db.js";
+import otpGenerator from "otp-generator";
+import nodemailer from "nodemailer";
+import multer from "multer";
 
-const { isAuthenticated, authorize } = Authentication;
 const providers = new Providers();
-const router = express.Router();
+let otpStore = {}; // เก็บ OTP ชั่วคราวในหน่วยความจำ
 
 // ===============================
 // 📦 OTP SYSTEM
 // ===============================
-let otpStore = {}; // { email: { code: '123456', expires: <timestamp> } }
+export const OTPController = {
+  async generate(req, res) {
+    const { email } = req.body;
+    const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
+    const expires = Date.now() + 30 * 60 * 1000;
+    otpStore[email] = { code: otp, expires };
 
-router.post("/generate-otp", async (req, res) => {
-  const { email } = req.body;
-  const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false });
-  const expiresAt = Date.now() + 30 * 60 * 1000;
-  otpStore[email] = { code: otp, expires: expiresAt };
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "665021001003@mail.rmutk.ac.th",
-      pass: "wquiov ycnijiw nji".replace(/\s/g, ""),
-    },
-  });
-
-  try {
-    await transporter.sendMail({
-      from: "665021001003@mail.rmutk.ac.th",
-      to: email,
-      subject: "Your OTP Code",
-      text: `Your OTP is ${otp}\n\n(Valid for 30 minutes)`,
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "665021001003@mail.rmutk.ac.th",
+        pass: "wquiovycnijiwnji",
+      },
     });
-    res.send("OTP sent successfully!");
-  } catch (error) {
-    console.error("error:", error);
-    res.status(500).send("Failed to send OTP");
-  }
-});
 
-router.post("/verify-otp", (req, res) => {
-  const { email, otp } = req.body;
-  const record = otpStore[email];
-  if (!record) return res.status(400).send("No OTP found for this email!");
-  if (Date.now() > record.expires) {
+    try {
+      await transporter.sendMail({
+        from: "ThisGameShop <665021001003@mail.rmutk.ac.th>",
+        to: email,
+        subject: "Your OTP Code",
+        text: `Your OTP is ${otp} (valid 30 minutes)`,
+      });
+      res.json({ status: true, message: "OTP sent successfully" });
+    } catch (err) {
+      res.status(500).json({ status: false, message: "Send mail failed" });
+    }
+  },
+
+  verify(req, res) {
+    const { email, otp } = req.body;
+    const record = otpStore[email];
+    if (!record) return res.status(400).json({ status: false, message: "No OTP found" });
+    if (Date.now() > record.expires)
+      return res.status(400).json({ status: false, message: "OTP expired" });
+    if (record.code !== otp)
+      return res.status(400).json({ status: false, message: "Invalid OTP" });
+
+    if (!req.session.otpVerified) req.session.otpVerified = {};
+    req.session.otpVerified[email] = true;
     delete otpStore[email];
-    return res.status(400).send("OTP expired! Please request a new one.");
-  }
-  if (otp === record.code) {
-    delete otpStore[email];
-    res.send("OTP verified successfully!");
-  } else {
-    res.status(400).send("Invalid OTP!");
-  }
-});
+
+    res.json({ status: true, message: "OTP verified successfully" });
+  },
+};
 
 // ===============================
-// 📁 Upload Config
+// 👤 USER ACCOUNT SYSTEM
 // ===============================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'public/images/uploads/'),
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = file.originalname.split('.').pop();
-    cb(null, `profile-${uniqueSuffix}.${ext}`);
-  }
-});
-const upload = multer({ storage });
+export const UserController = {
+  async getsession(req, res) {
+    if (req.session.user) {
+      res.json({ loggedIn: true, user: req.session.user });
+    } else {
+      res.json({ loggedIn: false });
+    }
+  },
 
-// ===============================
-// 🌐 Page Routes
-// ===============================
-router.get('/', (req, res) => res.render('login', { title: 'Login' , activePage: 'login' }));
-router.get('/register', (req, res) => res.render('register', { title: 'Register',activePage: 'register' }));
-router.get('/profile', isAuthenticated, (req, res) => {
-  res.render('profile', { title: 'Profile', user: req.session.user ,activePage: 'profile' });
-});
+  async getImage(req, res) {
+    const { id } = req.params;
 
-// ===============================
-// 👤 Authentication
-// ===============================
-router.post('/register-sum', async (req, res) => {
-  const { email, password, display_name } = req.body;
-  const user = await providers.getUserByEmail(email);
-  if (user.rowCount > 0)
-    return res.status(400).json({ message: 'Email already registered', status: false });
-  if (!email || !password || password.length < 6)
-    return res.status(400).json({ message: 'Invalid email or password', status: false });
+    try {
+      const result = await providers.getUserById(id);
+      if (!result || result.rowCount === 0 || !result.rows[0].profile_image)
+        return res.status(404).json({ status: false, message: "No image found" });
 
-  const newUser = await providers.register(email, password, display_name);
-  await providers.setUserRole(newUser.rows[0].id, 'user');
-  res.json({ status: true });
-});
+      res.json({ status: true, image: result.rows[0].profile_image });
+    } catch (err) {
+      console.error("❌ Error fetching image:", err);
+      res.status(500).json({ status: false, message: err.message });
+    }
+  },
+  async UpImge(req, res) {
+    const { id } = req.params;
+    const file = req.file;
+  
+    if (!file)
+      return res.status(400).json({ status: false, message: "No file uploaded" });
+  
+    // ตรวจว่าผู้ใช้นี้มีอยู่จริงไหม
+    const user = await providers.getUserById(id);
+    if (!user || user.rowCount === 0)
+      return res.status(404).json({ status: false, message: "User not found" });
+  
+    try {
+      const imgPath = `/images/uploads/${file.filename}`;
+      await providers.updateProfileImage(id, imgPath);
+      res.json({ status: true, message: "Profile image updated", image: imgPath });
+    } catch (err) {
+      console.error("❌ Error updating profile image:", err);
+      res.status(500).json({ status: false, message: err.message });
+    }
+  },
+  async registerAdmod(req, res) {
+    const { email, password, display_name, role } = req.body;
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  const user = await providers.login(email, password);
-  if (user.rowCount === 0)
-    return res.status(401).json({ message: 'Invalid email or password', status: false });
+    if (!email || !password || !display_name || !role)
+      return res.status(400).json({ status: false, message: 'Missing fields' });
+    const user = await service.getUserByEmail(email);
 
-  req.session.user = {
-    id: user.rows[0].id,
-    email: user.rows[0].email,
-    display_name: user.rows[0].display_name,
-    role: user.rows[0].role,
-  };
+    if (user.rowCount > 0) {
+      return res.status(400).json({ message: 'Email already registered', status: false });
+    }
 
-  // ✅ redirect ตาม role
-  let redirectTo = '/';
-  if (user.rows[0].role === 'admin') redirectTo = '/ad-m';
-  else if (user.rows[0].role === 'staff') redirectTo = '/ad-m';
+    if (role === 'root')
+      return res.status(403).json({ status: false, message: 'Cannot create root user' });
 
-  res.json({ message: 'Login successful', redirectTo, user: req.session.user, status: true });
-});
+    try {
+      // ตรวจสอบอีเมลซ้ำ 
+      const check = await db.QQuery('SELECT id FROM users WHERE email=$1', [email]);
+      if (check.rowCount > 0)
+        return res.status(400).json({ status: false, message: 'Email already exists' });
 
-router.post('/session', (req, res) => {
-  if (req.session.user) {
-    res.json({ loggedIn: true, user: req.session.user });
-  } else {
-    res.json({ loggedIn: false });
-  }
-});
+      // เพิ่มผู้ใช้ใหม่ 
+      const result = await db.QQuery(
+        `INSERT INTO users (email, password_hash, display_name, role, is_active) 
+      VALUES ($1, crypt($2, gen_salt('bf')), $3, $4, true) RETURNING id,
+        email, display_name, role, is_active, created_at`,
+        [email, password, display_name, role]);
+      res.json({ status: true, data: result.rows[0] });
 
-router.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/');
-});
+    }
+    catch (err) {
+      console.error("Add user error:", err);
+      res.status(500).json({ status: false, message: 'Database error' });
+    }
+  },
 
-// ===============================
-// 📇 User Profile
-// ===============================
-router.get('/user', isAuthenticated, async (req, res) => {
-  const user = await providers.getUserById(req.session.user.id);
-  res.json(user[0]);
-});
 
-// ✅ ดูรายชื่อผู้ใช้ (admin, staff)
-router.get('/list', authorize(['admin', 'staff']), async (req, res) => {
-  const users = await providers.listUsers();
-  res.json(users.rows);
-});
+  async register(req, res) {
+    const { email, password, display_name } = req.body;
 
-// ✅ อัปเดตชื่อ/รหัสผ่าน (ทุก role ที่ล็อกอิน)
-router.post('/update', isAuthenticated, async (req, res) => {
-  const { display_name, password } = req.body;
-  if (display_name) {
-    const user = await providers.updateUser(req.session.user.id, display_name);
-    return res.json(user[0]);
-  }
-  if (password && password.length >= 6) {
-    const user = await providers.updatePassword(req.session.user.id, password);
-    return res.json(user[0]);
-  }
-  res.status(400).json({ message: 'No valid fields to update', status: false });
-});
+    if (!req.session.otpVerified?.[email])
+      return res.status(403).json({ status: false, message: "Email not verified by OTP" });
 
-// ✅ ลบ user (เฉพาะ admin)
-router.post('/delete', authorize(['admin']), async (req, res) => {
-  const { id } = req.body;
-  await providers.deleteUser(id);
-  res.json({ message: 'Account deleted by admin', status: true });
-});
+    const exists = await providers.getUserByEmail(email);
+    if (exists.rowCount > 0)
+      return res.status(400).json({ status: false, message: "Email already exists" });
 
-// ===============================
-// 🖼️ Profile Image
-// ===============================
-router.post('/image/:id', isAuthenticated, upload.single("image"), async (req, res) => {
-  const { id } = req.params;
-  const file = req.file;
-  if (!file) return res.status(400).json({ status: false, message: "No file uploaded" });
+    const user = await providers.register(email, password, display_name);
+    await providers.setUserRole(user.rows[0].id, "user");
 
-  const user = await providers.getUserById(id);
-  if (!user || user.rowCount === 0)
-    return res.status(404).json({ status: false, message: "User not found" });
+    delete req.session.otpVerified[email];
+    res.json({ status: true, message: "Registered successfully", user: user.rows[0] });
+  },
 
-  try {
-    const imgPath = `/images/uploads/${file.filename}`;
-    await db.QQuery("UPDATE USERS SET profile_image = $1 WHERE id = $2", [imgPath, id]);
-    res.json({ status: true, message: "Profile image updated successfully", image: imgPath });
-  } catch (err) {
-    console.error("Error uploading profile image:", err);
-    res.status(500).json({ status: false, error: err.message });
-  }
-});
+  async login(req, res) {
+    const { email, password } = req.body;
+    const result = await providers.login(email, password);
 
-router.get("/image/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const rows = await db.QQuery("SELECT profile_image FROM USERS WHERE id = $1;", [id]);
-    if (!rows || rows.rowCount === 0 || !rows.rows[0].profile_image)
-      return res.status(404).json({ status: false, message: "❌ No image found" });
-    res.json({ status: true, image: rows.rows[0].profile_image });
-  } catch (err) {
-    console.error("Error fetching image:", err);
-    res.status(500).json({ status: false, error: err.message });
-  }
-});
+    if (result.rowCount === 0)
+      return res.status(401).json({ status: false, message: "Invalid credentials" });
 
-export default router;
+    const user = result.rows[0];
+    if (!user.is_active)
+      return res.status(403).json({ status: false, message: "Account blocked" });
+
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+      display_name: user.display_name,
+      role: user.role,
+    };
+
+    const redirectTo = ["admin", "staff"].includes(user.role) ? "/ad-m" : "/";
+    res.json({ status: true, message: "Login success", redirectTo, user: req.session.user });
+  },
+
+  logout(req, res) {
+    req.session.destroy();
+    res.redirect("/");
+  },
+
+  async profile(req, res) {
+    const user = await providers.getUserById(req.session.user.id);
+    res.json({ status: true, data: user.rows[0] });
+  },
+
+  async update(req, res) {
+    const { id, display_name, password } = req.body;
+    if (display_name) {
+      const user = await providers.updateUser(id, display_name);
+      return res.json({ status: true, user: user.rows[0] });
+    }
+    if (password && password.length >= 6) {
+      const user = await providers.updatePassword(id, password);
+      return res.json({ status: true, user: user.rows[0] });
+    }
+    res.status(400).json({ status: false, message: "No valid fields to update" });
+  },
+
+  async list(req, res) {
+    const users = await providers.listUsers();
+    res.json({ status: true, data: users.rows });
+  },
+
+  async changeRole(req, res) {
+    const { id, role } = req.body;
+    if (id == 1 || role === "root")
+      return res.status(403).json({ status: false, message: "Cannot modify root admin" });
+
+    await providers.setUserRole(id, role);
+    res.json({ status: true, message: "Role updated" });
+  },
+
+  async changeActive(req, res) {
+    const { id } = req.params;
+    const { is_active } = req.body;
+    await providers.setUserActiveStatus(id, is_active);
+    res.json({ status: true, message: "User status updated" });
+  },
+
+  async delete(req, res) {
+    const { id } = req.params;
+    await providers.deleteUser(id);
+    res.json({ status: true, message: "User deleted" });
+  },
+
+  async reUser(req, res) {
+    const { id } = req.params;
+    await providers.ReUser(id);
+    res.json({ status: true, message: "User reactivated" });
+  },
+};

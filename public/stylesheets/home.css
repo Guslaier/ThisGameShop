@@ -18,7 +18,7 @@
 
 .recommend-section {
   width: 100%;
-  margin: 0 auto 2rem auto;
+  box-sizing: border-box;
 }
 
 .recommend-section h1 {
@@ -39,6 +39,7 @@
 }
 
 .recommend-card {
+  
   aspect-ratio: 16 / 9;
   display: flex;
   justify-content: center;

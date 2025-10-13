@@ -1,5 +1,7 @@
 import express from 'express';
 import Providers from './service.js'
+import Authentication from './authentication.js';
+const { isAuthenticated,authorize } = Authentication;
 const providers = new Providers();
 var router = express.Router();
 /* GET home page. */
@@ -13,4 +15,5 @@ router.get('/no-access', (req, res) => {
     user: req.session.user || null
   });
 });
+
 export default  router;

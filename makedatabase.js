@@ -170,10 +170,11 @@ BEGIN
   END LOOP;
 END$$;
 
-ALTER TABLE cart_items
-ADD CONSTRAINT cart_items_unique_cart_game UNIQUE (cart_id, game_id);
-ALTER TABLE cart_items
-ADD CONSTRAINT cart_items_unique UNIQUE (cart_id, game_id);
+ALTER TABLE cart_items ADD CONSTRAINT cart_items_unique_cart_game UNIQUE (cart_id, game_id);
+ALTER TABLE carts ADD CONSTRAINT unique_user_cart UNIQUE (user_id);
+ALTER TABLE cart_items ADD CONSTRAINT cart_items_user_game_unique UNIQUE (user_id, game_id);
+
+
 
 -- ✅ สร้าง admin เริ่มต้น
 INSERT INTO users (email, password_hash, display_name, role, profile_image)

@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loginButton.disabled = true;
       loginButton.innerText = "Logging in...";
 
-      const response = await fetch("/account/login", {
+      const response = await fetch("/account/login-sm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -1,47 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <%- include('header.html')%>
   <link rel="stylesheet" href="../stylesheets/register.css" />
+  <%- include('header.html') %>
 </head>
-
 <body>
-  <%- include('nav.html')%>
+  <%- include('nav.html') %>
+
   <main class="content">
     <div class="register-container">
       <h2 class="register-title">Register</h2>
       <p class="register-sub">Join the game universe 🎮</p>
 
       <form id="registerForm">
+        <!-- ชื่อ -->
         <div class="wrap-input">
           <input class="input" type="text" name="display_name" placeholder="Name" required />
         </div>
 
-        <div class="wrap-input">
-          <input class="input" type="email" name="email" placeholder="Email" required />
+        <!-- อีเมล -->
+        <div class="wrap-input email-wrap">
+          <input class="input" type="email" name="email" id="email" placeholder="Email" required />
+          <button type="button" id="sendOtpBtn" class="otp-btn">Send OTP</button>
         </div>
 
+        <!-- OTP -->
+        <div class="wrap-input otp-wrap" style="display:none;">
+          <input class="input" type="text" name="otp" id="otp" placeholder="Enter OTP" maxlength="6" />
+          <button type="button" id="verifyOtpBtn" class="otp-btn verify">Verify</button>
+        </div>
+
+        <!-- Password -->
         <div class="wrap-input password-wrap">
           <input class="input" type="password" name="password" placeholder="Password" id="password" minlength="8" required />
           <i class="fi fi-rr-eye" id="togglePassword"></i>
         </div>
 
+        <!-- Confirm Password -->
         <div class="wrap-input password-wrap">
           <input class="input" type="password" name="password_confirm" placeholder="Confirm Password" id="passwordConfirm" required />
           <i class="fi fi-rr-eye" id="togglePasswordConfirm"></i>
         </div>
 
-        <button type="submit" class="register-btn">Create Account</button>
+        <!-- Submit -->
+        <button type="submit" class="register-btn" disabled id="registerBtn">Create Account</button>
 
-            <div class="extra-links">
-            <a href="./">Already have an account? Login →</a>
-            </div>
+        <div class="extra-links">
+          <a href="/account/login">Already have an account? Login →</a>
+        </div>
       </form>
     </div>
   </main>
 
+  <!-- ✅ Script -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="/javascripts/register.js"></script>
 </body>
-
 </html>
