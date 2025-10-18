@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Game Detail — ThisGameShop</title>
+
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" href="/stylesheets/gamedetail.css" />
+
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css" />
+</head>
+
+<body>
+  <!-- ===== NAVBAR ===== -->
+  <nav>
+    <div class="nav-l">
+      <img src="/images/this-game-shop-high-resolution-logo.png" alt="" />
+    </div>
+    <div class="nav-c">
+      <ul class="group">
+        <li class="Home active">
+          <a>
+            <i class="fi fi-rr-home icon"></i>
+            Home
+          </a>
+        </li>
+        <li class="Store">
+          <a href="/store">
+            <i class="fi fi-rr-sign-hanging icon"></i>
+            Store
+          </a>
+        </li>
+        <li class="Cart">
+          <a href="/cart">
+            <i class="fi fi-rr-shopping-cart icon"></i>
+            Cart
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="nav-r" id="account-area">
+      <script>
+        (async () => {
+          try {
+            let response = await fetch("../account/session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+            });
+            let data = await response.json();
+            const container = document.getElementById("account-area");
+
+            if (data.loggedIn) {
+              container.innerHTML = `
+                  <div class="profile">
+                    <ul id="menu" style="padding: 0;">
+                      <li><a>Account</a></li>
+                      <li><a href="/history">History</a></li>
+                      <li><a href="/account/logout">Log out</a></li>
+                    </ul>
+                    <div id="pf">
+                      <div id="nameProfile">${data.user.display_name}</div>
+                      <div id="iconProfileProfile"></div>
+                    </div>
+                  </div>
+                `;
+              let show = 0;
+              document.getElementById("pf").addEventListener("click", (e) => {
+                if (show === 0) {
+                  show = 1;
+                  document.getElementById("menu").style.display = "block";
+                } else {
+                  show = 0;
+                  document.getElementById("menu").style.display = "none";
+                }
+              });
+
+              response = await fetch(`../account/image/${data.user.id}`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+              });
+              data = await response.json();
+              console.log(data);
+              if (data.image) {
+                document.getElementById("iconProfileProfile").style.backgroundImage = `url(${data.image})`;
+              } else {
+                document.getElementById("iconProfileProfile").style.backgroundImage = `url('/images/profile.png')`;
+              }
+              document.getElementById("iconProfileProfile").style.backgroundSize = "cover";
+              document.getElementById("iconProfileProfile").style.backgroundPosition = "top";
+              document.getElementById("iconProfileProfile").style.backgroundRepeat = "no-repeat";
+              document.getElementById("iconProfileProfile").addEventListener("mouseover", (e) => {
+                document.getElementById("iconProfileProfile").style.transform = "scale(1.1)";
+              });
+              document.getElementById("iconProfileProfile").addEventListener("mouseout", (e) => {
+                document.getElementById("iconProfileProfile").style.transform = "scale(1)";
+
+              });
+            } else {
+              container.innerHTML = `
+                  <div>
+                    <a href="/account/" class="signIn">Sign in</a>
+                  </div>
+                `;
+            }
+          } catch (error) {
+            console.error("Error fetching session data:", error);
+          }
+        })();
+      </script>
+    </div>
+  </nav>
+
+  <!-- slide -->
+  <div class="slideshow-container">
+    <div class="mySlides fade">
+      <img
+        src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/d1a893ec6357b347a55ed929833ba793b57a79d2/ss_d1a893ec6357b347a55ed929833ba793b57a79d2.600x338.jpg?t=1756994410"
+        alt="screenshot gameplay scene 1" />
+    </div>
+
+    <div class="mySlides fade">
+      <img
+        src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/09ccaa6c16f158f9df8298feb5d196098506a028/ss_09ccaa6c16f158f9df8298feb5d196098506a028.600x338.jpg?t=1756994410"
+        alt="screenshot gameplay scene 2" />
+    </div>
+
+    <div class="mySlides fade">
+      <img
+        src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/26950369fe4b03c2268620eb9815c8a246aa0b06/ss_26950369fe4b03c2268620eb9815c8a246aa0b06.600x338.jpg?t=1756994410"
+        alt="screenshot gameplay scene 3" />
+    </div>
+    <a class="prev" onclick="plusSlides(-1)">❮</a>
+    <a class="next" onclick="plusSlides(1)">❯</a>
+    <br>
+    <div style="text-align: center">
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
+    </div>
+
+
+    <!-- ===== JS LOADER ===== -->
+    <script>
+      let slideIndex = 1;
+      showSlides(slideIndex);
+
+      function plusSlides(n) {
+        showSlides((slideIndex += n));
+      }
+
+      function currentSlide(n) {
+        showSlides((slideIndex = n));
+      }
+
+      function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+        if (n > slides.length) {
+          slideIndex = 1;
+        }
+        if (n < 1) {
+          slideIndex = slides.length;
+        }
+        for (i = 0; i < slides.length; i++) {
+          slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+          dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " active";
+      }
+    </script>
+</body>
+
+</html>

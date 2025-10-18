@@ -39,7 +39,7 @@ router.get("/api/users", async (req, res) => {
 });
 
 // ✅ เปิด/ปิดการใช้งานผู้ใช้
-router.put("/api/users/:id/active", async (req, res) => {
+router.put("/api/users/:id/active",async (req, res) => {
   const { id } = req.params;
   const { is_active } = req.body;
   const updated = await ProvidersAcc.setUserActiveStatus(id, is_active);

@@ -189,3 +189,10 @@ tr:hover {
   background-color: var(--accent);
   border-radius: 5px;
 }
+html {
+  scrollbar-gutter: stable;  /* ไม่ขยับ layout */
+}
+
+body {
+  overflow-y: overlay;       /* scrollbar ซ้อนในเนื้อหา */
+}

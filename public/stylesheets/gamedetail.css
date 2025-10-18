@@ -1,0 +1,173 @@
+/* ===== BASE ===== */
+:root {
+  --steam-dark: radial-gradient(145deg, #31068f, #05020f);
+  --steam-text: #c7d5e0;
+  --steam-accent: #00ff80;
+  --bor: 10px;
+   --color-shadow: rgba(182, 191, 241, 0.32);
+   /* Box Shadow */
+  --box-shadow: 0 0 4rem 0.1rem var(--color-shadow);
+}
+
+/* ===== WRAPPER ===== */
+.wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: "Motiva Sans", "Segoe UI", Roboto, sans-serif;
+  color: var(--steam-text);
+  
+}
+
+/* ===== GRID CONTAINER ===== */
+.container {
+  display: grid;
+  grid-template-areas:
+    "menu  content"
+    "buy-box buy-box ";
+  grid-template-columns: 5fr 2fr; /* keep your layout */
+  gap: 1rem;
+  background: var(--steam-dark);
+  padding: 2rem;
+  border-radius: var(--radius-med);
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem 15rem;
+  box-sizing: border-box;
+}
+
+/* ===== GRID AREAS ===== */
+.menu {
+  grid-area: menu;
+  background: var(--steam-panel);
+  border-radius: var(--radius-med);
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.content {
+  grid-area: content;
+  border-radius: var(--bor);
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+} 
+
+/* ===== SLIDESHOW ===== */
+.slideshow-container {
+  position: relative;
+  margin: 1rem auto;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--bor);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  background: #000;
+}
+
+.mySlides {
+  display: none;
+}
+
+.mySlides img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--bor);
+}
+
+/* ===== SLIDESHOW CONTROLS ===== */
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 0.5rem;
+  user-select: none;
+  transition: 0.3s;
+}
+
+.prev {
+  left: 0.5rem;
+}
+.next {
+  right: 0.5rem;
+}
+
+
+/* ===== FADING EFFECT ===== */
+.fade {
+  animation-name: fade;
+  animation-duration: 1.2s;
+}
+
+@keyframes fade {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+.content img{
+   aspect-ratio: 16 / 9;
+   width: 100%;
+   object-fit: cover;
+}
+
+.buy-box {
+  grid-area: buy-box;
+  background:  #1a052f;
+  border-radius: var(--radius-med);
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: var(--steam-light);
+}
+
+/* ===== BUY BUTTON (Steam style) ===== */
+.buy-box button {
+  background: rgba(18, 147, 69, 0.512);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-med);
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 128, 0.3);
+  transition: all 0.2s ease;
+}
+
+.buy-box button:hover {
+  background: linear-gradient(to bottom, #70bf32 5%, #5ba32b 95%);
+  box-shadow: 0 0 15px rgba(0, 255, 128, 0.5);
+  transform: translateY(-1px);
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .container {
+    grid-template-areas:
+      "menu"
+      "content"
+      "buy-box";
+    grid-template-columns: 1fr;
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .slideshow-container {
+    max-width: 100%;
+  }
+
+  .wrapper {
+    align-items: flex-start;
+  }
+}

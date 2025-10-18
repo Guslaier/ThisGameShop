@@ -36,6 +36,11 @@
   --transition-normal: 0.2s;
 }
 
+.conten{
+  overflow-y: scroll;
+  height: 93.5vh;
+}
+
 /* ===================== TITLE ===================== */
 .title {
   color: var(--color-text-main);

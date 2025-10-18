@@ -59,10 +59,10 @@ class Providers {
   }
 
   async deleteUser(id) {
-    const query = `DELETE FROM users WHERE id = $1`;
+    const query = `UpDATE users SET is_active = false, deleted_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *`;
     const rows = await q.QQuery(query, [id]);
     return rows;
-  } 
+  }
   
   async listUsers() {
     const query = `
