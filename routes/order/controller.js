@@ -82,6 +82,161 @@ export const OrderController = {
     }
   },
 
+  async updataStatus(req, res) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      // 🔹 ตรวจสอบค่าว่าง
+      if (!status) {
+        return res.status(400).json({ status: false, message: "Missing status value" });
+      }
+
+      // 🔹 อนุญาตเฉพาะสถานะที่กำหนดไว้
+      const allowedStatuses = ['pending', 'paid', 'cancelled'];
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({ status: false, message: "Invalid status" });
+      }
+
+      // 🔹 ตรวจสอบว่ามี order จริงไหม
+      const orderRes = await db.QQuery(`SELECT * FROM orders WHERE id=$1;`, [id]);
+      if (orderRes.rowCount === 0) {
+        return res.status(404).json({ status: false, message: "Order not found" });
+      }
+
+      const order = orderRes.rows[0];
+
+      // ❌ ถ้าออเดอร์นี้ถูกยกเลิกไปแล้ว → ห้ามแก้ไขอีก
+      if (order.status === 'cancelled') {
+        return res.status(400).json({
+          status: false,
+          message: "This order is already cancelled and cannot be modified."
+        });
+      }
+
+      // ======================================================
+      // ✅ ถ้าเปลี่ยนเป็น cancelled → คืน stock
+      // ======================================================
+      if (status === 'cancelled') {
+        const items = await db.QQuery(`
+        SELECT oi.game_id, oi.qty 
+        FROM order_items oi 
+        WHERE oi.order_id=$1;
+      `, [id]);
+
+        for (const item of items.rows) {
+          await db.QQuery(`
+          UPDATE games 
+          SET stock_managed = stock_managed + $1 
+          WHERE id = $2;
+        `, [item.qty, item.game_id]);
+        }
+      }
+
+      // ======================================================
+      // ✅ ถ้าเปลี่ยนเป็น paid → สร้าง fake key + ลด stock
+      // ======================================================
+      if (status === 'paid') {
+        const items = await db.QQuery(`
+        SELECT oi.*, g.title
+        FROM order_items oi
+        JOIN games g ON oi.game_id = g.id
+        WHERE oi.order_id=$1;
+      `, [id]);
+
+        for (const item of items.rows) {
+          for (let i = 0; i < item.qty; i++) {
+            const fakeKey = generateFakeKey(item.title);
+            await db.QQuery(`
+            INSERT INTO library_items (user_id, game_id, order_item_id, cd_key)
+            VALUES ($1, $2, $3, $4);
+          `, [order.user_id, item.game_id, item.id, fakeKey]);
+          }
+        }
+
+        // เพิ่ม paid_at เวลา
+        await db.QQuery(`
+        UPDATE orders SET paid_at = NOW() WHERE id=$1;
+      `, [id]);
+      }
+
+      // ======================================================
+      // ✅ อัปเดตสถานะสุดท้าย
+      // ======================================================
+      await db.QQuery(`
+      UPDATE orders 
+      SET status=$1, updated_at=NOW() 
+      WHERE id=$2;
+    `, [status, id]);
+
+      res.json({ status: true, message: "Order status updated successfully" });
+
+    } catch (err) {
+      console.error("❌ Update Order Status Error:", err);
+      res.status(500).json({ status: false, message: err.message });
+    }
+  },
+
+
+  async deleteOrder(req, res) {
+    try {
+      const { id } = req.params;
+
+      // 🔹 ตรวจสอบว่า order มีอยู่ไหม
+      const orderRes = await db.QQuery(`SELECT * FROM orders WHERE id=$1;`, [id]);
+      if (orderRes.rowCount === 0) {
+        return res.status(404).json({ status: false, message: "Order not found" });
+      }
+
+      const order = orderRes.rows[0];
+
+      // 🔹 ตรวจสอบสถานะ ต้องเป็น cancelled เท่านั้น
+      if (order.status !== 'cancelled') {
+        return res.status(400).json({
+          status: false,
+          message: "Only cancelled orders can be deleted",
+        });
+      }
+
+      // 🔹 คืน stock เฉพาะกรณีที่ยังไม่คืน
+      const items = await db.QQuery(`
+      SELECT oi.game_id, oi.qty
+      FROM order_items oi
+      WHERE oi.order_id = $1;
+    `, [id]);
+
+      for (const item of items.rows) {
+        await db.QQuery(`
+        UPDATE games
+        SET stock_managed = stock_managed + $1
+        WHERE id = $2;
+      `, [item.qty, item.game_id]);
+      }
+
+      // 🔹 ลบ library_items ที่อ้างถึง order_items
+      await db.QQuery(`
+      DELETE FROM library_items
+      WHERE order_item_id IN (
+        SELECT id FROM order_items WHERE order_id=$1
+      );
+    `, [id]);
+
+      // 🔹 ลบ order_items ก่อน
+      await db.QQuery(`DELETE FROM order_items WHERE order_id=$1;`, [id]);
+
+      // 🔹 ลบ order หลัก
+      await db.QQuery(`DELETE FROM orders WHERE id=$1;`, [id]);
+
+      // ✅ ส่ง response ปลอดภัย (ไม่มี circular JSON)
+      res.json({ status: true, message: "Order deleted successfully" });
+
+    } catch (err) {
+      console.error("❌ Delete Order Error:", err);
+      res.status(500).json({ status: false, message: err.message });
+    }
+  },
+
+
   // =========================================================
   // 💳 ยืนยันการชำระเงิน
   // =========================================================
@@ -121,13 +276,6 @@ export const OrderController = {
             VALUES ($1, $2, $3, $4);
           `, [user_id, item.game_id, item.id, fakeKey]);
         }
-
-        // ✅ ลด stock
-        await db.QQuery(`
-          UPDATE games
-          SET stock_managed = GREATEST(stock_managed - $1, 0)
-          WHERE id = $2;
-        `, [item.qty, item.game_id]);
       }
 
       res.json({ status: true, message: "Payment successful — Fake Keys generated!" });

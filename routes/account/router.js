@@ -16,11 +16,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-
-
-
-
-
 // 🔐 OTP
 router.post("/generate-otp", OTPController.generate);
 router.post("/verify-otp", OTPController.verify);
@@ -42,6 +37,7 @@ router.put("/:id/status", authorize(["admin"]), UserController.changeActive);
 router.delete("/delete/:id", authorize(["admin"]), UserController.delete);
 router.post("/re-de/:id", authorize(["admin"]), UserController.reUser);
 router.get("/profile", isAuthenticated, UserController.profile);
+router.get("/libery-oder", isAuthenticated, (req, res) => res.render('libery-oder', { title: 'libery-oder',activePage: 'libery' }));
 
 
 /** ✅ POST /account/image/:id — อัปโหลดหรืออัปเดตรูปโปรไฟล์ */

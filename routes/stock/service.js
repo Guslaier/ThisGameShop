@@ -86,7 +86,7 @@ export default class StockService {
   /** 🟥 ลบเกม (soft delete) */
   async deleteGame(id) {
     return await db.QQuery(`
-      UPDATE games SET deleted_at=NOW() WHERE id=$1 RETURNING *;
+      DELETE FROM games WHERE id=$1 RETURNING *;
     `, [id]);
   }
 

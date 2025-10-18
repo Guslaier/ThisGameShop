@@ -11,6 +11,7 @@
     left: 100;
     width: 45%;
     aspect-ratio: 16/9;
+    transition: transform 0.8s ease;
 }
 .card {z-index: 1;
     display: flex;
@@ -23,7 +24,7 @@
     right: -100vw;
     opacity: 0.8;
     scale: 0.90;
-    transition: 0.1s;
+    transition: 0.4s;
     border-radius: 5px;
     box-shadow: 0 0 10px 0.1px rgba(0, 0, 0, 0.221);
     overflow: hidden;

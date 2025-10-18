@@ -108,7 +108,7 @@ export const UserController = {
 
     if (!email || !password || !display_name || !role)
       return res.status(400).json({ status: false, message: 'Missing fields' });
-    const user = await service.getUserByEmail(email);
+    const user = await providers.getUserByEmail(email);
 
     if (user.rowCount > 0) {
       return res.status(400).json({ message: 'Email already registered', status: false });
@@ -184,8 +184,25 @@ export const UserController = {
   },
 
   async profile(req, res) {
+    if(!req.session.user){
+      return res.render("profile",{ title: 'Profile',activePage: 'profile',
+      "id": 999,
+      "email":"123",
+      "display_name":"123",
+      "role":"123",
+      "profile_image":'',
+      "created_at":""
+      })
+    }
     const user = await providers.getUserById(req.session.user.id);
-    res.json({ status: true, data: user.rows[0] });
+    return res.render("profile",{ title: 'Profile',activePage: 'profile',
+      "id":user.id,
+      "email":user.email,
+      "display_name":user.display_name,
+      "role":user.role,
+      "profile_image":user.profile_image,
+      "created_at":user.created_at
+      });
   },
 
   async update(req, res) {

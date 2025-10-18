@@ -32,14 +32,16 @@
 }
 
 .recommend-grid {
-  display: grid;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   width: 100%;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   gap: var(--card-gap);
 }
 
 .recommend-card {
-  
+  min-width: 12rem;
+  flex-grow: 1;
   aspect-ratio: 16 / 9;
   display: flex;
   justify-content: center;

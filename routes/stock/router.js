@@ -24,7 +24,7 @@ router.delete("/games/:id", authorize(["admin"]), StockController.delete);
 router.put("/games/:id/stock", authorize(["admin"]), StockController.updateStock);
 router.put("/games/:id/price", authorize(["admin"]), StockController.updatePrice);
 router.get("/random-slide", StockController.randomSlide);
-
+router.put('/games/:id', authorize(['admin']), StockController.updateAll);
 
 // =====================================================
 // 🖼️ GAME IMAGE ROUTES

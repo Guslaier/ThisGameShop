@@ -57,6 +57,39 @@ function renderGames(games) {
     });
 
 }
+// =========================================
+// ✏ ฟังก์ชัน Edit Game
+// =========================================
+async function editGame(id) {
+  try {
+    const res = await fetch(`/stock/games/${id}`); // ✅ ดึงข้อมูลเกมจาก API
+    const data = await res.json();
+    console.log(data)
+    if (!data.status || !data.game) {
+      Swal.fire("Error", "ไม่พบข้อมูลเกม", "error");
+      return;
+    }
+
+    const g = data.game;
+
+    // ✅ ตั้งชื่อ modal เป็นโหมดแก้ไข
+    document.getElementById("modalTitle").textContent = "Edit Game";
+    document.getElementById("gameId").value = g.id;
+    document.getElementById("title").value = g.title;
+    document.getElementById("platform_flags").value = g.platform_flags || "";
+    document.getElementById("price").value = g.amount_cents ? g.amount_cents / 100 : "";
+    document.getElementById("stock").value = g.stock_managed || "";
+    document.getElementById("release_date").value = g.release_date ? g.release_date.split("T")[0] : "";
+    document.getElementById("description_md").value = g.description_md || "";
+
+    // ✅ เปิด modal
+    document.getElementById("modalGame").classList.remove("hidden");
+
+  } catch (err) {
+    console.error("❌ Error loading game:", err);
+    Swal.fire("Error", "โหลดข้อมูลเกมล้มเหลว", "error");
+  }
+}
 
 // ✅ ฟิลเตอร์เกม
 function applyFilters() {
@@ -255,41 +288,61 @@ document.getElementById('btnAddGame').addEventListener('click', () => {
 document.getElementById('btnCancel').addEventListener('click', () => modal.classList.add('hidden'));
 
 document.getElementById('gameForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    document.getElementById('gameForm').querySelector('input[type="file"]'); const fileInput = document.querySelector('input[type="file"]');
-    const file = fileInput.files; // ✅ เอาไฟล์แรก
-    // if (!file) return alert('กรุณาเลือกไฟล์');
+  e.preventDefault();
 
+  const form = e.target;
+  const formData = new FormData(form);
+  const id = formData.get("id"); // 🔹 ถ้ามี id = edit mode
+  const isEdit = !!id;
+  const url = isEdit ? `/stock/games/${id}` : `/stock/games`;
+  const method = isEdit ? "PUT" : "POST";
 
+  try {
+    // ✅ ส่งข้อมูลเกมก่อน (ยังไม่อัปโหลดภาพ)
+    const res = await fetch(url, {
+      method,
+      body: formData,
+    });
 
-    const res = await fetch('/stock/games', { method: 'POST', body: formData });
-    if (!res.ok) {
-        alert(res.id)
-        return alert('❌ Failed to add game')
-    } else {
-        const newGame = await res.json();
+    if (!res.ok) throw new Error("Failed to save game");
 
-        const fileInput = document.getElementById('gameForm').querySelector('input[type="file"]');
-        if (fileInput.files[0]) {
-            const imgData = new FormData();
-            imgData.append('image', fileInput.files[0]);
+    const data = await res.json();
+    if (!data.status) throw new Error(data.message || "Save failed");
 
-            await fetch(`/stock/games/${newGame.data.id}/img`, {
-                method: 'POST',
-                body: imgData
-            });
-        }
+    const gameId = isEdit ? id : data.data.id; // ✅ ถ้าเป็น add ให้ใช้ id จาก response
 
+    // ✅ ถ้ามีภาพ → อัปโหลดแยก
+    const fileInput = form.querySelector('input[type="file"]');
+    if (fileInput.files[0]) {
+      const imgData = new FormData();
+      imgData.append("image", fileInput.files[0]);
+
+      const imgRes = await fetch(`/stock/games/${gameId}/img`, {
+        method: "POST",
+        body: imgData,
+      });
+
+      const imgDataRes = await imgRes.json();
+      if (!imgDataRes.status) console.warn("⚠ Upload image failed:", imgDataRes.message);
     }
 
-    modal.classList.add('hidden');
+    // ✅ ปิด modal และโหลดเกมใหม่
+    document.getElementById("modalGame").classList.add("hidden");
+    Swal.fire({
+      icon: "success",
+      title: isEdit ? "อัปเดตเกมเรียบร้อย!" : "เพิ่มเกมสำเร็จ!",
+      timer: 1500,
+      showConfirmButton: false,
+    });
     loadGames();
+
+  } catch (err) {
+    console.error("❌ Error saving game:", err);
+    Swal.fire("Error", err.message || "ไม่สามารถบันทึกได้", "error");
+  }
 });
 
-function editGame(id) {
-    alert(`🛠 Edit mode coming soon for game ID: ${id}`);
-}
+
 // ✅ โหลดเฉพาะรูปในแกลเลอรีใหม่ (ไม่รีทั้ง Section)
 async function refreshGallery() {
     if (!selectedGameId) return;

@@ -62,6 +62,29 @@ export const StockController = {
     const result = await service.updateField(id, field, value);
     res.json({ status: true, data: result.rows[0] });
   },
+  async updateAll(req, res) {
+  const { id } = req.params;
+  const { title, platform_flags, price, stock, release_date, description_md } = req.body;
+
+  try {
+    await db.QQuery(`
+      UPDATE games
+      SET title=$1, platform_flags=$2, description_md=$3, release_date=$4, stock_managed=$5, updated_at=NOW()
+      WHERE id=$6;
+    `, [title, platform_flags, description_md, release_date || null, stock, id]);
+
+    if (price) {
+      await db.QQuery(`
+        UPDATE prices SET amount_cents=$1 WHERE game_id=$2 AND is_active=TRUE;
+      `, [parseInt(price) * 100, id]);
+    }
+
+    res.json({ status: true, message: "Game updated successfully" });
+  } catch (err) {
+    console.error("❌ Update game error:", err);
+    res.status(500).json({ status: false, message: err.message });
+  }
+},
 
   async getMainImage(req, res) {
     const { id } = req.params;

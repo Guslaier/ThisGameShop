@@ -42,16 +42,17 @@
 
 
 function initSlide() {
-
   const slides = document.querySelectorAll('.card');
   const prevBtn = document.querySelector('.prev');
   const nextBtn = document.querySelector('.next');
   const dotsContainer = document.querySelector('.dots');
+  if (slides.length === 0) return;
 
   let current = 0;
   let interval;
 
-  // สร้าง dot ตามจำนวนสไลด์
+  // ✅ สร้าง dot
+  dotsContainer.innerHTML = "";
   slides.forEach((_, i) => {
     const dot = document.createElement('span');
     dot.classList.add('dot');
@@ -59,71 +60,80 @@ function initSlide() {
     dot.addEventListener('click', () => goToSlide(i));
     dotsContainer.appendChild(dot);
   });
+  const dots = dotsContainer.querySelectorAll('.dot');
 
-  const dots = document.querySelectorAll('.dot');
+  // ✅ ฟังก์ชันเปลี่ยน slide
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove("active", "naxt");
 
-  function showSlide(i) {
-    slides.forEach((slide, s) => {
-      slide.classList.remove('active', 'naxt');
-      slide.style.transition = "all 1s ease"; // ✅ smooth
-
-      if (s === i) {
-        slide.style.left = `48%`;
-        slide.classList.add('active');
-      } else if (s === i - 1) {
-        slide.style.left = `-2%`;
-      } else if (s === i + 1) {
-        slide.style.left = `100%`;
-        slide.classList.add('naxt');
-      } else if (s < i - 1) {
-        slide.style.left = `-100vw`;
+      if (i === index) {
+        slide.classList.add("active");
+        slide.style.left = "50%";
+        slide.style.transform = "translate(-50%, -2%) scale(0.95)";
+        slide.style.filter = "blur(0px) brightness(1)";
+        slide.style.opacity = "1";
+        slide.style.zIndex = "2";
+      } else if (i === index + 1) {
+        slide.classList.add("naxt");
+        slide.style.left = "100%";
+        slide.style.transform = "translate(-107%, 0) scale(0.9)";
+        slide.style.filter = "blur(2px) brightness(0.7)";
+        slide.style.opacity = "0.8";
+        slide.style.zIndex = "1";
+      } else if (i === index - 1) {
+        slide.style.left = "0%";
+        slide.style.transform = "translate(-2%, 0) scale(0.9)";
+        slide.style.filter = "blur(2px) brightness(0.7)";
+        slide.style.opacity = "0.8";
+        slide.style.zIndex = "1";
       } else {
-        slide.style.left = `100vw`;
+        slide.style.left = "-100vw";
+        slide.style.opacity = "0";
+        slide.style.filter = "blur(3px)";
+        slide.style.zIndex = "0";
       }
     });
 
-    dots.forEach(dot => dot.classList.remove('active'));
-    dots[i].classList.add('active');
+    dots.forEach(dot => dot.classList.remove("active"));
+    dots[index].classList.add("active");
   }
 
+  // ✅ เปลี่ยน slide
   function goToSlide(i) {
     current = i;
     showSlide(current);
-    resetInterval(); // ✅ reset timer เมื่อคลิก dot
+    resetInterval();
   }
 
   function nextSlideLoop() {
     current = (current + 1) % slides.length;
     showSlide(current);
-    resetInterval();
   }
+
   function nextSlide() {
-    if (current < slides.length - 1) {
-      current = (current + 1) % slides.length;
-      showSlide(current);
-      resetInterval();
-    }
+    current = (current + 1) % slides.length;
+    showSlide(current);
+    resetInterval();
   }
 
   function prevSlide() {
-    if (current > 0) {
-      current = (current - 1 + slides.length) % slides.length;
-      showSlide(current);
-      resetInterval(); // ✅ reset timer เมื่อกด prev
-    }
+    current = (current - 1 + slides.length) % slides.length;
+    showSlide(current);
+    resetInterval();
   }
 
-  // ปุ่มคลิก
-  nextBtn.addEventListener('click', nextSlide);
-  prevBtn.addEventListener('click', prevSlide);
+  // ✅ ปุ่ม
+  nextBtn.addEventListener("click", nextSlide);
+  prevBtn.addEventListener("click", prevSlide);
 
-  // Auto slide
+  // ✅ ตั้ง interval
   function resetInterval() {
     clearInterval(interval);
-    interval = setInterval(nextSlideLoop, 3500);
+    interval = setInterval(nextSlideLoop, 4000);
   }
 
   showSlide(current);
   resetInterval();
-
 }
+

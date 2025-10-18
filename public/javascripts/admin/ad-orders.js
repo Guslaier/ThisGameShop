@@ -203,7 +203,7 @@ async function deleteOrder(id) {
   });
   if (!confirm.isConfirmed) return;
 
-  const res = await fetch(`/order/orders/delete/${id}`, { method: "DELETE" });
+  const res = await fetch(`/order/delete/${id}`, { method: "DELETE" });
   const data = await res.json();
 
   if (!data.status) {
