@@ -1,59 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <link rel="stylesheet" href="../stylesheets/register.css" />
   <%- include('header.html') %>
 </head>
+
 <body>
   <%- include('nav.html') %>
 
-  <main class="content">
-    <div class="register-container">
-      <h2 class="register-title">Register</h2>
-      <p class="register-sub">Join the game universe 🎮</p>
+    <main class="content">
+      <div class="register-container">
+        <h2 class="register-title">Register</h2>
+        <p class="register-sub">Join the game universe 🎮</p>
 
-      <form id="registerForm">
-        <!-- ชื่อ -->
-        <div class="wrap-input">
-          <input class="input" type="text" name="display_name" placeholder="Name" required />
-        </div>
+        <form id="registerForm">
+          <!-- ชื่อ -->
+          <div class="wrap-input">
+            <input class="input" type="text" name="display_name" placeholder="Name" required />
+          </div>
 
-        <!-- อีเมล -->
-        <div class="wrap-input email-wrap">
-          <input class="input" type="email" name="email" id="email" placeholder="Email" required />
-          <button type="button" id="sendOtpBtn" class="otp-btn">Send OTP</button>
-        </div>
+          <!-- อีเมล -->
+          <div class="wrap-input email-wrap">
+            <input class="input" type="email" name="email" id="email" placeholder="Email" required />
+            <button type="button" id="sendOtpBtn" class="otp-btn">Send OTP</button>
+          </div>
 
-        <!-- OTP -->
-        <div class="wrap-input otp-wrap" style="display:none;">
-          <input class="input" type="text" name="otp" id="otp" placeholder="Enter OTP" maxlength="6" />
-          <button type="button" id="verifyOtpBtn" class="otp-btn verify">Verify</button>
-        </div>
+          <!-- OTP -->
+          <div class="wrap-input otp-wrap" style="display:none;">
+            <input class="input" type="text" name="otp" id="otp" placeholder="Enter OTP" maxlength="6" autocomplete="new-password" />
+            <button type="button" id="verifyOtpBtn" class="otp-btn verify">Verify</button>
+          </div>
 
-        <!-- Password -->
-        <div class="wrap-input password-wrap">
-          <input class="input" type="password" name="password" placeholder="Password" id="password" minlength="8" required />
-          <i class="fi fi-rr-eye" id="togglePassword"></i>
-        </div>
+          <!-- Password -->
+          <div class="wrap-input password-wrap">
+            <input class="input" type="password" name="password" id="password" placeholder="Password" minlength="8"
+              required autocomplete="new-password" />
+            <i class="fi fi-rr-eye-crossed" id="togglePassword"></i>
+          </div>
 
-        <!-- Confirm Password -->
-        <div class="wrap-input password-wrap">
-          <input class="input" type="password" name="password_confirm" placeholder="Confirm Password" id="passwordConfirm" required />
-          <i class="fi fi-rr-eye" id="togglePasswordConfirm"></i>
-        </div>
+          <!-- Confirm Password -->
+          <div class="wrap-input password-wrap">
+            <input class="input" type="password" name="password_confirm" id="passwordConfirm"
+              placeholder="Confirm Password" required autocomplete="new-password" />
+            <i class="fi fi-rr-eye-crossed" id="togglePasswordConfirm"></i>
+          </div>
 
-        <!-- Submit -->
-        <button type="submit" class="register-btn" disabled id="registerBtn">Create Account</button>
 
-        <div class="extra-links">
-          <a href="/account/login">Already have an account? Login →</a>
-        </div>
-      </form>
-    </div>
-  </main>
+          <!-- Submit -->
+          <button type="submit" class="register-btn" id="registerBtn">Create Account</button>
 
-  <!-- ✅ Script -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="/javascripts/register.js"></script>
+          <div class="extra-links">
+            <a href="/account/login">Already have an account? Login →</a>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- ✅ Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/javascripts/register.js"></script>
 </body>
+
 </html>

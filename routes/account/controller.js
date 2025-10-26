@@ -85,15 +85,15 @@ export const UserController = {
   async UpImge(req, res) {
     const { id } = req.params;
     const file = req.file;
-  
+
     if (!file)
       return res.status(400).json({ status: false, message: "No file uploaded" });
-  
+
     // ตรวจว่าผู้ใช้นี้มีอยู่จริงไหม
     const user = await providers.getUserById(id);
     if (!user || user.rowCount === 0)
       return res.status(404).json({ status: false, message: "User not found" });
-  
+
     try {
       const imgPath = `/images/uploads/${file.filename}`;
       await providers.updateProfileImage(id, imgPath);
@@ -184,35 +184,33 @@ export const UserController = {
   },
 
   async profile(req, res) {
-    if(!req.session.user){
-      return res.render("profile",{ title: 'Profile',activePage: 'profile',
-      "id": 999,
-      "email":"123",
-      "display_name":"123",
-      "role":"123",
-      "profile_image":'',
-      "created_at":""
+    if (!req.session.user) {
+      return res.render("profile", {
+        title: 'Profile', activePage: 'profile',
+        "id": 999,
+        "email": "123",
+        "display_name": "123",
+        "role": "123",
+        "profile_image": '',
+        "created_at": ""
       })
     }
     const user = await providers.getUserById(req.session.user.id);
-    return res.render("profile",{ title: 'Profile',activePage: 'profile',
-      "id":user.id,
-      "email":user.email,
-      "display_name":user.display_name,
-      "role":user.role,
-      "profile_image":user.profile_image,
-      "created_at":user.created_at
-      });
+    return res.render("profile", {
+      title: 'Profile', activePage: 'profile',
+      "id": user.rows[0].id,
+      "email": user.rows[0].email,
+      "display_name": user.rows[0].display_name,
+      "role": user.rows[0].role,
+      "profile_image": user.rows[0].profile_image,
+      "created_at": user.rows[0].created_at
+    });
   },
 
   async update(req, res) {
     const { id, display_name, password } = req.body;
     if (display_name) {
       const user = await providers.updateUser(id, display_name);
-      return res.json({ status: true, user: user.rows[0] });
-    }
-    if (password && password.length >= 6) {
-      const user = await providers.updatePassword(id, password);
       return res.json({ status: true, user: user.rows[0] });
     }
     res.status(400).json({ status: false, message: "No valid fields to update" });
@@ -250,4 +248,70 @@ export const UserController = {
     await providers.ReUser(id);
     res.json({ status: true, message: "User reactivated" });
   },
+  async resetPassword(req, res) {
+    try {
+      const { email, otp, new_password } = req.body;
+
+      // ตรวจสอบฟิลด์เบื้องต้น
+      if (!email || !new_password) {
+        return res.status(400).json({ status: false, message: "Missing email or new_password" });
+      }
+      if (String(new_password).length < 8) {
+        return res.status(400).json({ status: false, message: "Password must be at least 8 characters" });
+      }
+
+      // ตรวจสอบสถานะการยืนยัน OTP
+      let verified = false;
+
+      // 1) เคสที่กดยืนยัน OTP มาก่อนแล้ว (verify endpoint) จะมีธงใน session
+      if (req.session?.otpVerified?.[email]) {
+        verified = true;
+      } else {
+        // 2) เคสยังไม่ verify แต่อยากยืนยันในคำขอ reset นี้เลย (ต้องมี otp ตรงกับ otpStore และยังไม่หมดอายุ)
+        const record = otpStore[email];
+        if (!otp) {
+          return res.status(403).json({ status: false, message: "OTP not verified" });
+        }
+        if (!record) {
+          return res.status(400).json({ status: false, message: "No OTP found" });
+        }
+        if (Date.now() > record.expires) {
+          delete otpStore[email];
+          return res.status(400).json({ status: false, message: "OTP expired" });
+        }
+        if (record.code !== otp) {
+          return res.status(400).json({ status: false, message: "Invalid OTP" });
+        }
+        // ผ่าน OTP ในคำขอนี้
+        verified = true;
+      }
+
+      if (!verified) {
+        return res.status(403).json({ status: false, message: "OTP verification required" });
+      }
+
+      // ตรวจว่ามีผู้ใช้งานจริง
+      const user = await providers.getUserByEmail(email);
+      if (!user || user.rowCount === 0) {
+        return res.status(404).json({ status: false, message: "User not found" });
+      }
+
+      await db.QQuery(
+        `UPDATE users
+           SET password_hash = crypt($2, gen_salt('bf')),
+               updated_at = NOW()
+         WHERE email = $1;`,
+        [email, new_password]
+      );
+
+      // เคลียร์สถานะ OTP
+      if (req.session?.otpVerified) delete req.session.otpVerified[email];
+      if (otpStore[email]) delete otpStore[email];
+
+      return res.json({ status: true, message: "Password reset successful" });
+    } catch (err) {
+      console.error("❌ Reset password error:", err);
+      return res.status(500).json({ status: false, message: "Internal Server Error" });
+    }
+  }
 };

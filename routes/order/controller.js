@@ -46,12 +46,53 @@ export const OrderController = {
   // =========================================================
   async listByUser(req, res) {
     try {
-      const result = await service.listOrdersByUser(req.session.user.id);
+      const result = await service.listOrdersByUser(2);
       res.json({ status: true, data: result.rows });
     } catch (err) {
       res.status(500).json({ status: false, message: err.message });
     }
   },
+  // routes/order/controller.js
+  async cancelByOwner(req, res) {
+    try {
+      const { id } = req.params;
+      const user_id = req.session.user?.id;
+      if (!user_id) return res.status(401).json({ status: false, message: 'Unauthorized' });
+
+      // หาออเดอร์ของ user เอง
+      const orderRes = await db.QQuery(`SELECT * FROM orders WHERE id=$1 AND user_id=$2;`, [id, user_id]);
+      if (orderRes.rowCount === 0) return res.status(404).json({ status: false, message: 'Order not found' });
+
+      const order = orderRes.rows[0];
+      if (order.status !== 'pending') {
+        return res.status(400).json({ status: false, message: 'Order cannot be cancelled (not pending)' });
+      }
+
+      // คืน stock (เพราะตอน checkout ลดไว้แล้ว)
+      const items = await db.QQuery(`
+      SELECT oi.game_id, oi.qty
+      FROM order_items oi
+      WHERE oi.order_id = $1;
+    `, [id]);
+
+      for (const it of items.rows) {
+        await db.QQuery(`
+        UPDATE games
+        SET stock_managed = stock_managed + $1
+        WHERE id = $2;
+      `, [it.qty, it.game_id]);
+      }
+
+      // อัปเดตสถานะเป็น cancelled
+      await db.QQuery(`UPDATE orders SET status='cancelled', updated_at=NOW() WHERE id=$1;`, [id]);
+
+      return res.json({ status: true, message: 'Order cancelled' });
+    } catch (err) {
+      console.error('❌ CancelByOwner error:', err);
+      return res.status(500).json({ status: false, message: err.message });
+    }
+  },
+
 
   // =========================================================
   // 📦 ดึงรายละเอียดออเดอร์
@@ -241,9 +282,9 @@ export const OrderController = {
   // 💳 ยืนยันการชำระเงิน
   // =========================================================
   async paymentConfirm(req, res) {
-    const { order_id } = req.body;
-    const user_id = req.session.user.id;
     try {
+      const { order_id } = req.body;
+      const user_id = req.session.user.id;
       // ตรวจสอบว่า order เป็นของผู้ใช้คนนี้
       const order = await db.QQuery(
         `SELECT * FROM orders WHERE id=$1 AND user_id=$2;`,

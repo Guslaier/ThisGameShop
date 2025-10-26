@@ -1,4 +1,4 @@
-import db from "../../databace/db.js";
+import db from "../databace/db.js";
 
 export default class LibraryService {
   async grantLibraryFromOrder(order_id) {
@@ -11,15 +11,45 @@ export default class LibraryService {
       WHERE o.id = $1
       ON CONFLICT DO NOTHING;
     `, [order_id]);
+
   }
 
-  async getUserLibrary(user_id) {
-    return await db.QQuery(`
-      SELECT g.title, li.cd_key, li.acquired_at
+   async getLibraryItemById(user_id, library_item_id) {
+    return db.QQuery(`
+      SELECT
+        li.id,
+        li.user_id,
+        li.game_id,
+        g.title,
+        g.platform_flags,
+        li.cd_key,
+        li.acquired_at,
+        li.order_item_id
       FROM library_items li
-      JOIN games g ON li.game_id = g.id
-      WHERE li.user_id=$1 AND li.deleted_at IS NULL;
-    `, [user_id]);
+      JOIN games g ON g.id = li.game_id
+      WHERE li.id = $1
+        AND li.user_id = $2
+        AND li.deleted_at IS NULL
+      LIMIT 1;
+    `, [library_item_id, user_id]);
   }
+
+  async listUserLibrary(user_id) {
+  return db.QQuery(`
+    SELECT
+      li.id,
+      li.user_id,
+      li.game_id,
+      g.title,
+      g.platform_flags,
+      li.cd_key,
+      li.acquired_at
+    FROM library_items li
+    JOIN games g ON g.id = li.game_id
+    WHERE li.user_id = $1
+      AND li.deleted_at IS NULL
+    ORDER BY li.acquired_at DESC, li.id DESC;
+  `, [user_id]);
+}
 
 }

@@ -13,4 +13,6 @@ router.put("/update-status/:id", authorize(["admin", "staff"]), OrderController.
 router.post("/payment/confirm", isAuthenticated, OrderController.paymentConfirm);
 router.delete("/delete/:id", authorize(["admin", "staff"]), OrderController.deleteOrder);
 
+router.patch("/cancel/:id", isAuthenticated, OrderController.cancelByOwner);
+router.get("/my",  isAuthenticated, OrderController.listByUser);
 export default router;

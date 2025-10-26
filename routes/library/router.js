@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/", isAuthenticated, LibraryController.page);
 
 // 📦 API ของผู้ใช้
-router.get("/api/list", isAuthenticated, LibraryController.list);
+router.get("/api/library", isAuthenticated, LibraryController.list);
 router.get("/api/:id", isAuthenticated, LibraryController.detail);
 
 // 👑 สำหรับ admin/staff

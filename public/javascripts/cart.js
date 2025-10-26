@@ -381,7 +381,7 @@ document.addEventListener("click", async (e) => {
                   title: "ชำระเงินสำเร็จ 🎉",
                   text: "ระบบได้เพิ่มเกมของคุณเข้าสู่ Library แล้ว",
                   confirmButtonColor: "#3085d6",
-                }).then(() => (location.href = ".")); // หรือ "/history" ตามที่คุณต้องการ
+                }).then(() => (location.href = "/account/libery-oder")); // หรือ "/history" ตามที่คุณต้องการ
               }
             })
             .catch((err) => {
