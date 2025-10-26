@@ -55,6 +55,33 @@
   color: var(--text-primary);
 }
 
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.filter-bar label {
+  color: var(--text-accent);
+  font-weight: 500;
+}
+
+.filter-bar select {
+  background: var(--bg-panel);
+  color: var(--text-accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}
+
+.filter-bar .btn {
+  padding: 0.4rem 0.8rem;
+}
+
+
 /* ===================== 📊 TABLE ===================== */
 .section {
   margin-top: 2.5rem;
@@ -97,6 +124,62 @@ th {
 
 tr:hover {
   background-color: var(--table-hover);
+}
+
+/* ===================== 💰 TOTAL SUMMARY BOX ===================== */
+.total-summary {
+  margin-top: 1.5rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 15px var(--shadow);
+  transition: 0.3s ease;
+}
+
+.total-summary:hover {
+  box-shadow: 0 0 25px var(--hover-glow);
+  transform: translateY(-2px);
+}
+
+.total-label {
+  color: var(--text-accent);
+  font-weight: 600;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.total-amount {
+  color: var(--tex--accent);
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: var(--font-title);
+}
+
+/* ===================== 📱 Responsive ===================== */
+@media (max-width: 768px) {
+  .total-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    text-align: left;
+  }
+
+  .total-amount {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .total-summary {
+    padding: 0.8r
+  }
 }
 
 /* ===================== BUTTON ===================== */
@@ -171,6 +254,8 @@ tr:hover {
     padding: 0.3rem 0.6rem;
   }
 }
+
+
 
 /* Small Mobile (≤480px) */
 @media (max-width: 480px) {
