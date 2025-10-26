@@ -2,20 +2,329 @@
 <html lang="en">
 
 <head>
-  <%- include('header.html')%>
-  <link rel="stylesheet" href="stylesheets/profile.css" />
+  <%- include('header.html') %>
+    <link rel="stylesheet" href="../stylesheets/profile.css" />
+    <title>
+      <%= title %>
+    </title>
 </head>
 
 <body>
-  <%- include('nav.html')%>
-  <div class="conten">
-    <div class="Explope">
-      <div class="title">
-        Profile
-      </div>
+  <%- include('nav.html') %>
 
+    <div class="conten">
+        <div class="profile-wrapper">
+          <div class="profile-container">
+            <div class="profile-header">
+              <div class="avatar-wrapper">
+                <img src="/images/profile.png" alt="User Avatar" class="avatar" id="img-profile" />
+                <button class="edit-img-btn" id="edit-img-btn">
+                  Edit
+                </button>
+                <input type="file" id="upload-image" name="image" accept="image/*" style="display: none" />
+              </div>
+
+              <div class="info-section">
+                <h2 class="display-name-text">
+                  <%= display_name %>
+                </h2>
+                <p class="profile-subtitle">
+                  <%= email %>
+                </p>
+              </div>
+            </div>
+
+            <div class="profile-body">
+              <div class="info-grid" id="profile-info-grid">
+                <div class="info-card">
+                  <label class="label">User ID</label>
+                  <span class="value">
+                    <%= id %>
+                  </span>
+                </div>
+
+                <div class="info-card editable-card" data-field="display_name">
+                  <label class="label">Display Name</label>
+                  <span class="value" data-value>
+                    <%= display_name %>
+                  </span>
+                  <input type="text" class="edit-input" data-input value="<%= display_name %>" style="display: none;" />
+                </div>
+
+                <div class="info-card">
+                  <label class="label">Account Created</label>
+                  <span class="value">
+                    <%= created_at ? created_at : 'N/A' %>
+                  </span>
+                </div>
+
+                <div class="info-card action-card">
+                  <label class="label">Security</label>
+                  <span class="value">Password</span>
+                  <button class="small-action-btn">Change Password</button>
+                </div>
+              </div>
+
+              <div id="passwordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Change Password</h3>
+    <input type="password" id="oldPass" placeholder="Old Password" class="modal-input">
+    <input type="password" id="newPass" placeholder="New Password" class="modal-input">
+    <div class="modal-actions">
+      <button id="cancelPass" class="modal-btn cancel">Cancel</button>
+      <button id="savePass" class="modal-btn save">Save</button>
     </div>
   </div>
+</div>
+
+              <div class="button-row">
+                <button class="edit-btn" id="edit-profile-btn">Edit Profile</button>
+                <button class="edit-btn save-btn" id="save-profile-btn" style="display: none;">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script src="../javascripts/main.js"></script>
+    <script>
+  // === PROFILE IMAGE LOADING ===
+  const image = document.getElementById("img-profile");
+  async function loadImage() {
+    try {
+      // ✅ FIX: Using a reliable root-relative path
+      const res = await fetch(`/account/image/<%= id %>`);
+      if (!res.ok) throw new Error("Server responded with an error.");
+
+      const data = await res.json();
+
+      if (data.status && data.image) {
+        image.src = data.image;
+      } else {
+        image.src = "/images/profile.png";
+      }
+    } catch (err) {
+      console.error("Error loading image:", err);
+      image.src = "/images/profile.png";
+    }
+  }
+  loadImage();
+
+  // === PROFILE IMAGE UPLOAD ===
+  const editBtnImg = document.getElementById("edit-img-btn");
+  const input = document.getElementById("upload-image");
+
+  editBtnImg.addEventListener("click", () => input.click());
+
+  input.addEventListener("change", async () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      Swal.fire({
+        icon: "warning",
+        title: "⚠️ Invalid file type",
+        text: "Please upload a JPG, PNG, or WEBP image.",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    editBtnImg.disabled = true;
+    editBtnImg.innerText = "Uploading...";
+
+    try {
+      const res = await fetch(`/account/image/<%= id %>`, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Handle specific errors like session expiry or general failures
+        if (res.status === 401) {
+          Swal.fire({
+            icon: "error",
+            title: "Session expired 🕒",
+            text: "Please log in again.",
+          }).then(() => (window.location.href = "/account/login"));
+        } else {
+           throw new Error(data.message || "Unknown error occurred.");
+        }
+        return;
+      }
+
+      // Update profile preview
+      image.src = data.image + "?t=" + new Date().getTime(); // prevent cache
+
+      Swal.fire({
+        icon: "success",
+        title: "✅ Upload successful!",
+        text: "Your profile image has been updated.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Upload failed ❌",
+        text: err.message,
+      });
+    } finally {
+      // Restore button
+      editBtnImg.disabled = false;
+      editBtnImg.innerText = "Edit"; // Consistent with original HTML
+      input.value = "";
+    }
+  });
+
+  // === PROFILE INFO EDITING LOGIC ===
+  const editProfileBtn = document.getElementById("edit-profile-btn");
+  const saveProfileBtn = document.getElementById("save-profile-btn");
+  const editableCards = document.querySelectorAll(".editable-card");
+  const userId = "<%= id %>";
+
+  function toggleEditMode(isEditing) {
+    editProfileBtn.style.display = isEditing ? "none" : "flex";
+    saveProfileBtn.style.display = isEditing ? "flex" : "none";
+
+    editableCards.forEach((card) => {
+      const valueSpan = card.querySelector("[data-value]");
+      const input = card.querySelector("[data-input]");
+
+      valueSpan.style.display = isEditing ? "none" : "block";
+      input.style.display = isEditing ? "block" : "none";
+
+      if (isEditing) {
+        input.focus();
+
+        input.select();
+      }
+    });
+  }
+
+  editProfileBtn.addEventListener("click", () => {
+    toggleEditMode(true);
+  });
+
+  saveProfileBtn.addEventListener("click", async () => {
+    const updatedData = {};
+    editableCards.forEach((card) => {
+      const input = card.querySelector("[data-input]");
+      updatedData[card.getAttribute("data-field")] = input.value;
+    });
+
+    saveProfileBtn.disabled = true;
+    saveProfileBtn.innerText = "Saving...";
+
+    try {
+      const res = await fetch(`/account/profile/${userId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+        credentials: "include",
+      });
+
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to save changes.");
+      }
+
+      editableCards.forEach((card) => {
+        const valueSpan = card.querySelector("[data-value]");
+        const input = card.querySelector("[data-input]");
+        valueSpan.innerText = input.value;
+
+        if (card.getAttribute("data-field") === "display_name") {
+          document.querySelector(".display-name-text").innerText = input.value;
+        }
+      });
+
+      toggleEditMode(false);
+
+      Swal.fire({
+        icon: "success",
+        title: "Profile Saved!",
+        text: "Your information has been updated.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      console.error("Error saving profile:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Save Failed",
+        text: err.message,
+      });
+    } finally {
+      saveProfileBtn.disabled = false;
+      saveProfileBtn.innerText = "Save Changes";
+    }
+  });
+
+  const changePassBtn = document.querySelector(".small-action-btn");
+const passwordModal = document.getElementById("passwordModal");
+const cancelPass = document.getElementById("cancelPass");
+const savePass = document.getElementById("savePass");
+
+changePassBtn.addEventListener("click", () => {
+  passwordModal.style.display = "flex";
+});
+
+cancelPass.addEventListener("click", () => {
+  passwordModal.style.display = "none";
+});
+
+savePass.addEventListener("click", async () => {
+  const oldPassword = document.getElementById("oldPass").value.trim();
+  const newPassword = document.getElementById("newPass").value.trim();
+
+  if (!oldPassword || !newPassword) {
+    Swal.fire({ icon: "warning", title: "Please fill all fields." });
+    return;
+  }
+
+  try {
+    const res = await fetch(`/account/password/${userId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ oldPassword, newPassword }),
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    if (!data.status) {
+      Swal.fire({ icon: "error", title: "Change Failed", text: data.message });
+      return;
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Password Changed!",
+      text: "Your password has been updated.",
+      timer: 1500,
+      showConfirmButton: false
+    });
+
+    passwordModal.style.display = "none";
+    document.getElementById("oldPass").value = "";
+    document.getElementById("newPass").value = "";
+  } catch (err) {
+    console.error("Error changing password:", err);
+    Swal.fire({ icon: "error", title: "Server Error", text: err.message });
+  }
+});
+</script>
 </body>
-<Script src="../javascripts/main.js"></Script>
+
 </html>

@@ -65,6 +65,8 @@ function renderGames(games) {
         </div>
       </div>
     `;
+    
+    
     container.appendChild(card);
   });
 }
@@ -257,6 +259,12 @@ function renderGames(games) {
     const addCartClass = isOutOfStock ? "addCart disabled" : "addCart";
     const addCartAttr = isOutOfStock ? "disabled" : `onclick="addToCart(${g.id})"`;
 
+    card.addEventListener("click", e => {
+      if (e.target.closest(".addCart")) return;
+      // ✅ go to /store/gamedetail/:id instead
+      window.location.href = `/store/gamedetail/${g.id}`;
+    });  
+    
     card.innerHTML = `
       <div class="poto">
         <img src="${g.image_poster || '/images/default-cover.jpg'}" alt="${g.title}">
@@ -283,6 +291,8 @@ function renderGames(games) {
     `;
 
     container.appendChild(card);
+    
   });
 }
+
 

@@ -23,7 +23,7 @@ router.post("/verify-otp", OTPController.verify);
 // 👤 AUTH
 router.post("/register-sum", UserController.register);
 router.get('/login', (req, res) => res.render('login', { title: 'Login' , activePage: 'login' })); 
-router.get('/register', (req, res) => res.render('register', { title: 'Register',activePage: 'register' }))
+router.get('/reg  ister', (req, res) => res.render('register', { title: 'Register',activePage: 'register' }))
 router.post("/login-sm", UserController.login);
 router.get("/logout", UserController.logout);
 router.get('/session',UserController.getsession);
@@ -37,6 +37,8 @@ router.put("/:id/status", authorize(["admin"]), UserController.changeActive);
 router.delete("/delete/:id", authorize(["admin"]), UserController.delete);
 router.post("/re-de/:id", authorize(["admin"]), UserController.reUser);
 router.get("/profile", isAuthenticated, UserController.profile);
+router.put('/profile/:id', isAuthenticated, UserController.updateProfile);
+router.put('/password/:id', isAuthenticated, UserController.changePassword);
 router.get("/libery-oder", isAuthenticated, (req, res) => res.render('libery-oder', { title: 'libery-oder',activePage: 'libery' }));
 
 
@@ -45,4 +47,10 @@ router.post('/image/:id', isAuthenticated, upload.single("image"),UserController
 
 /** ✅ GET /account/image/:id — ดึงรูปโปรไฟล์ */
 router.get('/image/:id', isAuthenticated, UserController.getImage);
+
+//  DELETE /account/image/:id — ลบรูปโปรไฟล์ */
+router.delete('/image/:id', isAuthenticated, UserController.deleteImage);
+
 export default router;
+
+

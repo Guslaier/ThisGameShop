@@ -1,0 +1,210 @@
+/* ===================== HEADER ===================== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header h1 {
+  font-family: var(--font-title);
+  color: var(--text-accent);
+  font-size: 2rem;
+}
+
+.header input {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--bg-dark);
+  color: var(--text-accent);
+  width: 250px;
+  max-width: 100%;
+}
+
+/* ===================== 🧱 CARDS ===================== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--bg-panel);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px var(--hover-glow);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--text-accent);
+}
+
+.card p {
+  margin: 0.5rem 0 0;
+  color: var(--text-primary);
+}
+
+/* ===================== 📊 TABLE ===================== */
+.section {
+  margin-top: 2.5rem;
+}
+
+.section h2 {
+  color: var(--text-accent);
+  font-family: var(--font-title);
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--accent);
+  display: inline-block;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* ✅ ป้องกันตารางล้นจอ */
+  border-radius: 10px;
+  box-shadow: 0 0 15px var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-panel);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  min-width: 600px; /* ✅ ป้องกันคอลัมน์หดเกินไป */
+}
+
+th, td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--bg-dark);
+  text-align: left;
+}
+
+th {
+  background: var(--accent);
+  color: var(--bg-dark);
+}
+
+tr:hover {
+  background-color: var(--table-hover);
+}
+
+/* ===================== BUTTON ===================== */
+.btn {
+  background: var(--accent);
+  color: var(--bg-dark);
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 0.9rem;
+}
+
+.btn:hover {
+  background: var(--text-accent);
+  color: var(--bg-dark);
+}
+
+/* ===================== 📱 RESPONSIVE ===================== */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .header h1 {
+    font-size: 1.6rem;
+  }
+
+  .cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .card h3 {
+    font-size: 1.4rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header input {
+    width: 100%;
+  }
+
+  .cards {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    padding: 0.7rem;
+    font-size: 0.7;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+/* Small Mobile (≤480px) */
+@media (max-width: 480px) {
+  .header {
+    align-items: stretch;
+  }
+
+  .header h1 {
+    font-size: 1.3rem;
+  }
+
+  .header input {
+    font-size: 0.9rem;
+  }
+
+  .cards {
+    grid-template-columns: 1fr; /* ✅ การ์ดเรียงแนวตั้ง */
+    gap: 1rem;
+  }
+
+  table {
+    font-size: 0.8rem;
+    min-width: 500px;
+  }
+
+  th, td {
+    padding: 0.2rem;
+  }
+
+  .btn {
+    width: 100%; /* ✅ ปุ่มเต็มแถว */
+    text-align: center;
+  }
+  .gameTable th,td{
+    font-size: 0.7rem;
+  }
+}

@@ -4,7 +4,7 @@ const client = new Client({
   user: "postgres",
   host: "localhost",
   database: "postgres",
-  password: "2547", // 👈 เปลี่ยนเป็นรหัสของคุณเอง
+  password: "1234", // 👈 เปลี่ยนเป็นรหัสของคุณเอง
   port: 5432,
 });
 
@@ -26,7 +26,7 @@ async function setupDatabase() {
     user: "postgres",
     host: "localhost",
     database: "ThisGameShop",
-    password: "2547",
+    password: "1234",
     port: 5432,
   });
 

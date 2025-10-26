@@ -1,143 +1,144 @@
-// === This Game Shop - Register Script ===
+// === This Game Shop - Register Script (fixed) ===
 document.addEventListener("DOMContentLoaded", () => {
-    const registerForm = document.getElementById("registerForm");
-    const togglePassword = document.getElementById("togglePassword");
-    const togglePasswordConfirm = document.getElementById("togglePasswordConfirm");
-    const passwordInput = document.getElementById("password");
-    const passwordConfirmInput = document.getElementById("passwordConfirm");
-    const registerButton = document.querySelector(".register-btn");
+  const registerForm = document.getElementById("registerForm");
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+  const otpWrap = document.querySelector(".otp-wrap");
+  const registerBtn = document.getElementById("registerBtn");
 
-    // 👁️ Toggle password visibility
-    function toggleVisibility(icon, input) {
-        const isPassword = input.getAttribute("type") === "password";
-        input.setAttribute("type", isPassword ? "text" : "password");
-        icon.classList.remove("fi-rr-eye", "fi-sr-eye-crossed");
-        icon.classList.add(isPassword ? "fi-sr-eye-crossed" : "fi-rr-eye");
+  const togglePassword = document.getElementById("togglePassword");
+  const togglePasswordConfirm = document.getElementById("togglePasswordConfirm");
+  const passwordInput = document.getElementById("password");
+  const passwordConfirmInput = document.getElementById("passwordConfirm");
+
+  let otpVerified = false;
+
+  // 👁️ Toggle password visibility
+  function toggleVisibility(icon, input) {
+    const isPassword = input.getAttribute("type") === "password";
+    input.setAttribute("type", isPassword ? "text" : "password");
+    icon.classList.remove("fi-rr-eye", "fi-sr-eye-crossed");
+    icon.classList.add(isPassword ? "fi-sr-eye-crossed" : "fi-rr-eye");
+  }
+  togglePassword.addEventListener("click", () => toggleVisibility(togglePassword, passwordInput));
+  togglePasswordConfirm.addEventListener("click", () => toggleVisibility(togglePasswordConfirm, passwordConfirmInput));
+
+  // ✅ ส่ง OTP
+  sendOtpBtn.addEventListener("click", async () => {
+    const email = document.getElementById("email").value.trim();
+    if (!email) {
+      Swal.fire("Warning", "Please enter your email first", "warning");
+      return;
     }
+    sendOtpBtn.disabled = true;
+    sendOtpBtn.textContent = "Sending...";
+    try {
+      const res = await fetch("/account/generate-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error("Failed to send OTP");
+      Swal.fire("OTP Sent", "Check your email for the verification code!", "success");
+      otpWrap.style.display = "flex";
+      sendOtpBtn.textContent = "Resend OTP";
+    } catch (err) {
+      Swal.fire("Error", "Failed to send OTP", "error");
+      sendOtpBtn.textContent = "Send OTP";
+    } finally {
+      sendOtpBtn.disabled = false;
+    }
+  });
 
-    togglePassword.addEventListener("click", () => toggleVisibility(togglePassword, passwordInput));
-    togglePasswordConfirm.addEventListener("click", () => toggleVisibility(togglePasswordConfirm, passwordConfirmInput));
-
-    // 🚀 Handle register submit
-    registerForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(registerForm);
-        const data = Object.fromEntries(formData.entries());
-
-        if (data.password !== data.password_confirm) {
-            alert("❌ Passwords do not match!");
-            return;
-        }
-        let response;
-        try {
-            registerButton.disabled = true;
-            registerButton.innerText = "Creating Account...";
-            response = await fetch("/account/register-sum", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-
-
-        } catch (err) {
-            alert("⚠️ Server Error");
-            console.error("Error:", err);
-            registerButton.disabled = false;
-            registerButton.innerText = "Create Account";
-        }
-        const result = await response.json();
-
-        if (result.status === true) {
-            alert("🎉 Register Success!");
-            window.location.href = "/account";
-        } else {
-            alert("❌ Register Failed: " + result.message);
-            registerButton.disabled = false;
-            registerButton.innerText = "Create Account";
-        }
-    });
-});
-
- const sendOtpBtn = document.getElementById("sendOtpBtn");
- const verifyOtpBtn = document.getElementById("verifyOtpBtn");
-    const otpWrap = document.querySelector(".otp-wrap");
-    const registerBtn = document.getElementById("registerBtn");
-
-    let otpVerified = false;
-
-    // ✅ ส่ง OTP
-    sendOtpBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
-      if (!email) {
-        Swal.fire("Warning", "Please enter your email first", "warning");
-        return;
-      }
-
-      sendOtpBtn.disabled = true;
-      sendOtpBtn.textContent = "Sending...";
-
-      try {
-        const res = await fetch("/account/generate-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email })
-        });
-        const data = await res.text();
-
-        Swal.fire("OTP Sent", "Check your email for the verification code!", "success");
-        otpWrap.style.display = "flex";
-      } catch (err) {
-        Swal.fire("Error", "Failed to send OTP", "error");
-      } finally {
-        sendOtpBtn.disabled = false;
-        sendOtpBtn.textContent = "Resend OTP";
-      }
-    });
-
-    // ✅ ตรวจสอบ OTP
-    verifyOtpBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
-      const otp = document.getElementById("otp").value.trim();
-
-      if (!otp) {
-        Swal.fire("Warning", "Please enter the OTP", "warning");
-        return;
-      }
-
-      verifyOtpBtn.disabled = true;
-      verifyOtpBtn.textContent = "Checking...";
-
-      try {
-        const res = await fetch("/account/verify-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp })
-        });
-
-        const data = await res.json();
-        if (data.status || otpVerified) {
-          otpVerified = true;
-          Swal.fire("Success", "OTP verified successfully!", "success");
-          registerBtn.disabled = false;
-          verifyOtpBtn.textContent = "✅ Verified";
-          verifyOtpBtn.style.background = "green";
-          verifyOtpBtn.style.cursor = "default";
-        } else {
-          Swal.fire("Error", "Invalid OTP", "error");
-          verifyOtpBtn.textContent = "Verify";
-        }
-      } catch (err) {
-        Swal.fire("Error", "Verification failed", "error");
-      } finally {
+  // ✅ ตรวจสอบ OTP
+  verifyOtpBtn.addEventListener("click", async () => {
+    const email = document.getElementById("email").value.trim();
+    const otp = document.getElementById("otp").value.trim();
+    if (!otp) {
+      Swal.fire("Warning", "Please enter the OTP", "warning");
+      return;
+    }
+    verifyOtpBtn.disabled = true;
+    verifyOtpBtn.textContent = "Checking...";
+    try {
+      const res = await fetch("/account/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.status === true) {
+        otpVerified = true;
+        registerBtn.disabled = false; // ✅ เปิดปุ่มสมัคร
+        Swal.fire("Success", "OTP verified successfully!", "success");
+        verifyOtpBtn.textContent = "✅ Verified";
+        verifyOtpBtn.style.background = "green";
+        verifyOtpBtn.style.cursor = "default";
+        verifyOtpBtn.disabled = true; // ล็อกหลังยืนยันแล้ว
+      } else {
+        Swal.fire("Error", "Invalid OTP", "error");
+        verifyOtpBtn.textContent = "Verify";
         verifyOtpBtn.disabled = false;
       }
-    });
+    } catch (err) {
+      Swal.fire("Error", "Verification failed", "error");
+      verifyOtpBtn.textContent = "Verify";
+      verifyOtpBtn.disabled = false;
+    }
+  });
 
-    // ✅ ป้องกัน submit ถ้ายังไม่ verify OTP
-    document.getElementById("registerForm").addEventListener("submit", (e) => {
-      if (!otpVerified) {
-        e.preventDefault();
-        Swal.fire("Warning", "Please verify your OTP before registering", "warning");
+  // 🚀 ส่งฟอร์มสมัคร
+  registerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!otpVerified) {
+      Swal.fire("Warning", "Please verify your OTP before registering", "warning");
+      return;
+    }
+
+    const formData = new FormData(registerForm);
+    const data = Object.fromEntries(formData.entries());
+
+    if (data.password !== data.password_confirm) {
+      Swal.fire("Error", "Passwords do not match!", "error");
+      return;
+    }
+
+    registerBtn.disabled = true;
+    const oldText = registerBtn.innerText;
+    registerBtn.innerText = "Creating Account...";
+
+    try {
+      const res = await fetch("/account/register-sum", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          display_name: data.display_name,
+          email: data.email,
+          password: data.password,
+          // ไม่ต้องส่ง otp ไปที่ endpoint สมัคร ถ้า backend ไม่ได้ใช้
+        }),
+      });
+
+      // ป้องกันกรณีตอบไม่เป็น JSON
+      const text = await res.text();
+      let result;
+      try { result = JSON.parse(text); } catch { result = { status: res.ok, message: text }; }
+
+      if (result.status === true) {
+        Swal.fire("Success", "Register Success!", "success").then(() => {
+          window.location.href = "/account/login";
+        });
+      } else {
+        Swal.fire("Register Failed", result.message || "Unknown error", "error");
+        registerBtn.disabled = false;
+        registerBtn.innerText = oldText;
       }
-    });
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Server Error", "error");
+      registerBtn.disabled = false;
+      registerBtn.innerText = oldText;
+    }
+  });
+});

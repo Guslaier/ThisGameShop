@@ -4,6 +4,8 @@ import db from "../databace/db.js";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
 import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 const providers = new Providers();
 let otpStore = {}; // เก็บ OTP ชั่วคราวในหน่วยความจำ
@@ -68,6 +70,33 @@ export const UserController = {
     }
   },
 
+async changePassword(req, res) {
+  try {
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword)
+      return res.status(400).json({ status: false, message: "Please fill in all fields." });
+
+    if (newPassword.length < 6)
+      return res.status(400).json({ status: false, message: "Password must be at least 6 characters." });
+
+    // 1️⃣ Check old password
+    const valid = await providers.checkPassword(id, oldPassword);
+    if (valid.rowCount === 0)
+      return res.status(401).json({ status: false, message: "Incorrect old password." });
+
+    // 2️⃣ Update password
+    await providers.updatePassword(id, newPassword);
+    return res.json({ status: true, message: "Password changed successfully." });
+
+  } catch (err) {
+    console.error("❌ Change password error:", err);
+    return res.status(500).json({ status: false, message: "Server error during password change." });
+  }
+},
+
+   /** GET — ดึงรูปโปรไฟล์ตาม id */
   async getImage(req, res) {
     const { id } = req.params;
 
@@ -82,27 +111,73 @@ export const UserController = {
       res.status(500).json({ status: false, message: err.message });
     }
   },
+
+/** ✅ POST — อัปโหลดหรืออัปเดตรูปโปรไฟล์ */
   async UpImge(req, res) {
     const { id } = req.params;
     const file = req.file;
-  
-    if (!file)
+
+    if (!file) {
       return res.status(400).json({ status: false, message: "No file uploaded" });
-  
-    // ตรวจว่าผู้ใช้นี้มีอยู่จริงไหม
+    }
+
     const user = await providers.getUserById(id);
-    if (!user || user.rowCount === 0)
+    const newFilePath = path.join("public", "images", "uploads", file.filename);
+    
+    if (!user || user.rowCount === 0) {
+      // 🧹 FIX: Delete the newly uploaded file if the user doesn't exist
+      if (fs.existsSync(newFilePath)) {
+        fs.unlinkSync(newFilePath);
+        console.log("🧹 Rolled back: deleted new uploaded file (user not found)");
+      }
       return res.status(404).json({ status: false, message: "User not found" });
-  
+    }
+
+    const oldImage = user.rows[0].profile_image;
+    const imgPath = `/images/uploads/${file.filename}`;
+
     try {
-      const imgPath = `/images/uploads/${file.filename}`;
+      // 1. Update DB with new image path
       await providers.updateProfileImage(id, imgPath);
-      res.json({ status: true, message: "Profile image updated", image: imgPath });
+
+      // 2. Delete old image (if exists) - NOTE: This should NOT send a response.
+      if (oldImage && oldImage !== '/images/profile.png') {
+        // Assuming deleteProfileImage now takes the old path and handles file deletion
+        await providers.deleteProfileImage(oldImage); 
+        console.log(`🗑️ Deleted old image record/file: ${oldImage}`);
+      }
+
+      // 3. SUCCESS RESPONSE: Must return immediately.
+      return res.json({ status: true, message: "Profile image updated", image: imgPath });
+      
     } catch (err) {
       console.error("❌ Error updating profile image:", err);
-      res.status(500).json({ status: false, message: err.message });
+
+      // 🧹 Rollback — remove new file if DB update failed
+      if (fs.existsSync(newFilePath)) {
+        fs.unlinkSync(newFilePath);
+        console.log("🧹 Rolled back: deleted new uploaded file due to error");
+      }
+
+      // 4. ERROR RESPONSE: Must return immediately and use generic message
+      return res.status(500).json({ status: false, message: "Server error during image update." });
     }
   },
+
+  /** ✅ DELETE — ลบรูปโปรไฟล์ */
+  async deleteImage(req, res) {
+    const { id } = req.params;
+    try {
+      const result = await providers.deleteProfileImage(id);
+      // FIX: Added return for robustness
+      return res.json(result); 
+    } catch (err) {
+      console.error("❌ Error deleting profile image:", err);
+      // FIX: Added return for robustness
+      return res.status(500).json({ status: false, message: err.message });
+    }
+  },
+
   async registerAdmod(req, res) {
     const { email, password, display_name, role } = req.body;
 
@@ -184,6 +259,7 @@ export const UserController = {
   },
 
   async profile(req, res) {
+    console.log("SESSION USER:", req.session.user);
     if(!req.session.user){
       return res.render("profile",{ title: 'Profile',activePage: 'profile',
       "id": 999,
@@ -195,15 +271,46 @@ export const UserController = {
       })
     }
     const user = await providers.getUserById(req.session.user.id);
+    console.log("FETCHED USER:", user.rows[0]);
     return res.render("profile",{ title: 'Profile',activePage: 'profile',
-      "id":user.id,
-      "email":user.email,
-      "display_name":user.display_name,
-      "role":user.role,
-      "profile_image":user.profile_image,
-      "created_at":user.created_at
+      "id":user.rows[0].id,
+      "email":user.rows[0].email,
+      "display_name":user.rows[0].display_name,
+      "role":user.rows[0].role,
+      "profile_image":user.rows[0].profile_image,
+      "created_at":user.rows[0].created_at
       });
   },
+
+  // ✅ Update profile info (for fetch PUT /account/profile/:id)
+async updateProfile(req, res) {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+
+    // example: only allow certain fields
+    const allowedFields = ["display_name", "email", "password"];
+    const updates = Object.fromEntries(
+      Object.entries(data).filter(([k]) => allowedFields.includes(k))
+    );
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ status: false, message: "No valid fields" });
+    }
+
+    // Update in DB (use your providers)
+    if (updates.display_name) await providers.updateUser(id, updates.display_name);
+    if (updates.password) await providers.updatePassword(id, updates.password);
+
+    const user = await providers.getUserById(id);
+    res.json({ status: true, message: "Profile updated successfully", user: user.rows[0] });
+
+  } catch (err) {
+    console.error("❌ Update profile error:", err);
+    res.status(500).json({ status: false, message: "Server error during update" });
+  }
+},
+
 
   async update(req, res) {
     const { id, display_name, password } = req.body;

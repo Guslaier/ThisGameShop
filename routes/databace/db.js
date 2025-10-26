@@ -5,7 +5,7 @@ user: 'postgres', // เปลี่ยนตามชื่อ user ของ�
 host: 'localhost',
 
 database: 'ThisGameShop', // เปลี่ยนตามชื่อฐานข้อมูลของคุณ
-password: '2547', // ใส่รหัสผ่านของ user postgres ที่คุณตั้งไว้
+password: '1234', // ใส่รหัสผ่านของ user postgres ที่คุณตั้งไว้
 port: 5432,
 });
 
