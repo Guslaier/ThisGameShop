@@ -46,7 +46,7 @@ export const OrderController = {
   // =========================================================
   async listByUser(req, res) {
     try {
-      const result = await service.listOrdersByUser(2);
+      const result = await service.listOrdersByUser(req.session.user.id);
       res.json({ status: true, data: result.rows });
     } catch (err) {
       res.status(500).json({ status: false, message: err.message });

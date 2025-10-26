@@ -249,12 +249,13 @@ async function deleteGalleryImage(imgId) {
                 timer: 1200,
                 showConfirmButton: false
             });
+            await refreshGallery();
         } else {
             Swal.fire({
                 icon: 'error',
                 title: '❌ ลบไม่สำเร็จ',
                 text: data.message || 'ไม่สามารถลบรูปนี้ได้',
-                confirmButtonColor: '#d33'
+                confirmButtonColor: '#d33',
             });
         }
     } catch (err) {

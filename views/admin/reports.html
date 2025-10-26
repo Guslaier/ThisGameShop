@@ -3,65 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThisGameShop Reports</title>
+
+  <!-- ===== STYLES ===== -->
   <link rel="stylesheet" href="/stylesheets/admin/style.css">
-  <title>ThisGameShop Admin Dashboard</title>
+  <link rel="stylesheet" href="/stylesheets/admin/report.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Prompt:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- ===== LIBRARIES ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
 <button id="toggleSidebar">☰ Menu</button>
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div>
-      <h2>THISGAMESHOP</h2>
-      <div class="menu">
-        <a href="/ad-m" >Dashboard</a>
-        <a href="/ad-m/User">Users</a>
-        <a href="/ad-m/Games" >Games</a>
-        <a href="/ad-m/Orders" >Orders</a>
-        <a class="active" >Reports</a>
-      </div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div>
+    <h2>THISGAMESHOP</h2>
+    <div class="menu">
+      <a href="/ad-m">Dashboard</a>
+      <a href="/ad-m/User">Users</a>
+      <a href="/ad-m/Games">Games</a>
+      <a href="/ad-m/Orders">Orders</a>
+      <a class="active">Reports</a>
     </div>
-    <footer>© 2025 ThisGameShop</footer>
-  </aside>
+  </div>
+  <footer>© 2025 ThisGameShop</footer>
+</aside>
 
-  <!-- Main -->
-  <main class="main-con">
-    
-  </main>
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-con">
+  <div class="header">
+    <h1>Admin Reports</h1>
+    <input type="text" placeholder="🔍 ค้นหาข้อมูล...">
+  </div>
 
-  </script>
+  <!-- ===== KPI CARDS ===== -->
+  <div class="cards">
+    <div class="card"><h3 id="usersCount">0</h3><p>Users Active</p></div>
+    <div class="card"><h3 id="totalOrders">0 Orders</h3><h3 id="totalAmount">฿ 0</h3><p>Total Purchases</p></div>
+    <div class="card"><h3 id="stockCount">0</h3><p>Games In Stock</p></div>
+    <div class="card"><h3 id="lowStock">0</h3><p>Low Stock Games</p></div>
+  </div>
+
+  <!-- ===== SALES CHARTS ===== -->
+  <section class="section">
+    <h2>📊 Sales Overview</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr;gap:2rem; transform: scale(0.5)">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </section>
+
+  <!-- ===== GAME TABLE ===== -->
+  <section class="section">
+  <h2>🧾 All Orders</h2>
+
+  <!-- Filters -->
+  <div class="filters" style="display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;background:var(--panel);padding:1rem;border-radius:10px;align-items:center;">
+    <input type="text" id="search" placeholder="🔍 Search name or order ID..." style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
+    <input type="date" id="date" style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
+    <select id="status" style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
+      <option value="">All Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Completed">Paid</option>
+      <option value="Cancelled">Cancelled</option>
+    </select>
+    <select id="platform" style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
+      <option value="">All Platform</option>
+      <option value="PC">PC</option>
+      <option value="PS5">PS5</option>
+      <option value="Xbox">Xbox</option>
+      <option value="Switch">Switch</option>
+    </select>
+    <button class="btn" onclick="filterTable()">Apply Filter</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container" style="background:var(--panel);border-radius:10px;overflow:auto;box-shadow:0 0 15px rgba(0,255,128,0.05);">
+    <table id="orderTable" style="width:100%;border-collapse:collapse;min-width:900px;">
+      <thead>
+        <tr style="background:#13131a;color:var(--accent);">
+          <th>Customer ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Game</th>
+          <th>Platform</th>
+          <th>Order ID</th>
+          <th>Cost</th>
+          <th>Status</th>
+          <th>Payment</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+  <!-- ===== EXPORT ===== -->
+  <section class="section" style="text-align:center;">
+    <button class="btn" onclick="exportCSV()">📄 Export CSV</button>
+  </section>
+
+</main>
+
+<script src="/javascripts/admin/report.js"></script>
 </body>
-<!-- 📦 SweetAlert2 สำหรับ popup สวยๆ -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-// ✅ ฟังก์ชัน Global fetch handler
-window.fetch = (async (originalFetch => {
-  return async (...args) => {
-    const response = await originalFetch(...args);
-
-    if (response.status === 403) {
-      let data = {};
-      try {
-        data = await response.clone().json();
-      } catch (e) {}
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Access Denied',
-        text: data.message || 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้',
-        confirmButtonText: 'ตกลง',
-        confirmButtonColor: '#3085d6',
-        background: '#1e1e1e',
-        color: '#fff'
-      });
-
-      return response; // ยังคงส่ง response กลับให้โค้ดอื่นทำงานต่อได้
-    }
-
-    return response;
-  };
-})(window.fetch));
-</script>
-<script src="/javascripts/admin/admin.js"></script>
 </html>

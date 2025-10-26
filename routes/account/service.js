@@ -1,5 +1,7 @@
 // 📁 /routes/account/service.js
-import q from '../databace/db.js'
+import q from "../databace/db.js";
+import fs from "fs";
+import path from 'path';
 
 class Providers {
   async login(email, password) {
@@ -18,11 +20,17 @@ class Providers {
   }
 
   async getUserById(id) {
-    return await q.QQuery(`SELECT * FROM users WHERE id=$1 AND deleted_at IS NULL`, [id]);
+    return await q.QQuery(
+      `SELECT * FROM users WHERE id=$1 AND deleted_at IS NULL`,
+      [id]
+    );
   }
 
   async getUserByEmail(email) {
-    return await q.QQuery(`SELECT * FROM users WHERE email=$1 AND deleted_at IS NULL`, [email]);
+    return await q.QQuery(
+      `SELECT * FROM users WHERE email=$1 AND deleted_at IS NULL`,
+      [email]
+    );
   }
 
   async updateUser(id, display_name) {
@@ -38,6 +46,13 @@ class Providers {
       [password, id]
     );
   }
+
+async checkPassword(id, password) {
+  return await q.QQuery(
+    `SELECT id FROM users WHERE id = $1 AND password_hash = crypt($2, password_hash)`,
+    [id, password]
+  );
+}
 
   async deleteUser(id) {
     return await q.QQuery(`DELETE FROM users WHERE id=$1 RETURNING *`, [id]);
@@ -71,8 +86,8 @@ class Providers {
     );
   }
 
-    async updateProfileImage(id, imgPath) {
-    const result = await db.QQuery(
+  async updateProfileImage(id, imgPath) {
+    const result = await q.QQuery(
       `UPDATE users 
        SET profile_image = $1, updated_at = CURRENT_TIMESTAMP 
        WHERE id = $2 RETURNING profile_image;`,
@@ -81,13 +96,55 @@ class Providers {
     return result;
   }
 
+
   /** ✅ ดึงรูปโปรไฟล์ตาม id */
   async getProfileImage(id) {
-    const result = await db.QQuery(
+    const result = await q.QQuery(
       `SELECT profile_image FROM users WHERE id = $1;`,
       [id]
     );
     return result;
+  }
+
+  // ลบรูปที่อยู่ในเครื่อง + ล้างข้อมูลใน DB
+  async deleteProfileImage(id) {
+  try {
+    //ดึง path ของรูปเก่าจาก DB
+    const result = await q.QQuery(
+      `SELECT profile_image FROM users WHERE id = $1;`,
+      [id]
+    );
+
+    if (result.rowCount === 0)
+      return { status: false, message: "User not found" };
+
+    const imgPath = result.rows[0].profile_image;
+
+    if (!imgPath) {
+      return { status: false, message: "No image to delete" };
+    }
+
+    //สร้าง path จริงของไฟล์ในเครื่อง
+    const filePath = path.join("public", imgPath.replace(/^\//, ""));
+
+    //ลบไฟล์เก่าออกจากเครื่องถ้ามีอยู่จริง
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      console.log("🗑️ Deleted file:", filePath);
+    }
+
+    //อัปเดต DB ให้ profile_image = NULL
+    await q.QQuery(
+      `UPDATE users SET profile_image = NULL, updated_at = CURRENT_TIMESTAMP WHERE id = $1;`,
+      [id]
+    );
+
+    return { status: true, message: "Profile image deleted" };
+
+    } catch (err) {
+        console.error("❌ deleteProfileImage error:", err);
+        return { status: false, message: err.message };
+      }
   }
 }
 

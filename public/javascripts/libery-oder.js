@@ -239,7 +239,7 @@
             return payData;
           },
           allowOutsideClick: () => !Swal.isLoading(),
-          didOpen: () => Swal.showLoading()
+        
         });
 
         if (confirm0.isConfirmed) {
@@ -281,7 +281,6 @@
           return payData;
         },
         allowOutsideClick: () => !Swal.isLoading(),
-        didOpen: () => Swal.showLoading()
       });
 
       if (payModal.isConfirmed) {

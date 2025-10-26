@@ -39,6 +39,8 @@ router.put("/:id/status", authorize(["admin"]), UserController.changeActive);
 router.delete("/delete/:id", authorize(["admin"]), UserController.delete);
 router.post("/re-de/:id", authorize(["admin"]), UserController.reUser);
 router.get("/profile", isAuthenticated, UserController.profile);
+router.put('/profile/:id', isAuthenticated, UserController.updateProfile);
+router.put('/password/:id', isAuthenticated, UserController.changePassword);
 router.get("/libery-oder", isAuthenticated, (req, res) => res.render('libery-oder', { title: 'libery-oder',activePage: 'libery' }));
 
 
@@ -47,4 +49,10 @@ router.post('/image/:id', isAuthenticated, upload.single("image"),UserController
 
 /** ✅ GET /account/image/:id — ดึงรูปโปรไฟล์ */
 router.get('/image/:id', isAuthenticated, UserController.getImage);
+
+//  DELETE /account/image/:id — ลบรูปโปรไฟล์ */
+router.delete('/image/:id', isAuthenticated, UserController.deleteImage);
+
 export default router;
+
+

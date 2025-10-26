@@ -1,6 +1,7 @@
 import express from 'express';
 import Providers from '../stock/service.js'; // ✅ ดึงจาก stock/service.js
 import Authentication from '../authentication.js';
+import { GameDetailController } from "../gamedetail/controller.js";
 
 const providers = new Providers();
 const { isAuthenticated } = Authentication;
@@ -47,5 +48,7 @@ router.get('/api/game/:id', async (req, res) => {
     res.status(500).json({ status: false, message: err.message });
   }
 });
+
+router.get("/gamedetail/:id", GameDetailController.showGameDetail);
 
 export default router;

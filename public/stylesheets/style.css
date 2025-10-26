@@ -55,7 +55,7 @@ html, body {
   background: var(--color-bg-main); /* ✅ ปิดพื้นหลังขาว */
   background-color: rgb(0, 2, 21);
   color: #fff;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 ::-webkit-scrollbar {

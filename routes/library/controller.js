@@ -28,7 +28,7 @@ export const LibraryController = {
       // const user_id = req.session.user?.id;
       // if (!user_id) return res.status(401).json({ status: false, message: "Unauthorized" });
 
-      const result = await service.listUserLibrary(2); // <-- ใช้ตามที่คุณเทสต์อยู่
+      const result = await service.listUserLibrary(req.session.user.id); // <-- ใช้ตามที่คุณเทสต์อยู่
       return res.json({ status: true, data: result.rows });
     } catch (err) {
       return sendError(res, err);

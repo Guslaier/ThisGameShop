@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import ejs from 'ejs'
+import cors from "cors";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -48,7 +50,8 @@ import orderpage from './routes/order/router.js';
 import storepage from './routes/store/router.js';
 import adminpage from './routes/admin/router.js';
 import stockpage from './routes/stock/router.js';
-import Librarypage from './routes/library/router.js';  
+import Librarypage from './routes/library/router.js';
+import gamedetailpage from './routes/gamedetail/router.js'
 
 
 // app.use((req, res, next) => {
@@ -73,8 +76,13 @@ app.use('/account', accountpage);
 app.use('/order', orderpage);
 app.use('/ad-m', adminpage);
 app.use('/stock', stockpage);
-app.use('/lib',Librarypage)
+app.use('/lib',Librarypage);
+app.use('/gamedetail', gamedetailpage);
 
+app.use(cors({
+  origin: "http://localhost:3000", // หรือ domain ของคุณ
+  credentials: true
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
