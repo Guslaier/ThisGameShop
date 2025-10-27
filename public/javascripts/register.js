@@ -1,18 +1,5 @@
 // === This Game Shop - Register Script (fixed) ===
-// === This Game Shop - Register Script (fixed) ===
 document.addEventListener("DOMContentLoaded", () => {
-  const registerForm = document.getElementById("registerForm");
-  const sendOtpBtn = document.getElementById("sendOtpBtn");
-  const verifyOtpBtn = document.getElementById("verifyOtpBtn");
-  const otpWrap = document.querySelector(".otp-wrap");
-  const registerBtn = document.getElementById("registerBtn");
-
-  const togglePassword = document.getElementById("togglePassword");
-  const togglePasswordConfirm = document.getElementById("togglePasswordConfirm");
-  const passwordInput = document.getElementById("password");
-  const passwordConfirmInput = document.getElementById("passwordConfirm");
-
-  let otpVerified = false;
   const registerForm = document.getElementById("registerForm");
   const sendOtpBtn = document.getElementById("sendOtpBtn");
   const verifyOtpBtn = document.getElementById("verifyOtpBtn");
@@ -27,16 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let otpVerified = false;
 
   // 👁️ Toggle password visibility
- if (togglePassword && passwordInput) {
-    togglePassword.addEventListener("click", () => {
-      const isPassword = passwordInput.getAttribute("type") === "password";
-      passwordInput.setAttribute("type", isPassword ? "text" : "password");
-
-      // ล้างเฉพาะคลาสที่เกี่ยวกับไอคอน แล้วสลับ rr ↔ rr-crossed
-      togglePassword.classList.remove("fi-rr-eye", "fi-rr-eye-crossed", "fi-sr-eye", "fi-sr-eye-crossed");
-      togglePassword.classList.add(isPassword ? "fi-rr-eye-crossed" : "fi-rr-eye");
-    });
+  function toggleVisibility(icon, input) {
+    const isPassword = input.getAttribute("type") === "password";
+    input.setAttribute("type", isPassword ? "text" : "password");
+    icon.classList.remove("fi-rr-eye", "fi-rr-eye-crossed");
+    icon.classList.add(isPassword ? "fi-rr-eye-crossed" : "fi-rr-eye");
   }
+  togglePassword.addEventListener("click", () => toggleVisibility(togglePassword, passwordInput));
+  togglePasswordConfirm.addEventListener("click", () => toggleVisibility(togglePasswordConfirm, passwordConfirmInput));
 
   // ✅ ส่ง OTP
   sendOtpBtn.addEventListener("click", async () => {
@@ -64,69 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sendOtpBtn.disabled = false;
     }
   });
-  // ✅ ส่ง OTP
-  sendOtpBtn.addEventListener("click", async () => {
-    const email = document.getElementById("email").value.trim();
-    if (!email) {
-      Swal.fire("Warning", "Please enter your email first", "warning");
-      return;
-    }
-    sendOtpBtn.disabled = true;
-    sendOtpBtn.textContent = "Sending...";
-    try {
-      const res = await fetch("/account/generate-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      if (!res.ok) throw new Error("Failed to send OTP");
-      Swal.fire("OTP Sent", "Check your email for the verification code!", "success");
-      otpWrap.style.display = "flex";
-      sendOtpBtn.textContent = "Resend OTP";
-    } catch (err) {
-      Swal.fire("Error", "Failed to send OTP", "error");
-      sendOtpBtn.textContent = "Send OTP";
-    } finally {
-      sendOtpBtn.disabled = false;
-    }
-  });
 
-  // ✅ ตรวจสอบ OTP
-  verifyOtpBtn.addEventListener("click", async () => {
-    const email = document.getElementById("email").value.trim();
-    const otp = document.getElementById("otp").value.trim();
-    if (!otp) {
-      Swal.fire("Warning", "Please enter the OTP", "warning");
-      return;
-    }
-    verifyOtpBtn.disabled = true;
-    verifyOtpBtn.textContent = "Checking...";
-    try {
-      const res = await fetch("/account/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (data.status === true) {
-        otpVerified = true;
-        registerBtn.disabled = false; // ✅ เปิดปุ่มสมัคร
-        Swal.fire("Success", "OTP verified successfully!", "success");
-        verifyOtpBtn.textContent = "✅ Verified";
-        verifyOtpBtn.style.background = "green";
-        verifyOtpBtn.style.cursor = "default";
-        verifyOtpBtn.disabled = true; // ล็อกหลังยืนยันแล้ว
-      } else {
-        Swal.fire("Error", "Invalid OTP", "error");
-        verifyOtpBtn.textContent = "Verify";
-        verifyOtpBtn.disabled = false;
-      }
-    } catch (err) {
-      Swal.fire("Error", "Verification failed", "error");
-      verifyOtpBtn.textContent = "Verify";
-      verifyOtpBtn.disabled = false;
-    }
-  });
   // ✅ ตรวจสอบ OTP
   verifyOtpBtn.addEventListener("click", async () => {
     const email = document.getElementById("email").value.trim();

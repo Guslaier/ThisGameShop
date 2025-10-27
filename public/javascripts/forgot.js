@@ -26,28 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const swal = (title, text = "", icon = "info") =>
         Swal.fire(title, text, icon);
 
-    if (togglePassword && passwordInput) {
-        togglePassword.addEventListener("click", () => {
-            const isPassword = passwordInput.getAttribute("type") === "text";
-            passwordInput.setAttribute("type", isPassword ? "text" : "password");
-
-            // ล้างเฉพาะคลาสที่เกี่ยวกับไอคอน แล้วสลับ rr ↔ rr-crossed
-            togglePassword.classList.remove("fi-rr-eye", "fi-rr-eye-crossed", "fi-sr-eye", "fi-sr-eye-crossed");
-            togglePassword.classList.add(isPassword ? "fi-rr-eye-crossed" : "fi-rr-eye");
-        });
-
-
-    }
-    if (togglePasswordConfirm && passwordConfirmInput) {
-        togglePasswordConfirm.addEventListener("click", () => {
-            const isPassword = passwordConfirmInput.getAttribute("type") === "text";
-            passwordConfirmInput.setAttribute("type", isPassword ? "text" : "password");
-
-            // ล้างเฉพาะคลาสที่เกี่ยวกับไอคอน แล้วสลับ rr ↔ rr-crossed
-            togglePasswordConfirm.classList.remove("fi-rr-eye", "fi-rr-eye-crossed", "fi-sr-eye", "fi-sr-eye-crossed");
-            togglePasswordConfirm.classList.add(isPassword ? "fi-rr-eye-crossed" : "fi-rr-eye");
-        });
-    }
+    function toggleVisibility(icon, input) {
+    const isPassword = input.getAttribute("type") === "password";
+    input.setAttribute("type", isPassword ? "text" : "password");
+    icon.classList.remove("fi-rr-eye", "fi-rr-eye-crossed");
+    icon.classList.add(isPassword ? "fi-rr-eye-crossed" : "fi-rr-eye");
+  }
+  togglePassword.addEventListener("click", () => toggleVisibility(togglePassword, passwordInput));
+  togglePasswordConfirm.addEventListener("click", () => toggleVisibility(togglePasswordConfirm, passwordConfirmInput));
     // ---------- ส่ง OTP ----------
     sendOtpBtn.addEventListener("click", async () => {
         const email = emailInput.value.trim();

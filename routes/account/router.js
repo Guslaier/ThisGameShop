@@ -27,10 +27,10 @@ router.get('/register', (req, res) => res.render('register', { title: 'Register'
 router.post("/login-sm", UserController.login);
 router.get("/logout", UserController.logout);
 router.get('/session',UserController.getsession);
-
+router.get("/password-re", (req, res) => res.render('reset_pess', { title: 'password-re' , activePage: 'password-re' }));
 // 👥 USERS
 router.post("/password/reset", UserController.resetPassword);
-router.post("/add", authorize(["admin", "staff"]), UserController.registerAdmod);
+router.post("/add", authorize(["admin"]), UserController.registerAdmod);
 router.get("/list", authorize(["admin", "staff"]), UserController.list);
 router.put("/update", authorize(["admin", "staff"]), UserController.update);
 router.put("/update-role", authorize(["admin"]), UserController.changeRole);
@@ -48,10 +48,6 @@ router.post('/image/:id', isAuthenticated, upload.single("image"),UserController
 
 /** ✅ GET /account/image/:id — ดึงรูปโปรไฟล์ */
 router.get('/image/:id', isAuthenticated, UserController.getImage);
-
-//  DELETE /account/image/:id — ลบรูปโปรไฟล์ */
-router.delete('/image/:id', isAuthenticated, UserController.deleteImage);
-
 export default router;
 
 

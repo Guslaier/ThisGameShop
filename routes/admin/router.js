@@ -25,6 +25,6 @@ router.put("/api/games/:id/stock", authorize(["admin", "staff"]), AdminControlle
 router.delete("/api/games/:id", authorize(["admin"]), AdminController.deleteGame);
 
 // ====== REPORTS ======
-router.get("/stats/purchases", authorize(["admin"]), AdminController.getStats);
+router.get("/stats/purchases", authorize(["admin", "staff"]), AdminController.getStats);
 
 export default router;

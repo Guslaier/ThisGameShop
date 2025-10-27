@@ -5,7 +5,7 @@ const { isAuthenticated } = Authentication;
 
 const router = express.Router();
 
-router.get("/", (req, res) => res.render("cart", { activePage: "cart" }));
+router.get("/", isAuthenticated, (req, res) => res.render("cart", { activePage: "cart" }));
 router.get("/u-cart", isAuthenticated, CartController.getUserCart);
 router.post("/add", isAuthenticated, CartController.addItem);
 router.post("/remove", isAuthenticated, CartController.removeItem);

@@ -19,25 +19,25 @@ const upload = multer({ storage });
 // Routes
 router.get("/games", StockController.list);
 router.get("/games/:id", StockController.getById);
-router.post("/games", authorize(["admin"]), upload.single("image"), StockController.create);
-router.delete("/games/:id", authorize(["admin"]), StockController.delete);
-router.put("/games/:id/stock", authorize(["admin"]), StockController.updateStock);
-router.put("/games/:id/price", authorize(["admin"]), StockController.updatePrice);
+router.post("/games", authorize(["admin", "staff"]), upload.single("image"), StockController.create);
+router.delete("/games/:id", authorize(["admin", "staff"]), StockController.delete);
+router.put("/games/:id/stock", authorize(["admin", "staff"]), StockController.updateStock);
+router.put("/games/:id/price", authorize(["admin", "staff"]), StockController.updatePrice);
 router.get("/random-slide", StockController.randomSlide);
-router.put('/games/:id', authorize(['admin']), StockController.updateAll);
+router.put('/games/:id', authorize(['admin', "staff"]), StockController.updateAll);
 
 // =====================================================
 // 🖼️ GAME IMAGE ROUTES
 // =====================================================
 router.get("/games/image/:id", StockController.getMainImage);
-router.post("/games/:id/img", authorize(["admin"]), upload.single("image"), StockController.uploadMainImage);
+router.post("/games/:id/img", authorize(["admin", "staff"]), upload.single("image"), StockController.uploadMainImage);
 
 // =====================================================
 // 🖼️ GAME GALLERY ROUTES
 // =====================================================
-router.post("/games/:id/gallery", authorize(["admin"]), upload.single("image"), StockController.addGallery);
+router.post("/games/:id/gallery", authorize(["admin", "staff"]), upload.single("image"), StockController.addGallery);
 router.get("/games/:id/gallery", StockController.listGallery);
-router.delete("/games/:id/gallery/:img_id", authorize(["admin"]), StockController.deleteGallery);
+router.delete("/games/:id/gallery/:img_id", authorize(["admin", "staff"]), StockController.deleteGallery);
 
 // =====================================================
 // 🎲 RANDOM SLIDE
