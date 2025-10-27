@@ -24,7 +24,6 @@ router.post("/verify-otp", OTPController.verify);
 router.post("/register-sum", UserController.register);
 router.get('/login', (req, res) => res.render('login', { title: 'Login' , activePage: 'login' })); 
 router.get('/register', (req, res) => res.render('register', { title: 'Register',activePage: 'register' }))
-router.get("/password-re", (req, res) => res.render('reset_pess', { title: 'password-re' , activePage: 'password-re' }));
 router.post("/login-sm", UserController.login);
 router.get("/logout", UserController.logout);
 router.get('/session',UserController.getsession);

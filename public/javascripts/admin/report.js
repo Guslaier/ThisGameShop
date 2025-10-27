@@ -1,167 +1,165 @@
-/* ========= Utility helpers ========= */
-async function fetchJSON(url) {
-  try {
-    const res = await fetch(url);
-    return await res.json();
-  } catch (err) {
-    console.error("❌ Fetch error:", url, err);
-    return null;
-  }
-}
-function toTHB(cents) {
-  return cents ? (cents / 100).toLocaleString("en-US") : "0";
-}
-function ym(dateStr) {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-}
+// ============================================================
+// 📊 Order Report Table (Report Page)
+// ============================================================
 
-/* ========= Load KPI cards ========= */
-async function loadKPIs() {
-  const [usersRes, gamesRes, purchasesRes] = await Promise.all([
-    fetchJSON("/ad-m/api/users"),
-    fetchJSON("/ad-m/api/games"),
-    fetchJSON("/ad-m/stats/purchases")
-  ]);
+const orderTableBody = document.querySelector("#orderTable tbody");
+const totalDisplay = document.getElementById("totalRevenueDisplay");
 
-  // 🧮 Users
-  const usersCount = usersRes?.data?.length ?? 0;
-  document.getElementById("usersCount").textContent = usersCount;
+let allOrders = []; // store all fetched orders for filtering
 
-  // 🧮 Games
-  const games = gamesRes?.data ?? [];
-  const stockCount = games.length;
-  const lowStock = games.filter(g => (parseInt(g.stock_managed ?? 0) || 0) <= 5).length;
-  document.getElementById("stockCount").textContent = stockCount;
-  document.getElementById("lowStock").textContent = lowStock;
-
-  // 🧮 Orders / Revenue
-  const tOrders = purchasesRes?.data?.total_orders ?? 0;
-  const tAmount = purchasesRes?.data?.total_amount ?? 0;
-  document.getElementById("totalOrders").textContent = `${tOrders} Orders`;
-  document.getElementById("totalAmount").textContent = `฿ ${toTHB(tAmount)}`;
-
-  return { games };
-}
-
-/* ========= Fill Game Table ========= */
 async function loadOrders() {
   try {
-    const res = await fetch("../order/all");
+    const res = await fetch("/order/all");
     const data = await res.json();
-    if (!data.status) throw new Error(data.message || "Failed to load");
+    console.log("📦 Orders:", data);
 
-    renderTable(data.data);
+    if (!data.status || !data.data?.length) {
+      orderTableBody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center; padding:1rem; color:#aaa;">
+            ❌ No orders found
+          </td>
+        </tr>`;
+      totalDisplay.textContent = "฿ 0.00";
+      document.getElementById("totalOrders").textContent = `0 Orders`;
+      document.getElementById("totalAmount").textContent = `฿ 0`;
+      return;
+    }
+
+    allOrders = data.data;
+    renderOrders(allOrders);
+    updateSummary(allOrders);
+    populateYearDropdown(allOrders);
   } catch (err) {
     console.error("❌ Error loading orders:", err);
-    document.querySelector("#orderTable tbody").innerHTML = `
-      <tr><td colspan="8" style="text-align:center;color:red;">Load error</td></tr>`;
+    Swal.fire("Error", "Failed to load order data", "error");
   }
 }
 
-function renderTable(list) {
-  const tbody = document.querySelector("#orderTable tbody");
-  tbody.innerHTML = "";
-  list.forEach(o => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-        <td>${o.customer_id || '-'}</td>
-        <td>${o.customer_name || '-'}</td>
-        <td>${new Date(o.created_at).toLocaleDateString("en-GB")}</td>
-        <td>${o.game_title || '-'}</td>
-        <td>${o.platform_flags || '-'}</td>
-        <td>${o.order_no || o.id}</td>
-        <td>฿ ${(o.total_cents/100).toLocaleString()}</td>
-        <td class="status ${o.status?.toLowerCase() || 'pending'}"><span class="dot"></span>${o.status}</td>
-        <td>${o.payment_status || '-'}</td>`;
-    tbody.appendChild(tr);
-  });
+// ============================================================
+// 🧾 Render Orders into Table
+// ============================================================
+function renderOrders(orders) {
+  let total = 0;
+
+  orderTableBody.innerHTML = orders.map((o, i) => {
+    const orderNo = o.order_no || o.id || `#${i + 1}`;
+    const customer = o.customer_name || "-";
+    const date = new Date(o.paid_at || o.created_at).toLocaleDateString("en-EN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    const cost = (o.total_cents ? o.total_cents / 100 : o.total_cost || 0);
+    total += cost;
+
+    return `
+      <tr>
+        <td>${orderNo}</td>
+        <td>${date}</td>
+        <td>${customer}</td>
+        <td>฿ ${cost.toLocaleString()}</td>
+      </tr>
+    `;
+  }).join("");
+
+  totalDisplay.textContent = `฿ ${total.toLocaleString()}`;
 }
 
-function filterTable() {
-  const search = document.getElementById("search").value.toLowerCase();
-  const status = document.getElementById("status").value;
-  const platform = document.getElementById("platform").value;
+// ============================================================
+// 🧮 Update KPI Cards
+// ============================================================
+function updateSummary(orders) {
+  const totalOrders = orders.length;
+  const totalAmount = orders.reduce((sum, o) => sum + (o.total_cents || 0), 0) / 100;
 
-  const rows = document.querySelectorAll("#orderTable tbody tr");
-  rows.forEach(row => {
-    const name = row.children[0].innerText.toLowerCase();
-    const orderId = row.children[4].innerText.toLowerCase();
-    const stat = row.children[6].innerText;
-    const plat = row.children[3].innerText;
-    const matchSearch = !search || name.includes(search) || orderId.includes(search);
-    const matchStatus = !status || stat === status;
-    const matchPlatform = !platform || plat === platform;
-    row.style.display = matchSearch && matchStatus && matchPlatform ? "" : "none";
-  });
+  document.getElementById("totalOrders").textContent = `${totalOrders} Orders`;
+  document.getElementById("totalAmount").textContent = `฿ ${totalAmount.toLocaleString()}`;
+  totalDisplay.textContent = `฿ ${totalAmount.toLocaleString()}`;
 }
 
-loadOrders();
+// ============================================================
+// 📅 Filter by Month & Year
+// ============================================================
+function applyFilter() {
+  const month = document.getElementById("filterMonth").value;
+  const year = document.getElementById("filterYear").value;
 
-/* ========= Charts from real orders ========= */
-async function loadCharts() {
-  const ordersRes = await fetchJSON("../order/all");
-  const orders = ordersRes?.status ? ordersRes.data : [];
-
-  // 🧮 Monthly revenue
-  const monthly = new Map();
-  orders.forEach(o => {
-    const key = ym(o.created_at);
-    monthly.set(key, (monthly.get(key) ?? 0) + (o.total_cents || 0));
+  const filtered = allOrders.filter(o => {
+    const d = new Date(o.paid_at || o.created_at);
+    const m = d.getMonth() + 1;
+    const y = d.getFullYear();
+    return (!month || m == month) && (!year || y == year);
   });
-  const labels = Array.from(monthly.keys()).sort();
-  const revenue = labels.map(k => (monthly.get(k) || 0) / 100);
 
-  // 🧮 Platform share
-  const platformMap = new Map();
-  orders.forEach(o => {
-    const p = o.platform || o.platform_flags || "Unknown";
-    platformMap.set(p, (platformMap.get(p) ?? 0) + 1);
-  });
-  const platLabels = Array.from(platformMap.keys());
-  const platData = platLabels.map(k => platformMap.get(k));
-
-  // 📈 Draw charts
-  new Chart(document.getElementById("salesChart"), {
-    type: "line",
-    data: {
-      labels,
-      datasets: [{
-        label: "Revenue (฿)",
-        data: revenue,
-        borderColor: "#00ff80",
-        backgroundColor: "rgba(0,255,128,0.2)",
-        tension: 0.3,
-        fill: true
-      }]
-    },
-    options: {
-      plugins:{legend:{labels:{color:"whitesmoke"}}},
-      scales:{
-        x:{ticks:{color:"white"},grid:{color:"rgba(255,255,255,0.1)"}},
-        y:{ticks:{color:"white"},grid:{color:"rgba(255,255,255,0.1)"}}
-      }
-    }
-  });
+  renderOrders(filtered);
+  updateSummary(filtered);
 }
 
-/* ========= Export CSV ========= */
+// ============================================================
+// 🧾 Populate Year Dropdown
+// ============================================================
+function populateYearDropdown(orders) {
+  const yearSelect = document.getElementById("filterYear");
+  const years = [...new Set(orders.map(o => new Date(o.paid_at || o.created_at).getFullYear()))]
+    .sort((a, b) => b - a);
+
+  yearSelect.innerHTML = `<option value="">All</option>` +
+    years.map(y => `<option value="${y}">${y}</option>`).join("");
+}
+
+// ============================================================
+// 🎯 Filter Buttons
+// ============================================================
+document.getElementById("btnFilter").addEventListener("click", applyFilter);
+document.getElementById("btnClear").addEventListener("click", () => {
+  document.getElementById("filterMonth").value = "";
+  document.getElementById("filterYear").value = "";
+  renderOrders(allOrders);
+  updateSummary(allOrders);
+});
+
+// ============================================================
+// 📤 Export CSV
+// ============================================================
 function exportCSV() {
-  const rows = [["Customer","Date","Game","Platform","Order ID","Cost","Status","Payment"]];
-  document.querySelectorAll("#orderTable tbody tr").forEach(tr=>{
-    const cols = Array.from(tr.querySelectorAll("td")).map(td=>td.innerText);
+  const rows = [["Order ID", "Date", "Customer Name", "Cost (฿)"]];
+  let total = 0;
+
+  // ✅ Loop through table rows and collect data
+  document.querySelectorAll("#orderTable tbody tr").forEach(tr => {
+    const cols = Array.from(tr.querySelectorAll("td")).map(td => {
+      const txt = td.innerText.replace(/"/g, '""'); // escape quotes
+      return `"${txt}"`;
+    });
+
+    // extract cost as number (remove non-digits)
+    const costText = tr.querySelector("td:last-child")?.innerText.replace(/[^\d.]/g, "") || "0";
+    total += parseFloat(costText) || 0;
+
     rows.push(cols);
   });
-  const csv = rows.map(r=>r.join(",")).join("\n");
-  const blob = new Blob([csv], {type:"text/csv"});
+
+  // ✅ Add Total Revenue row
+  rows.push(["", "", `"💰 Total Revenue"`, `"฿ ${total.toLocaleString()}"`]);
+
+  // ✅ Join into CSV text
+  const csv = rows.map(r => r.join(",")).join("\n");
+
+  // ✅ Add UTF-8 BOM (for Excel Thai text)
+  const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = "orders-report.csv";
+  link.download = `order_report_${new Date().toISOString().slice(0, 10)}.csv`;
   link.click();
 }
-/* ========= Init ========= */
-document.addEventListener("DOMContentLoaded", async () => {
-  const { games } = await loadKPIs();
-  await loadGamesTable(games);
-  await loadCharts();
-});
+s
+
+// ============================================================
+// 🔄 Initialize
+// ============================================================
+document.addEventListener("DOMContentLoaded", loadOrders);

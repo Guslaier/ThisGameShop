@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Prompt:wght@400;600&display=swap" rel="stylesheet">
 
   <!-- ===== LIBRARIES ===== -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -42,64 +41,58 @@
 
   <!-- ===== KPI CARDS ===== -->
   <div class="cards">
-    <div class="card"><h3 id="usersCount">0</h3><p>Users Active</p></div>
     <div class="card"><h3 id="totalOrders">0 Orders</h3><h3 id="totalAmount">฿ 0</h3><p>Total Purchases</p></div>
-    <div class="card"><h3 id="stockCount">0</h3><p>Games In Stock</p></div>
-    <div class="card"><h3 id="lowStock">0</h3><p>Low Stock Games</p></div>
   </div>
 
-  <!-- ===== SALES CHARTS ===== -->
-  <section class="section">
-    <h2>📊 Sales Overview</h2>
-    <div style="display:grid; grid-template-columns:1fr 1fr;gap:2rem; transform: scale(0.5)">
-      <canvas id="salesChart"></canvas>
-    </div>
-  </section>
+  <div class="filter-bar">
+  <label for="filterMonth">📅 Month:</label>
+  <select id="filterMonth">
+    <option value="">All</option>
+    <option value="1">January</option>
+    <option value="2">February</option>
+    <option value="3">March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </select>
+
+  <label for="filterYear">🗓️ Year:</label>
+  <select id="filterYear">
+    <option value="">All</option>
+    <!-- ✅ JS will auto-fill available years -->
+  </select>
+
+  <button class="btn" id="btnFilter">Filter</button>
+  <button class="btn" id="btnClear">Clear</button>
+</div>  
 
   <!-- ===== GAME TABLE ===== -->
   <section class="section">
-  <h2>🧾 All Orders</h2>
-
-  <!-- Filters -->
-  <div class="filters" style="display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;background:var(--panel);padding:1rem;border-radius:10px;align-items:center;">
-    <input type="text" id="search" placeholder="🔍 Search name or order ID..." style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
-    <input type="date" id="date" style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
-    <select id="status" style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
-      <option value="">All Status</option>
-      <option value="Pending">Pending</option>
-      <option value="Completed">Paid</option>
-      <option value="Cancelled">Cancelled</option>
-    </select>
-    <select id="platform" style="background:#121217;border:1px solid #2f2f2f;color:var(--text);border-radius:6px;padding:0.4rem 0.8rem;">
-      <option value="">All Platform</option>
-      <option value="PC">PC</option>
-      <option value="PS5">PS5</option>
-      <option value="Xbox">Xbox</option>
-      <option value="Switch">Switch</option>
-    </select>
-    <button class="btn" onclick="filterTable()">Apply Filter</button>
+    <h2>🎮 Game Stock</h2>
+    <div class="table-container">
+      <table id="orderTable">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Customer Name</th>
+            <th>Cost (฿)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="total-summary">
+    <div class="total-label">💰 Total Revenue</div>
+    <div class="total-amount" id="totalRevenueDisplay">฿ 0.00</div>
   </div>
-
-  <!-- Table -->
-  <div class="table-container" style="background:var(--panel);border-radius:10px;overflow:auto;box-shadow:0 0 15px rgba(0,255,128,0.05);">
-    <table id="orderTable" style="width:100%;border-collapse:collapse;min-width:900px;">
-      <thead>
-        <tr style="background:#13131a;color:var(--accent);">
-          <th>Customer ID</th>
-          <th>Customer</th>
-          <th>Date</th>
-          <th>Game</th>
-          <th>Platform</th>
-          <th>Order ID</th>
-          <th>Cost</th>
-          <th>Status</th>
-          <th>Payment</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</section>
+  </section>
 
   <!-- ===== EXPORT ===== -->
   <section class="section" style="text-align:center;">

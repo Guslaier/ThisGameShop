@@ -13,6 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordConfirmInput = document.getElementById("passwordConfirm");
 
   let otpVerified = false;
+  const registerForm = document.getElementById("registerForm");
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+  const otpWrap = document.querySelector(".otp-wrap");
+  const registerBtn = document.getElementById("registerBtn");
+
+  const togglePassword = document.getElementById("togglePassword");
+  const togglePasswordConfirm = document.getElementById("togglePasswordConfirm");
+  const passwordInput = document.getElementById("password");
+  const passwordConfirmInput = document.getElementById("passwordConfirm");
+
+  let otpVerified = false;
 
   // 👁️ Toggle password visibility
  if (togglePassword && passwordInput) {
