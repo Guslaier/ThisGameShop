@@ -1,5 +1,5 @@
 // ============================================================
-// 📊 Order Report Table (Report Page)
+//  Order Report Table (Report Page)
 // ============================================================
 
 const orderTableBody = document.querySelector("#orderTable tbody");
@@ -11,13 +11,13 @@ async function loadOrders() {
   try {
     const res = await fetch("/order/all");
     const data = await res.json();
-    console.log("📦 Orders:", data);
+    console.log(" Orders:", data);
 
     if (!data.status || !data.data?.length) {
       orderTableBody.innerHTML = `
         <tr>
           <td colspan="6" style="text-align:center; padding:1rem; color:#aaa;">
-            ❌ No orders found
+             No orders found
           </td>
         </tr>`;
       totalDisplay.textContent = "฿ 0.00";
@@ -31,13 +31,13 @@ async function loadOrders() {
     updateSummary(allOrders);
     populateYearDropdown(allOrders);
   } catch (err) {
-    console.error("❌ Error loading orders:", err);
+    console.error(" Error loading orders:", err);
     Swal.fire("Error", "Failed to load order data", "error");
   }
 }
 
 // ============================================================
-// 🧾 Render Orders into Table
+//  Render Orders into Table
 // ============================================================
 function renderOrders(orders) {
   let total = 0;
@@ -70,7 +70,7 @@ function renderOrders(orders) {
 }
 
 // ============================================================
-// 🧮 Update KPI Cards
+//  Update KPI Cards
 // ============================================================
 function updateSummary(orders) {
   const totalOrders = orders.length;
@@ -82,7 +82,7 @@ function updateSummary(orders) {
 }
 
 // ============================================================
-// 📅 Filter by Month & Year
+//  Filter by Month & Year
 // ============================================================
 function applyFilter() {
   const month = document.getElementById("filterMonth").value;
@@ -100,7 +100,7 @@ function applyFilter() {
 }
 
 // ============================================================
-// 🧾 Populate Year Dropdown
+//  Populate Year Dropdown
 // ============================================================
 function populateYearDropdown(orders) {
   const yearSelect = document.getElementById("filterYear");
@@ -112,7 +112,7 @@ function populateYearDropdown(orders) {
 }
 
 // ============================================================
-// 🎯 Filter Buttons
+//  Filter Buttons
 // ============================================================
 document.getElementById("btnFilter").addEventListener("click", applyFilter);
 document.getElementById("btnClear").addEventListener("click", () => {
@@ -123,13 +123,13 @@ document.getElementById("btnClear").addEventListener("click", () => {
 });
 
 // ============================================================
-// 📤 Export CSV
+//  Export CSV
 // ============================================================
 function exportCSV() {
   const rows = [["Order ID", "Date", "Customer Name", "Cost (฿)"]];
   let total = 0;
 
-  // ✅ Loop through table rows and collect data
+  //  Loop through table rows and collect data
   document.querySelectorAll("#orderTable tbody tr").forEach(tr => {
     const cols = Array.from(tr.querySelectorAll("td")).map(td => {
       const txt = td.innerText.replace(/"/g, '""'); // escape quotes
@@ -143,13 +143,13 @@ function exportCSV() {
     rows.push(cols);
   });
 
-  // ✅ Add Total Revenue row
-  rows.push(["", "", `"💰 Total Revenue"`, `"฿ ${total.toLocaleString()}"`]);
+  //  Add Total Revenue row
+  rows.push(["", "", `" Total Revenue"`, `"฿ ${total.toLocaleString()}"`]);
 
-  // ✅ Join into CSV text
+  //  Join into CSV text
   const csv = rows.map(r => r.join(",")).join("\n");
 
-  // ✅ Add UTF-8 BOM (for Excel Thai text)
+  //  Add UTF-8 BOM (for Excel Thai text)
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
 
   const link = document.createElement("a");
@@ -160,6 +160,6 @@ function exportCSV() {
 
 
 // ============================================================
-// 🔄 Initialize
+//  Initialize
 // ============================================================
 document.addEventListener("DOMContentLoaded", loadOrders);

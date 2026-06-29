@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import createError from'http-errors';
 import express from 'express';
 import session from "express-session";
@@ -22,7 +23,7 @@ liveReloadServer.server.once("connection", () => {
   }, 100);
 });
 app.use(session({
-  secret: "mySecretKey",     // ใช้ string ลับสำหรับ sign cookie
+  secret: process.env.SESSION_SECRET,     // ใช้ string ลับสำหรับ sign cookie
   resave: false,             // ไม่บันทึกซ้ำถ้าไม่มีการแก้ไข
   saveUninitialized: false,  // ไม่สร้าง session ถ้าไม่ใช้งาน
   cookie: { 
@@ -80,7 +81,7 @@ app.use('/lib',Librarypage);
 app.use('/gamedetail', gamedetailpage);
 
 app.use(cors({
-  origin: "http://localhost:3000", // หรือ domain ของคุณ
+  origin: process.env.CORS_ORIGIN, // หรือ domain ของคุณ
   credentials: true
 }));
 

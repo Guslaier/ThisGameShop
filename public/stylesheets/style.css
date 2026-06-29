@@ -277,7 +277,7 @@ nav .active .icon {
 }
 
 /* ===================== MEDIA QUERIES ===================== */
-@media screen and (min-width: 1440px) {
+@media screen and (min-width: 1584px) {
   nav {
     padding: 0rem 30rem;
   }
@@ -299,7 +299,7 @@ nav .active .icon {
     padding: 1rem 30rem;
   }
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 845px) {
   nav {
     padding: 0rem 1rem;
   }
@@ -323,7 +323,7 @@ nav .active .icon {
 }
 
 /* ---------- Small Mobile (<=480px) ---------- */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 528px) {
   nav {
     padding: 0 0.5rem;
   }
@@ -347,12 +347,12 @@ nav .active .icon {
   }
 
   .group li a {
-    font-size: 0.7rem;
+    font-size: 0; /* Hide text on mobile */
   }
 
   .group li .icon {
-    font-size: 0.7rem;
-    margin-right: 0.2rem;
+    font-size: 1.2rem;
+    margin-right: 0;
   }
 
   #iconProfileProfile {

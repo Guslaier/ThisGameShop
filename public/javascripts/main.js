@@ -1,4 +1,4 @@
-// ✅ ฟังก์ชัน Global fetch handler
+//  ฟังก์ชัน Global fetch handler
 window.fetch = (async (originalFetch => {
   return async (...args) => {
     const response = await originalFetch(...args);

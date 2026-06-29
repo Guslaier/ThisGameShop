@@ -114,7 +114,7 @@
 /* ===================== 📱 Responsive ===================== */
 
 /* Tablet (≤1024px): ปรับ layout แน่นขึ้น */
-@media (max-width: 1024px) {
+@media (max-width: 1126px) {
   .order-card {
     flex-wrap: wrap;
     padding: 0.7rem 0.8rem;
@@ -134,7 +134,7 @@
 }
 
 /* Mobile (≤768px): จัดเรียงแนวตั้ง */
-@media (max-width: 768px) {
+@media (max-width: 845px) {
   .order-card {
     flex-direction: column;
     align-items: flex-start;
@@ -168,7 +168,7 @@
 }
 
 /* Small Mobile (≤480px): ลดขนาด font และจัด spacing */
-@media (max-width: 480px) {
+@media (max-width: 528px) {
   .order-card {
     padding: 0.6rem 0.7rem;
   }

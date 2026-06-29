@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
             resetBtn.disabled = false;  // เปิดปุ่ม Reset
             await Swal.fire("Success", "OTP verified successfully!", "success");
 
-            verifyOtpBtn.textContent = "✅ Verified";
+            verifyOtpBtn.textContent = " Verified";
             verifyOtpBtn.style.background = "green";
             verifyOtpBtn.style.cursor = "default";
             verifyOtpBtn.disabled = true;

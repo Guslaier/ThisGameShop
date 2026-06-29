@@ -1,0 +1,44 @@
+services:
+  app:
+    build: .
+    container_name: gameshop-app
+    ports:
+      - "4000:4000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_POSTGRES=${DB_POSTGRES}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+    command: sh -c "node makedatabase.js && node insart_game.js && npm start"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  db:
+    image: postgres:15-alpine
+    container_name: gameshop-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_POSTGRES}
+    ports:
+      - "25432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

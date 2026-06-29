@@ -1,12 +1,12 @@
 // ============================================================
-// 👥 FILE: /public/javascripts/admin/ad-users.js
+//  FILE: /public/javascripts/admin/ad-users.js
 // ระบบจัดการผู้ใช้ (Admin User Management)
 // ============================================================
 
 const apiBase = '/account/list';
 const userTableBody = document.getElementById('userTableBody');
 
-// ✅ โหลดข้อมูลผู้ใช้ทั้งหมด
+//  โหลดข้อมูลผู้ใช้ทั้งหมด
 async function loadUsers() {
   try {
     const res = await fetch(apiBase);
@@ -24,7 +24,7 @@ async function loadUsers() {
   }
 }
 
-// ✅ แสดงผลในตาราง
+//  แสดงผลในตาราง
 function renderUsers(users) {
   userTableBody.innerHTML = users.map((u, i) => {
     const isRoot = (u.id === 1 || u.email === 'root@thisgameshop.com' || u.role === 'root');
@@ -35,16 +35,16 @@ function renderUsers(users) {
           <div class="user-number">#${i + 1}</div>
           <div class="user-name">${u.display_name || '-'}</div>
           <div class="user-email">${u.email}</div>
-          <div class="user-role">👤 ${u.role || 'user'}</div>
-          <div class="user-date">📅 ${new Date(u.created_at).toLocaleDateString()}</div>
+          <div class="user-role"> ${u.role || 'user'}</div>
+          <div class="user-date"> ${new Date(u.created_at).toLocaleDateString()}</div>
         </div>
         
         <div class="user-status">
           ${isRoot
-            ? `<span class="status-label active">🟢 Root Admin</span>`
+            ? `<span class="status-label active"> Root Admin</span>`
             : `
               <span class="status-label ${u.is_active ? 'active' : 'inactive'}">
-                ${u.is_active ? '🟢 Active' : '🔴 Inactive'}
+                ${u.is_active ? ' Active' : ' Inactive'}
               </span>
               <button class="btn-small status-toggle"
                 onclick="toggleUserStatus(${u.id}, ${u.is_active})">
@@ -56,7 +56,7 @@ function renderUsers(users) {
 
         <div class="user-actions">
           ${isRoot
-            ? `<button class="btn-small" disabled title="Cannot modify Root Admin">Locked 🔒</button>`
+            ? `<button class="btn-small" disabled title="Cannot modify Root Admin">Locked </button>`
             : `
               <button class="btn-small edit" onclick="editUser(${u.id})">Edit Name</button>
               <button class="btn-small info" onclick="editRole(${u.id}, '${u.role}')">Edit Role</button>
@@ -69,18 +69,18 @@ function renderUsers(users) {
   }).join('');
 }
 async function editRole(id, currentRole) {
-  // 🧩 ป้องกัน root admin
+  //  ป้องกัน root admin
   if (id === 1) {
     Swal.fire({
       icon: "warning",
-      title: "ไม่สามารถแก้ Role ของ Root Admin ได้ 🔒",
+      title: "ไม่สามารถแก้ Role ของ Root Admin ได้ ",
       confirmButtonColor: "#3085d6"
     });
     return;
   }
 
   const { value: role } = await Swal.fire({
-    title: "🛠 เปลี่ยนบทบาทผู้ใช้",
+    title: " เปลี่ยนบทบาทผู้ใช้",
     input: "select",
     inputOptions: {
       admin: "Admin",
@@ -104,19 +104,19 @@ async function editRole(id, currentRole) {
       const data = await res.json();
 
       if (res.ok && data.status) {
-        Swal.fire("✅ สำเร็จ!", `เปลี่ยนบทบาทผู้ใช้เป็น ${role} แล้ว`, "success");
+        Swal.fire(" สำเร็จ!", `เปลี่ยนบทบาทผู้ใช้เป็น ${role} แล้ว`, "success");
         loadUsers();
       } else {
-        Swal.fire("❌ Error", data.message || "อัปเดตไม่สำเร็จ", "error");
+        Swal.fire(" Error", data.message || "อัปเดตไม่สำเร็จ", "error");
       }
     } catch (err) {
       console.error("Edit role error:", err);
-      Swal.fire("❌ Error", "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", "error");
+      Swal.fire(" Error", "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", "error");
     }
   }
 }
 
-// ✅ ฟิลเตอร์
+//  ฟิลเตอร์
 document.getElementById('filterName').addEventListener('input', applyFilters);
 document.getElementById('filterRole').addEventListener('change', applyFilters);
 document.getElementById('filterStatus').addEventListener('change', applyFilters);
@@ -126,7 +126,7 @@ function applyFilters() {
   const role = document.getElementById('filterRole').value.toLowerCase();
   const status = document.getElementById('filterStatus').value.toLowerCase();
 
-  // ✅ ค้นหาจากการ์ดแทนที่จะเป็นแถว
+  //  ค้นหาจากการ์ดแทนที่จะเป็นแถว
   const cards = Array.from(document.querySelectorAll('.user-card'));
 
   cards.forEach(card => {
@@ -135,7 +135,7 @@ function applyFilters() {
     const roleText = card.querySelector('.user-role')?.innerText.toLowerCase() || '';
     const statusText = card.querySelector('.user-status')?.innerText.toLowerCase() || '';
 
-    // ✅ ให้ค้นจากทั้งชื่อและอีเมล
+    //  ให้ค้นจากทั้งชื่อและอีเมล
     const matchName = !name || nameText.includes(name) || emailText.includes(name);
     const matchRole = !role || roleText.includes(role);
     const matchStatus = !status ||
@@ -147,8 +147,7 @@ function applyFilters() {
 
 
 document.getElementById("btnAddUser").addEventListener("click", async () => {
-  const { value: formValues } = await Swal.fire({
-    title: "➕ Add New User",
+  const { value: formValues } = await Swal.fire({title: " Add New User",
     html: `
       <input id="swal-email" class="swal2-input" placeholder="Email" type="email">
       <input id="swal-pass" class="swal2-input" placeholder="Password" type="text" minlength="8">
@@ -169,18 +168,18 @@ document.getElementById("btnAddUser").addEventListener("click", async () => {
       const role = document.getElementById("swal-role").value;
 
       if (!email || !password || !display_name) {
-        Swal.showValidationMessage("⚠️ โปรดกรอกข้อมูลให้ครบทุกช่อง");
+        Swal.showValidationMessage("️ โปรดกรอกข้อมูลให้ครบทุกช่อง");
         return false;
       }
 
       if (password.length < 6) {
-        Swal.showValidationMessage("🔒 รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");
+        Swal.showValidationMessage(" รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");
         return false;
       }
 
       return { email, password, display_name, role };
-    }
-  });
+    },
+icon: 'warning'});
 
   if (formValues) {
     try {
@@ -193,22 +192,22 @@ document.getElementById("btnAddUser").addEventListener("click", async () => {
       const data = await res.json();
 
       if (res.ok && data.status) {
-        Swal.fire("✅ Success", "เพิ่มผู้ใช้ใหม่เรียบร้อยแล้ว", "success");
+        Swal.fire(" Success", "เพิ่มผู้ใช้ใหม่เรียบร้อยแล้ว", "success");
         loadUsers();
       } else {
-        Swal.fire("❌ Error", data.message || "ไม่สามารถเพิ่มผู้ใช้ได้", "error");
+        Swal.fire(" Error", data.message || "ไม่สามารถเพิ่มผู้ใช้ได้", "error");
       }
     } catch (err) {
       console.error("Add user error:", err);
-      Swal.fire("❌ Error", "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", "error");
+      Swal.fire(" Error", "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", "error");
     }
   }
 });
 
-// ✅ แก้ไขผู้ใช้
+//  แก้ไขผู้ใช้
 function editUser(id) {
   Swal.fire({
-    title: "🛠 Edit User",
+    title: " Edit User",
     input: 'text',
     inputLabel: 'New display name',
     inputPlaceholder: 'Enter new name...',
@@ -221,21 +220,21 @@ function editUser(id) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({"id": id ,display_name: result.value })
       });
-      Swal.fire('✅ Updated!', 'User name updated successfully.', 'success');
+      Swal.fire(' Updated!', 'User name updated successfully.', 'success');
       loadUsers();
     }
   });
 }
 
-// ✅ ลบผู้ใช้
+//  ลบผู้ใช้
 // ============================================================
-// 🗑️ ลบผู้ใช้ (กัน root admin)
+// ️ ลบผู้ใช้ (กัน root admin)
 // ============================================================
 async function deleteUser(id, email) {
   if (id === 1 || email === 'root@thisgameshop.com') {
     Swal.fire({
       icon: 'warning',
-      title: 'ไม่สามารถลบ Root Admin ได้ 🔒',
+      title: 'ไม่สามารถลบ Root Admin ได้ ',
       text: 'บัญชีนี้เป็นผู้ดูแลหลักของระบบ',
       confirmButtonColor: '#3085d6'
     });
@@ -243,7 +242,7 @@ async function deleteUser(id, email) {
   }
 
   const confirm = await Swal.fire({
-    title: "⚠ ลบผู้ใช้?",
+    title: " ลบผู้ใช้?",
     text: "การลบนี้ไม่สามารถกู้คืนได้!",
     icon: "warning",
     showCancelButton: true,
@@ -270,18 +269,18 @@ async function deleteUser(id, email) {
 }
 
 // ============================================================
-// 🔄 Toggle User Status (Active / Inactive)
+//  Toggle User Status (Active / Inactive)
 // ============================================================
 async function toggleUserStatus(userId, currentStatus) {
-  // 🧩 ดึงข้อมูลผู้ใช้จากตาราง (เพื่อดูว่าเป็น root ไหม)
+  //  ดึงข้อมูลผู้ใช้จากตาราง (เพื่อดูว่าเป็น root ไหม)
   const row = document.querySelector(`button[onclick="toggleUserStatus(${userId}, ${currentStatus})"]`)?.closest('tr');
   const email = row ? row.children[2].innerText.toLowerCase() : '';
 
-  // 🚫 ป้องกัน root admin (เช่น ID = 1 หรือ email ที่กำหนด)
+  //  ป้องกัน root admin (เช่น ID = 1 หรือ email ที่กำหนด)
   if (userId === 1 || email === 'root@thisgameshop.com') {
     Swal.fire({
       icon: 'warning',
-      title: 'ไม่สามารถปิดสถานะ Root Admin ได้ 🔒',
+      title: 'ไม่สามารถปิดสถานะ Root Admin ได้ ',
       text: 'บัญชีนี้เป็นผู้ดูแลหลักของระบบ',
       confirmButtonColor: '#3085d6'
     });
@@ -322,12 +321,12 @@ async function toggleUserStatus(userId, currentStatus) {
       });
       loadUsers();
     } else {
-      Swal.fire("❌ Error", data.message || "ไม่สามารถอัปเดตสถานะได้", "error");
+      Swal.fire(" Error", data.message || "ไม่สามารถอัปเดตสถานะได้", "error");
     }
 
   } catch (err) {
     console.error("Toggle status error:", err);
-    Swal.fire("❌ Error", "เกิดข้อผิดพลาดระหว่างเชื่อมต่อเซิร์ฟเวอร์", "error");
+    Swal.fire(" Error", "เกิดข้อผิดพลาดระหว่างเชื่อมต่อเซิร์ฟเวอร์", "error");
   }
 }
 

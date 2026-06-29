@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<button id="toggleSidebar">☰ Menu</button>
+<button id="toggleSidebar"><i class="fi fi-rr-menu-burger"></i> Menu</button>
 
 <!-- ===== SIDEBAR ===== -->
 <aside class="sidebar">
@@ -44,7 +44,7 @@
   </div>
 
   <div class="filter-bar">
-  <label for="filterMonth">📅 Month:</label>
+  <label for="filterMonth"><i class="fi fi-rr-calendar"></i> Month:</label>
   <select id="filterMonth">
     <option value="">All</option>
     <option value="1">January</option>
@@ -61,10 +61,10 @@
     <option value="12">December</option>
   </select>
 
-  <label for="filterYear">🗓️ Year:</label>
+  <label for="filterYear"><i class="fi fi-rr-calendar"></i>️ Year:</label>
   <select id="filterYear">
     <option value="">All</option>
-    <!-- ✅ JS will auto-fill available years -->
+    <!-- <i class="fi fi-rr-check-circle"></i> JS will auto-fill available years -->
   </select>
 
   <button class="btn" id="btnFilter">Filter</button>
@@ -73,7 +73,7 @@
 
   <!-- ===== GAME TABLE ===== -->
   <section class="section">
-    <h2>🎮 Game Stock</h2>
+    <h2><i class="fi fi-rr-gamepad"></i> Game Stock</h2>
     <div class="table-container">
       <table id="orderTable">
         <thead>
@@ -88,14 +88,14 @@
       </table>
     </div>
     <div class="total-summary">
-    <div class="total-label">💰 Total Revenue</div>
+    <div class="total-label"><i class="fi fi-rr-money-bill-wave"></i> Total Revenue</div>
     <div class="total-amount" id="totalRevenueDisplay">฿ 0.00</div>
   </div>
   </section>
 
   <!-- ===== EXPORT ===== -->
   <section class="section" style="text-align:center;">
-    <button class="btn" onclick="exportCSV()">📄 Export CSV</button>
+    <button class="btn" onclick="exportCSV()"><i class="fi fi-rr-document"></i> Export CSV</button>
   </section>
 
 </main>

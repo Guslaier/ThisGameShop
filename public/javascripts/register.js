@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let otpVerified = false;
 
-  // 👁️ Toggle password visibility
+  // ️ Toggle password visibility
   function toggleVisibility(icon, input) {
     const isPassword = input.getAttribute("type") === "password";
     input.setAttribute("type", isPassword ? "text" : "password");
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   togglePassword.addEventListener("click", () => toggleVisibility(togglePassword, passwordInput));
   togglePasswordConfirm.addEventListener("click", () => toggleVisibility(togglePasswordConfirm, passwordConfirmInput));
 
-  // ✅ ส่ง OTP
+  //  ส่ง OTP
   sendOtpBtn.addEventListener("click", async () => {
     const email = document.getElementById("email").value.trim();
     if (!email) {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ ตรวจสอบ OTP
+  //  ตรวจสอบ OTP
   verifyOtpBtn.addEventListener("click", async () => {
     const email = document.getElementById("email").value.trim();
     const otp = document.getElementById("otp").value.trim();
@@ -69,9 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json().catch(() => ({}));
       if (data.status === true) {
         otpVerified = true;
-        registerBtn.disabled = false; // ✅ เปิดปุ่มสมัคร
+        registerBtn.disabled = false; //  เปิดปุ่มสมัคร
         Swal.fire("Success", "OTP verified successfully!", "success");
-        verifyOtpBtn.textContent = "✅ Verified";
+        verifyOtpBtn.textContent = " Verified";
         verifyOtpBtn.style.background = "green";
         verifyOtpBtn.style.cursor = "default";
         verifyOtpBtn.disabled = true; // ล็อกหลังยืนยันแล้ว
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🚀 ส่งฟอร์มสมัคร
+  //  ส่งฟอร์มสมัคร
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 

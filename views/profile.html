@@ -94,7 +94,7 @@
   const image = document.getElementById("img-profile");
   async function loadImage() {
     try {
-      // ✅ FIX: Using a reliable root-relative path
+      // <i class="fi fi-rr-check-circle"></i> FIX: Using a reliable root-relative path
       const res = await fetch(`/account/image/<%= id %>`);
       if (!res.ok) throw new Error("Server responded with an error.");
 
@@ -126,7 +126,7 @@
     if (!allowed.includes(file.type)) {
       Swal.fire({
         icon: "warning",
-        title: "⚠️ Invalid file type",
+        title: "️ Invalid file type",
         text: "Please upload a JPG, PNG, or WEBP image.",
       });
       return;
@@ -152,7 +152,7 @@
         if (res.status === 401) {
           Swal.fire({
             icon: "error",
-            title: "Session expired 🕒",
+            title: "Session expired ",
             text: "Please log in again.",
           }).then(() => (window.location.href = "/account/login"));
         } else {
@@ -166,7 +166,7 @@
 
       Swal.fire({
         icon: "success",
-        title: "✅ Upload successful!",
+        title: " Upload successful!",
         text: "Your profile image has been updated.",
         timer: 1500,
         showConfirmButton: false,
@@ -176,7 +176,7 @@
       console.error("Error uploading image:", err);
       Swal.fire({
         icon: "error",
-        title: "Upload failed ❌",
+        title: "Upload failed ",
         text: err.message,
       });
     } finally {

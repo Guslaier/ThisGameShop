@@ -111,7 +111,7 @@
 .btn-small.danger:hover { background: #ff5a4a; }
 
 /* ===================== 📱 Responsive ===================== */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 845px) {
   .user-card {
     flex-direction: column;
     align-items: flex-start;
@@ -180,7 +180,7 @@
 }
 
 /* Responsive: บีบ padding และ font ให้พอดีในจอเล็ก */
-@media (max-width: 768px) {
+@media (max-width: 845px) {
   .user-table {
     font-size: 0.85rem;
   }
@@ -191,7 +191,7 @@
 }
 
 /* มือถือเล็กมาก: ซ่อนบางคอลัมน์ */
-@media (max-width: 430px) {
+@media (max-width: 473px) {
   .user-table th:nth-child(1),
   .user-table td:nth-child(1),
   .user-table th:nth-child(6),

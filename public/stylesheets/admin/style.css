@@ -130,7 +130,7 @@ body {
 }
 
 /* ===================== 📱 RESPONSIVE ===================== */
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 990px) {
   .sidebar {
     transform: translateX(-100%); /* ✅ แสดง sidebar ถาวรบนจอใหญ่ */
     width: 275px;

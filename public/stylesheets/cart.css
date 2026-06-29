@@ -257,7 +257,7 @@ input[type=number]::-webkit-outer-spin-button {
   justify-content: center;
   align-items: center;
 }
-@media (max-width: 768px) {
+@media (max-width: 845px) {
   .title {
     font-size: 1.2rem;
     text-align: center;

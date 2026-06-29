@@ -1,11 +1,12 @@
+import 'dotenv/config';
 import { Client } from "pg";
 
 const db = new Client({
-  user: "postgres",
-  host: "localhost",
-  database: "ThisGameShop",
-  password: "1234",
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 const dataset = [
@@ -585,6 +586,12 @@ async function insertGames() {
   console.log("📡 Connected to ThisGameShop");
 
   try {
+    const check = await db.query('SELECT COUNT(*) FROM games');
+    if (parseInt(check.rows[0].count) > 0) {
+      console.log("ℹ️ Games already exist in database, skipping insert.");
+      return;
+    }
+
     for (const g of dataset) {
       const result = await db.query(
         `INSERT INTO games (title, description_md, release_date, stock_managed, platform_flags,image_poster)

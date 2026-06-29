@@ -334,7 +334,7 @@
 /* ===================== 📱 RESPONSIVE ===================== */
 
 /* 🔹 Tablet (≤1024px) */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1126px) {
   .game-card .cover {
     width: 80px;
     height: 80px;
@@ -350,7 +350,7 @@
 }
 
 /* 🔹 Mobile (≤768px) */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 660px) {
   .game-card {
     flex-direction: column;
     align-items: flex-start;

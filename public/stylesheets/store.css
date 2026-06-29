@@ -56,6 +56,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 /* ===================== CATEGORY CONTAINER ===================== */
@@ -292,7 +294,7 @@
 
 #ShopExplo.horizontal {
   display: grid;
-  grid-template-columns: repeat(1, minmax(420px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 0.4rem;
   align-items: stretch;
   /* ดันทุก card ให้สูงเท่ากันในแถวเดียว */
@@ -400,6 +402,23 @@
   transition: background 0.2s;
 }
 
+@media (max-width: 845px) {
+  .game-card-row {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .game-card-row .col {
+    text-align: center !important;
+  }
+  .game-card-row .col.image img {
+    height: auto;
+    max-height: 200px;
+  }
+  .game-card-row .col.actions {
+    margin-top: 10px;
+  }
+}
+
 .game-card-row:hover {
   background: rgba(45, 45, 45, 0.9);
 }
@@ -482,14 +501,14 @@ select {
 }
 
 /* ===================== RESPONSIVE ===================== */
-@media screen and (max-width: 1410px) {
+@media screen and (max-width: 1551px) {
   #ShopExplo.normal {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 
-@media screen and (max-width: 931px) {
+@media screen and (max-width: 1024px) {
   #ShopExplo.normal {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -499,7 +518,7 @@ select {
   }
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 506px) {
   #ShopExplo.normal {
     grid-template-columns: repeat(1, 1fr);
   }

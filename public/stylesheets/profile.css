@@ -332,7 +332,7 @@ body {
 /* --- RESPONSIVENESS (Media Queries) --- */
 /* -------------------------------------------------- */
 
-@media (max-width: 600px) {
+@media (max-width: 660px) {
   .profile-container {
     padding: 1.5rem; /* Reduce padding on smaller screens */
   }

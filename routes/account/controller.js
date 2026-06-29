@@ -23,14 +23,14 @@ export const OTPController = {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "665021001003@mail.rmutk.ac.th",
-        pass: "wquiovycnijiwnji",
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
       },
     });
 
     try {
       await transporter.sendMail({
-        from: "ThisGameShop <665021001003@mail.rmutk.ac.th>",
+        from: `ThisGameShop <${process.env.MAIL_USER}>`,
         to: email,
         subject: "Your OTP Code",
         text: `Your OTP is ${otp} (valid 30 minutes)`,

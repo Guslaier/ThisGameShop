@@ -190,7 +190,7 @@
 
       // 2) เลือกวิธีชำระ + โชว์รายละเอียด
       const { isConfirmed } = await Swal.fire({
-        title: 'เลือกวิธีชำระเงิน 💳',
+        title: 'เลือกวิธีชำระเงิน ',
         html: `
           <div style="text-align:left">
             <div style="margin-bottom:.5rem"><b>Order #${orderNo}</b></div>
@@ -207,7 +207,7 @@
         reverseButtons:true,
       });
       if (!isConfirmed) {
-        await Swal.fire({ icon:'info', title:'เก็บไว้ก่อน 🕒', text:'คุณสามารถกลับมาชำระภายหลังได้ในหน้าประวัติคำสั่งซื้อ', confirmButtonColor:'#3085d6' });
+        await Swal.fire({ icon:'info', title:'เก็บไว้ก่อน ', text:'คุณสามารถกลับมาชำระภายหลังได้ในหน้าประวัติคำสั่งซื้อ', confirmButtonColor:'#3085d6' });
         return;
       }
 
@@ -243,7 +243,7 @@
         });
 
         if (confirm0.isConfirmed) {
-          await Swal.fire({ icon:'success', title:'ชำระเงินสำเร็จ 🎉', text:'ระบบได้เพิ่มเกมของคุณเข้าสู่ Library แล้ว', confirmButtonColor:'#3085d6' });
+          await Swal.fire({ icon:'success', title:'ชำระเงินสำเร็จ ', text:'ระบบได้เพิ่มเกมของคุณเข้าสู่ Library แล้ว', confirmButtonColor:'#3085d6' });
           loadOrders(); loadLibrary();
         }
         return;
@@ -284,7 +284,7 @@
       });
 
       if (payModal.isConfirmed) {
-        await Swal.fire({ icon:'success', title:'ชำระเงินสำเร็จ 🎉', text:'ระบบได้เพิ่มเกมของคุณเข้าสู่ Library แล้ว', confirmButtonColor:'#3085d6' });
+        await Swal.fire({ icon:'success', title:'ชำระเงินสำเร็จ ', text:'ระบบได้เพิ่มเกมของคุณเข้าสู่ Library แล้ว', confirmButtonColor:'#3085d6' });
         loadOrders(); loadLibrary();
       }
     } catch (err) {
@@ -303,7 +303,7 @@
       const res  = await fetch(ENDPOINTS.cancelOrder(id), { method:'PATCH', headers:{ Accept:'application/json' }});
       const data = await res.json().catch(()=> ({}));
       if (res.ok && data.status) {
-        await swalToast('ยกเลิกสำเร็จ ✅', 'success');
+        await swalToast('ยกเลิกสำเร็จ ', 'success');
         loadOrders();
       } else {
         Swal.fire('ยกเลิกไม่สำเร็จ', data.message || 'โปรดลองอีกครั้ง', 'error');
@@ -360,7 +360,7 @@
       `;
 
       await Swal.fire({
-        title:'รายละเอียดคำสั่งซื้อ 🧾',
+        title:'รายละเอียดคำสั่งซื้อ ',
         html, width:720, icon:'info',
         confirmButtonText:'ปิด', confirmButtonColor:'#3085d6'
       });

@@ -1,11 +1,12 @@
+import 'dotenv/config';
 import { Client } from "pg";
 
 const client = new Client({
-  user: "postgres",
-  host: "localhost",
-  database: "postgres",
-  password: "1234", // 👈 เปลี่ยนเป็นรหัสของคุณเอง
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_POSTGRES,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 async function setupDatabase() {
@@ -23,11 +24,11 @@ async function setupDatabase() {
 
   // ✅ เชื่อมต่อไปยัง DB ที่สร้าง
   const db = new Client({
-    user: "postgres",
-    host: "localhost",
-    database: "ThisGameShop",
-    password: "1234",
-    port: 5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
   });
 
   await db.connect();

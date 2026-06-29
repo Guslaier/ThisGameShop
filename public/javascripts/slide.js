@@ -4,7 +4,7 @@
     const data = await res.json();
     const container = document.querySelector(".slide .con-card");
 
-    if (!container) return console.error("❌ .con-card not found");
+    if (!container) return console.error(" .con-card not found");
 
     container.innerHTML = ""; // ล้างก่อน
 
@@ -24,7 +24,7 @@
         `;
       });
     } else {
-      console.warn("⚠️ Using default images — no data from DB");
+      console.warn("️ Using default images — no data from DB");
       slidesHTML = `
         <div class="card active"><img src="/images/default-cover.jpg" class="cover"></div>
       `;
@@ -32,7 +32,7 @@
 
     container.innerHTML = slidesHTML;
 
-    // ✅ เมื่อสร้าง card เสร็จแล้ว ค่อยเริ่ม init slide
+    //  เมื่อสร้าง card เสร็จแล้ว ค่อยเริ่ม init slide
     initSlide();
 
   } catch (err) {
@@ -51,7 +51,7 @@ function initSlide() {
   let current = 0;
   let interval;
 
-  // ✅ สร้าง dot
+  //  สร้าง dot
   dotsContainer.innerHTML = "";
   slides.forEach((_, i) => {
     const dot = document.createElement('span');
@@ -62,7 +62,7 @@ function initSlide() {
   });
   const dots = dotsContainer.querySelectorAll('.dot');
 
-  // ✅ ฟังก์ชันเปลี่ยน slide
+  //  ฟังก์ชันเปลี่ยน slide
   function showSlide(index) {
     slides.forEach((slide, i) => {
       slide.classList.remove("active", "naxt");
@@ -99,7 +99,7 @@ function initSlide() {
     dots[index].classList.add("active");
   }
 
-  // ✅ เปลี่ยน slide
+  //  เปลี่ยน slide
   function goToSlide(i) {
     current = i;
     showSlide(current);
@@ -123,11 +123,11 @@ function initSlide() {
     resetInterval();
   }
 
-  // ✅ ปุ่ม
+  //  ปุ่ม
   nextBtn.addEventListener("click", nextSlide);
   prevBtn.addEventListener("click", prevSlide);
 
-  // ✅ ตั้ง interval
+  //  ตั้ง interval
   function resetInterval() {
     clearInterval(interval);
     interval = setInterval(nextSlideLoop, 4000);

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput  = document.getElementById("password");
   const loginButton    = document.querySelector(".login-btn");
 
-  // 👁️ Toggle password visibility (ใช้ rr ทั้งคู่)
+  // ️ Toggle password visibility (ใช้ rr ทั้งคู่)
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
       const isPassword = passwordInput.getAttribute("type") === "password";
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🧷 กัน submit ซ้ำ
+  //  กัน submit ซ้ำ
   let submitting = false;
 
   if (loginForm) {
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (window.Swal) {
             Swal.fire("Login Failed", result.message || "Invalid credentials", "error");
           } else {
-            alert("❌ Login Failed: " + (result.message || "Invalid credentials"));
+            alert(" Login Failed: " + (result.message || "Invalid credentials"));
           }
           if (loginButton) {
             loginButton.disabled = false;
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.Swal) {
           Swal.fire("Server Error", "Please try again.", "error");
         } else {
-          alert("⚠️ Server Error");
+          alert("️ Server Error");
         }
         if (loginButton) {
           loginButton.disabled = false;

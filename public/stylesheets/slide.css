@@ -61,7 +61,7 @@
   z-index: 1;
 }
 
-@media screen and (max-width:1410px) {
+@media screen and (max-width: 1551px) {
     #ShopExplo {
     grid-template-columns: repeat(3, 1fr);
     }
@@ -69,12 +69,12 @@
     width: 55%;
     }
 }
-@media screen and (max-width:1010px) {
+@media screen and (max-width: 1111px) {
     .con-card{
     width: 70%;
 }
 }
-@media screen and (max-width:831px) {
+@media screen and (max-width: 914px) {
     #ShopExplo {
     grid-template-columns: repeat(2, 1fr);
     }
@@ -83,7 +83,7 @@
 }
 }
 
-@media screen and (max-width:460px) {
+@media screen and (max-width: 506px) {
     #ShopExplo {
     grid-template-columns: repeat(1, 1fr);
     }

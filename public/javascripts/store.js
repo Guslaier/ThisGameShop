@@ -74,7 +74,7 @@ function renderGames(games) {
 // เพิ่มเกมลงตะกร้า
 async function addToCart(id) {
   try {
-    // ✅ 1. ตรวจสอบว่า login แล้วหรือยัง
+    //  1. ตรวจสอบว่า login แล้วหรือยัง
     const sessionRes = await fetch("/account/session", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -82,11 +82,11 @@ async function addToCart(id) {
     const sessionData = await sessionRes.json();
 
     if (!sessionData.loggedIn) {
-      // 🔒 ถ้ายังไม่ล็อกอิน
+      //  ถ้ายังไม่ล็อกอิน
       Swal.fire({
         icon: "warning",
         title: "กรุณาเข้าสู่ระบบก่อน!",
-        text: "คุณต้องเข้าสู่ระบบเพื่อเพิ่มสินค้าลงในตะกร้า 🛒",
+        text: "คุณต้องเข้าสู่ระบบเพื่อเพิ่มสินค้าลงในตะกร้า ",
         confirmButtonText: "เข้าสู่ระบบ",
         confirmButtonColor: "#3085d6",
         showCancelButton: true,
@@ -95,13 +95,13 @@ async function addToCart(id) {
         color: "#fff",
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = "/account/login"; // ✅ เปลี่ยนเส้นทางไปหน้า login
+          window.location.href = "/account/login"; //  เปลี่ยนเส้นทางไปหน้า login
         }
       });
-      return; // ❌ หยุดการทำงานต่อ
+      return; //  หยุดการทำงานต่อ
     }
 
-    // ✅ 2. ถ้า login แล้ว เรียก API เพิ่มสินค้า
+    //  2. ถ้า login แล้ว เรียก API เพิ่มสินค้า
     const res = await fetch("../cart/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -112,11 +112,11 @@ async function addToCart(id) {
 
     const data = await res.json();
 
-    // ✅ 3. แสดงผลตามสถานะ
+    //  3. แสดงผลตามสถานะ
     if (data.status) {
       Swal.fire({
         icon: "success",
-        title: "เพิ่มลงตะกร้าแล้ว! 🛒",
+        title: "เพิ่มลงตะกร้าแล้ว! ",
         text: "คุณสามารถดูได้ที่หน้าตะกร้า",
         timer: 1500,
         showConfirmButton: false,
@@ -143,7 +143,7 @@ const apiBase = '/stock/games';
 let selectedGameId = null;
 let deleteId = null;
 
-// ✅ โหลดเกมทั้งหมดจาก API
+//  โหลดเกมทั้งหมดจาก API
 async function loadGames() {
     try {
         const res = await fetch(apiBase);
@@ -152,13 +152,13 @@ async function loadGames() {
         console.log(allGames)
         renderGames(allGames);
     } catch (err) {
-        console.error('❌ Error loading games:', err);
+        console.error(' Error loading games:', err);
         gameGrid.innerHTML = `<p style="text-align:center; color:#bbb;">Failed to load games</p>`;
     }
 }
 
 
-// ✅ ฟิลเตอร์เกม
+//  ฟิลเตอร์เกม
 function applyFilters() {
     const title = document.getElementById('filterTitle').value.toLowerCase();
     const platform = document.getElementById('filterPlatform').value;
@@ -181,11 +181,11 @@ function applyFilters() {
     renderGames(filtered);
 }
 
-// ✅ Event listeners สำหรับ filter
+//  Event listeners สำหรับ filter
 ['filterTitle', 'filterPlatform', 'filterPriceMin', 'filterPriceMax', 'filterStockMin', 'filterStockMax']
     .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
 
-// ✅ เรียงเกม
+//  เรียงเกม
 function sortGames(field, order) {
     let sorted = [...allGames];
     sorted.sort((a, b) => {
@@ -204,7 +204,7 @@ function sortGames(field, order) {
 
 loadGames()
 document.addEventListener("DOMContentLoaded", async () => {
-  // ✅ รอจนกว่าเกมทั้งหมดถูกโหลดเข้า #ShopExplo แล้ว
+  //  รอจนกว่าเกมทั้งหมดถูกโหลดเข้า #ShopExplo แล้ว
   const waitForGames = async () => {
     let retries = 20;
     while (retries-- > 0) {
@@ -214,25 +214,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
   await waitForGames();
 
-  // ✅ อ่านค่า platform จาก URL เช่น ?platform=PS5
+  //  อ่านค่า platform จาก URL เช่น ?platform=PS5
   const params = new URLSearchParams(window.location.search);
   const platform = params.get("platform");
 
   if (platform) {
-    console.log(`🟢 Filter platform: ${platform}`);
+    console.log(` Filter platform: ${platform}`);
     const select = document.getElementById("filterPlatform");
 
     // ตั้งค่า dropdown ให้ตรง
     if (select) select.value = platform;
 
-    // ✅ เรียกฟังก์ชันกรอง (ต้องมีอยู่ใน store.js)
+    //  เรียกฟังก์ชันกรอง (ต้องมีอยู่ใน store.js)
     if (typeof applyFilters === "function") {
       applyFilters();
     } else {
-      console.warn("⚠️ applyFilters() not found in store.js");
+      console.warn("️ applyFilters() not found in store.js");
     }
 
-    // ✅ แสดง platform ปัจจุบันใน title
+    //  แสดง platform ปัจจุบันใน title
     const title = document.querySelector(".title");
     if (title) title.innerHTML = `Explore : ${platform}`;
   }
@@ -254,14 +254,14 @@ function renderGames(games) {
     const price = ((g.price_cents || 0) / 100).toLocaleString('en-US');
     const stock = g.stock_managed ?? 0;
 
-    // ✅ ถ้า stock = 0 ให้ปุ่มถูก disable
+    //  ถ้า stock = 0 ให้ปุ่มถูก disable
     const isOutOfStock = stock <= 0;
     const addCartClass = isOutOfStock ? "addCart disabled" : "addCart";
     const addCartAttr = isOutOfStock ? "disabled" : `onclick="addToCart(${g.id})"`;
 
     card.addEventListener("click", e => {
       if (e.target.closest(".addCart")) return;
-      // ✅ go to /store/gamedetail/:id instead
+      //  go to /store/gamedetail/:id instead
       window.location.href = `/store/gamedetail/${g.id}`;
     });  
     

@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await res.json();
       return data;
     } catch (err) {
-      console.error("❌ Fetch error:", err);
+      console.error(" Fetch error:", err);
       return null;
     }
   }
@@ -32,27 +32,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const result = await fetchJSON("/ad-m/api/games");
     if (!result?.status) {
-      tableBody.innerHTML = `<tr><td colspan="5">❌ โหลดข้อมูลเกมไม่สำเร็จ</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="5"> โหลดข้อมูลเกมไม่สำเร็จ</td></tr>`;
       return;
     }
 
-    // ✅ เรียงจาก id มาก → น้อย
+    //  เรียงจาก id มาก → น้อย
     const sortedGames = result.data.sort((a, b) => b.id - a.id);
 
     tableBody.innerHTML = "";
     sortedGames.forEach((game) => {
-      // ✅ ตรวจสอบสถานะของเกม
+      //  ตรวจสอบสถานะของเกม
       let statusText = "";
       let statusColor = "";
 
       if (game.deleted_at) {
-        statusText = "❌ ถูกลบ";
+        statusText = " ถูกลบ";
         statusColor = "red";
       } else if (game.stock_managed > 0) {
-        statusText = "🟢 มีในสต็อก";
+        statusText = " มีในสต็อก";
         statusColor = "green";
       } else {
-        statusText = "⚠️ หมดสต็อก";
+        statusText = "️ หมดสต็อก";
         statusColor = "orange";
       }
 
@@ -72,15 +72,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadGames();
 
-  // ✅ ค้นหาเกมในตาราง
+  //  ค้นหาเกมในตาราง
   document.querySelector(".header input").addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase();
 
     document.querySelectorAll("#gameTable tbody tr").forEach((row) => {
-      const id = row.children[0].innerText.toLowerCase();     // ✅ ช่อง ID
-      const title = row.children[1].innerText.toLowerCase();  // ✅ ช่องชื่อเกม
+      const id = row.children[0].innerText.toLowerCase();     //  ช่อง ID
+      const title = row.children[1].innerText.toLowerCase();  //  ช่องชื่อเกม
 
-      // ✅ ค้นจากทั้ง id และชื่อเกม
+      //  ค้นจากทั้ง id และชื่อเกม
       const match = id.includes(query) || title.includes(query);
 
       row.style.display = match ? "" : "none";

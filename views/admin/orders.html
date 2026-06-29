@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Prompt:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-<button id="toggleSidebar">☰ Menu</button>
+<button id="toggleSidebar"><i class="fi fi-rr-menu-burger"></i> Menu</button>
   <!-- Sidebar -->
   <aside class="sidebar">
     <div>
@@ -28,18 +28,18 @@
   <!-- Main -->
   <main class="main-con">
     <header class="topbar">
-      <h1>📦 Orders Management</h1>
+      <h1><i class="fi fi-rr-box"></i> Orders Management</h1>
     </header>
 
     <div class="orders-header">
-    <input id="filterOrder" placeholder="🔍 ค้นหา Order หรือชื่อลูกค้า..." />
+    <input id="filterOrder" placeholder="ค้นหา Order หรือชื่อลูกค้า..." />
     <select id="filterStatus">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
       <option value="paid">Paid</option>
       <option value="cancelled">Cancelled</option>
     </select>
-    <button id="btnReload">🔄 Reload</button>
+    <button id="btnReload"><i class="fi fi-rr-refresh"></i> Reload</button>
   </div>
 
   <div id="orderGrid" class="order-grid"></div>
@@ -47,7 +47,7 @@
 
 
 </body>
-<!-- 📦 SweetAlert2 สำหรับ popup สวยๆ -->
+<!-- <i class="fi fi-rr-box"></i> SweetAlert2 สำหรับ popup สวยๆ -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/javascripts/admin/admin.js"></script>
 <script src="/javascripts/admin/ad-orders.js"></script>

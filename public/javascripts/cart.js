@@ -1,15 +1,15 @@
 // ============================================================
-// 📦 CART CONTROLLER (ตะกร้าสินค้า)
+//  CART CONTROLLER (ตะกร้าสินค้า)
 // ============================================================
 
-// ✅ โหลดรายการในตะกร้า
+//  โหลดรายการในตะกร้า
 document.addEventListener("DOMContentLoaded", async () => {
   await loadCartItems();
   setupCheckboxListeners();
 });
 
 // ============================================================
-// 🛒 ดึงข้อมูลจาก API /store/cart
+//  ดึงข้อมูลจาก API /store/cart
 // ============================================================
 async function loadCartItems() {
   const container = document.querySelector(".totleCart");
@@ -23,7 +23,7 @@ async function loadCartItems() {
     container.appendChild(header);
 
     if (!result.status || !result.data || result.data.length === 0) {
-      container.innerHTML += `<div class="empty">Your cart is empty 🛒</div>`;
+      container.innerHTML += `<div class="empty">Your cart is empty </div>`;
       document.getElementById("showsum").innerText = 0;
       return;
     }
@@ -62,19 +62,19 @@ async function loadCartItems() {
     updateTotal();
   } catch (err) {
     console.error("Error loading cart:", err);
-    container.innerHTML = `<div class="empty">❌ Failed to load cart</div>`;
+    container.innerHTML = `<div class="empty"> Failed to load cart</div>`;
   }
 }
 
 // ============================================================
-// ➕ เพิ่มจำนวน
+//  เพิ่มจำนวน
 // ============================================================
 async function increaseValue(button) {
   const numberInput = button.parentElement.querySelector('.number');
   let value = parseInt(numberInput.innerHTML, 10);
   if (isNaN(value)) value = 0;
 
-  // ✅ ดึง stock จาก data attribute
+  //  ดึง stock จาก data attribute
   const stock = parseInt(
     button.closest('.drtail').getAttribute('data-stock'),
     10
@@ -88,7 +88,7 @@ async function increaseValue(button) {
       timer: 1500,
       showConfirmButton: false,
     });
-    return; // ❌ หยุด ไม่เพิ่มเกิน stock
+    return; //  หยุด ไม่เพิ่มเกิน stock
   }
 
   value++;
@@ -102,7 +102,7 @@ async function increaseValue(button) {
 
 
 // ============================================================
-// ➖ ลดจำนวน
+//  ลดจำนวน
 // ============================================================
 async function decreaseValue(button) {
   const numberInput = button.parentElement.querySelector('.number');
@@ -132,7 +132,7 @@ async function decreaseValue(button) {
 }
 
 // ============================================================
-// 💾 อัปเดตจำนวนในฐานข้อมูล
+//  อัปเดตจำนวนในฐานข้อมูล
 // ============================================================
 async function updateCartQty(game_id, quantity) {
   try {
@@ -147,7 +147,7 @@ async function updateCartQty(game_id, quantity) {
 }
 
 // ============================================================
-// 🗑️ ลบสินค้าออกจากตะกร้า
+// ️ ลบสินค้าออกจากตะกร้า
 // ============================================================
 async function removeFromCart(game_id) {
   try {
@@ -175,7 +175,7 @@ async function removeFromCart(game_id) {
 }
 
 // ============================================================
-// 💰 อัปเดตราคารวม
+//  อัปเดตราคารวม
 // ============================================================
 function updateTotal() {
   let total = 0;
@@ -192,7 +192,7 @@ function updateTotal() {
 }
 
 // ============================================================
-// ✅ Checkbox เลือกทั้งหมด
+//  Checkbox เลือกทั้งหมด
 // ============================================================
 function setupCheckboxListeners() {
   const selectAllCheck = document.getElementById('selectAllCheck');
@@ -210,7 +210,7 @@ function setupCheckboxListeners() {
 }
 
 // ============================================================
-// 🛍️ ปุ่ม Buy (สร้างออเดอร์)
+// ️ ปุ่ม Buy (สร้างออเดอร์)
 // ============================================================
 // ช่วยจัดรูปแบบเงิน
 const formatMoney = (n) => (parseFloat(n || 0)).toFixed(2);
@@ -238,7 +238,7 @@ document.addEventListener("click", async (e) => {
       if (!sessionData.loggedIn) {
         Swal.fire({
           icon: "warning",
-          title: "กรุณาเข้าสู่ระบบก่อนสั่งซื้อ 🛒",
+          title: "กรุณาเข้าสู่ระบบก่อนสั่งซื้อ ",
           text: "คุณต้องเข้าสู่ระบบเพื่อดำเนินการต่อ",
           confirmButtonText: "เข้าสู่ระบบ",
           cancelButtonText: "ยกเลิก",
@@ -335,7 +335,7 @@ document.addEventListener("click", async (e) => {
 
       // 5) เลือกวิธีชำระเงิน (จ่ายตอนนี้/ภายหลัง)
       Swal.fire({
-        title: "เลือกวิธีชำระเงิน 💳",
+        title: "เลือกวิธีชำระเงิน ",
         text: `Order #${data.order_no} — ยอดรวม ${data.total} บาท`,
         icon: "info",
         showCancelButton: true,
@@ -378,7 +378,7 @@ document.addEventListener("click", async (e) => {
               if (payResult.isConfirmed) {
                 Swal.fire({
                   icon: "success",
-                  title: "ชำระเงินสำเร็จ 🎉",
+                  title: "ชำระเงินสำเร็จ ",
                   text: "ระบบได้เพิ่มเกมของคุณเข้าสู่ Library แล้ว",
                   confirmButtonColor: "#3085d6",
                 }).then(() => (location.href = "/account/libery-oder")); // หรือ "/history" ตามที่คุณต้องการ
@@ -392,7 +392,7 @@ document.addEventListener("click", async (e) => {
           // ชำระภายหลัง
           Swal.fire({
             icon: "info",
-            title: "เก็บไว้ก่อน 🕒",
+            title: "เก็บไว้ก่อน ",
             text: "คุณสามารถกลับมาชำระภายหลังได้ในหน้าประวัติคำสั่งซื้อ",
             confirmButtonColor: "#3085d6",
           }).then(() => (location.href = "."));

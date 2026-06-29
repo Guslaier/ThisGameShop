@@ -13,7 +13,7 @@
 
 <body>
   <!-- Sidebar -->
-  <button id="toggleSidebar">☰ Menu</button>
+  <button id="toggleSidebar"><i class="fi fi-rr-menu-burger"></i> Menu</button>
   <aside class="sidebar">
     <div>
       <h2>THISGAMESHOP</h2>
@@ -31,13 +31,13 @@
   <!-- Main -->
   <main class="main-con">
     <header class="topbar">
-      <h1>🎮 Games Management</h1>
+      <h1><i class="fi fi-rr-gamepad"></i> Games Management</h1>
       <button id="btnAddGame" class="btn-primary">+ Add Game</button>
     </header>
 
-    <!-- ✅ ส่วน Gallery -->
+    <!-- <i class="fi fi-rr-check-circle"></i> ส่วน Gallery -->
     <section id="gallerySection" class="gallery hidden">
-      <h2 id="galleryHeader">📸 Game Gallery</h2>
+      <h2 id="galleryHeader"><i class="fi fi-rr-camera"></i> Game Gallery</h2>
       <div id="galleryGrid" class="gallery-grid"></div>
       <form id="galleryForm" enctype="multipart/form-data" class="gallery-form">
         <input type="file" id="galleryImage" name="image" accept="image/*" required />
@@ -47,7 +47,7 @@
       </form>
     </section>
 
-    <!-- ✅ ฟิลเตอร์ + Sort -->
+    <!-- <i class="fi fi-rr-check-circle"></i> ฟิลเตอร์ + Sort -->
     <section class="grid-header">
       <div class="filters">
         <input type="text" id="filterTitle" placeholder="Search title...">
@@ -66,14 +66,14 @@
 
       <div class="sort-buttons">
         <label>Sort:</label>
-        <button onclick="sortGames('price', 'asc')">💰 Price ⬆</button>
-        <button onclick="sortGames('price', 'desc')">💰 Price ⬇</button>
-        <button onclick="sortGames('stock', 'asc')">📦 Stock ⬆</button>
-        <button onclick="sortGames('stock', 'desc')">📦 Stock ⬇</button>
+        <button onclick="sortGames('price', 'asc')"><i class="fi fi-rr-money-bill-wave"></i> Price ⬆</button>
+        <button onclick="sortGames('price', 'desc')"><i class="fi fi-rr-money-bill-wave"></i> Price ⬇</button>
+        <button onclick="sortGames('stock', 'asc')"><i class="fi fi-rr-box"></i> Stock ⬆</button>
+        <button onclick="sortGames('stock', 'desc')"><i class="fi fi-rr-box"></i> Stock ⬇</button>
       </div>
     </section>
 
-    <!-- ✅ แสดงผลแบบ Grid -->
+    <!-- <i class="fi fi-rr-check-circle"></i> แสดงผลแบบ Grid -->
     <section class="grid-section">
       <div id="gameGrid" class="game-grid"></div>
     </section>

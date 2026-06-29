@@ -96,10 +96,13 @@
 }
 
 /* 📱 Mobile responsive */
-@media (max-width: 768px) {
+@media (max-width: 845px) {
 
   .recommend-section {
     margin-top: 2rem;
     padding: 0 10px;
+  }
+  .recommend-card {
+    min-width: 100%;
   }
 }
